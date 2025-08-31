@@ -1,6 +1,5 @@
 import 'package:client_app/core/common/widget/custom_button.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../../../core/common/utils/toast_util.dart';
 

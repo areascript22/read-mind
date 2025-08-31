@@ -14,19 +14,16 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> saveJwt(String jwt) async {
-    print("Saving jwt");
     await sharedPrefs.setString(jwtKey, jwt);
   }
 
   @override
   Future<String?> getJwt() async {
-    print("getting jwt");
     return sharedPrefs.getString(jwtKey);
   }
 
   @override
   Future<void> clearJwt() async {
-    print("Cleaning jwt");
     await sharedPrefs.remove(jwtKey);
   }
 }

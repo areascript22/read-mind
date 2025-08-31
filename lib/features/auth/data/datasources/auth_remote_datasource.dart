@@ -36,7 +36,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDatasource {
         body: jsonEncode({"email": email, "password": password}),
       );
       final data = jsonDecode(response.body);
-      print("sign in email pass: ${data}");
       if (response.statusCode != 200) {
         throw ServerException(data['message']);
       }

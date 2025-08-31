@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class DailyStreakWidget extends StatelessWidget {
   final int currentStreak;
   final List<bool>
-  attendance; // List of booleans representing attendance (true = present)
+  attendance;
 
   const DailyStreakWidget({
     super.key,
@@ -20,7 +20,7 @@ class DailyStreakWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
+              color: Colors.grey.withValues(alpha: 0.3),
               spreadRadius: 2,
               blurRadius: 5,
               offset: const Offset(0, 2),

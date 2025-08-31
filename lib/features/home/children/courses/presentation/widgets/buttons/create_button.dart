@@ -10,13 +10,13 @@ class CreateButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: true ? () async {} : null,
+          onTap: () async {},
           borderRadius: BorderRadius.circular(20),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Text(
               'Crear',
-              style: true ? const TextStyle(color: Colors.blue) : null,
+              style: const TextStyle(color: Colors.blue),
             ),
           ),
         ),

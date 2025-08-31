@@ -1,6 +1,5 @@
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CourseTile extends StatelessWidget {
   final CourseEntity course;

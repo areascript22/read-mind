@@ -78,7 +78,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: true ? Colors.blue.withValues (alpha:  0.2) : null,
+        color:  Colors.blue.withValues (alpha:  0.2),
         borderRadius: BorderRadius.circular(25),
       ),
       child: ListTile(

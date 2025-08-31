@@ -152,21 +152,16 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   const SizedBox(height: 15),
                   CustomButton(
-                    onTap:
-                    true
-                        ? () async {
+                    onTap: () async {
 
-                    }
-                        : () {},
-                    child:
-                    true
-                        ? const Text(
+                    },
+                    child: const Text(
                       'Continuar',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w600,
                       ),
-                    ) : const CircularProgressIndicator(),
+                    ),
                   ),
                 ],
               ),

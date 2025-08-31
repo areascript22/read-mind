@@ -16,7 +16,7 @@ void showDevSettingBS(BuildContext context) {
 
 // StatefulWidget for the BottomSheet body
 class DevSettingBottomSheet extends StatefulWidget {
-  const DevSettingBottomSheet({Key? key}) : super(key: key);
+  const DevSettingBottomSheet({super.key});
 
   @override
   State<DevSettingBottomSheet> createState() => _DevSettingBottomSheetState();
