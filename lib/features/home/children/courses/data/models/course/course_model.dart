@@ -1,8 +1,6 @@
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
 part 'course_model.freezed.dart';
-
 part 'course_model.g.dart';
 
 @freezed
