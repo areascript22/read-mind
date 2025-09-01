@@ -1,5 +1,8 @@
+import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
+import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../widgets/course_tile.dart';
 import '../widgets/daily_streak.dart';
@@ -15,12 +18,9 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _initializeValues();
-    });
+    context.read<CoursesBloc>().add(CoursesGetAll());
   }
 
-  void _initializeValues() async {}
 
   @override
   void dispose() {
@@ -90,7 +90,7 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('assets/img/notes.png', height: 150),
+                   // Image.asset('assets/img/notes.png', height: 150),
                     Column(
                       children: [
                         //Percent
@@ -133,7 +133,17 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
           //DAILY STREAK
           DailyStreakWidget(currentStreak: 1, attendance: [true, true, true]),
           //BUILD COURSES
-           Center(child: CircularProgressIndicator(color: Colors.green))
+          BlocConsumer<CoursesBloc, CoursesState>(
+            builder: (context, state) {
+
+            return CircularProgressIndicator(color: Colors.blue,);
+          }, listener: (context, state) {
+            if(state is CoursesLoaded){
+              ToastMessageUtil.showToast("Loaded", context);
+            }
+          },)
+
+
 
         ],
       ),

@@ -4,6 +4,7 @@ import 'package:client_app/features/auth/presentation/pages/auth_wrapper.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:client_app/features/auth/presentation/pages/splash_screen.dart';
+import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc.dart';
 import 'package:client_app/features/home/presentation/pages/home_page.dart';
 import 'package:client_app/init_dependencies.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,7 +40,14 @@ class AppRouter {
           ),
         ],
       ),
-      GoRoute(path: RouteNames.home, builder: (context, state) => HomePage()),
+      ShellRoute(
+          builder: (context, state, child) {
+            return BlocProvider.value(value: serviceLocator<CoursesBloc>(), child: child,);
+          },
+          routes: [
+        GoRoute(path: RouteNames.home, builder: (context, state) => HomePage()),
+      ]),
+
     ],
   );
 }

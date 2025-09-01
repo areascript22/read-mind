@@ -1,4 +1,4 @@
-import 'package:client_app/features/auth/data/datasources/auth_local_datasource.dart';
+import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:client_app/features/auth/data/models/user_model/user_model.dart';
 import 'package:fpdart/fpdart.dart';
 

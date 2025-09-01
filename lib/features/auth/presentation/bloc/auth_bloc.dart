@@ -43,9 +43,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     final response = await currentUser(Noparams());
     response.fold(
-      (l) => emit(AuthFailureState(l.message)),
+      (l) => _emitAuthFailure(emit,l.message),
       (r) => _emitAuthSuccess(emit, r),
     );
+  }
+
+  void _emitAuthFailure(Emitter<AuthState> emit, String message){
+    appUserCubit.updateUserFailure(message);
+    emit(AuthFailureState(message));
   }
 
   void _emitAuthSuccess(Emitter<AuthState> emit, UserEntity userEntity) {

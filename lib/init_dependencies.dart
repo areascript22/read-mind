@@ -1,5 +1,10 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
-import 'package:client_app/features/auth/data/datasources/auth_local_datasource.dart';
+import 'package:client_app/features/home/children/courses/data/datasources/courses_remote_datasource.dart';
+import 'package:client_app/features/home/children/courses/data/repository/courses_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/domain/repository/courses_repositories.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/courses_get_all.dart';
+import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc.dart';
+import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:client_app/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:client_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:client_app/features/auth/domain/repositories/auth_repository.dart';
@@ -17,6 +22,7 @@ Future<void> initDependencies() async {
 
   await _initSharedPreferences();
   _initAuth();
+  initCourses();
 }
 
 Future<void> _initSharedPreferences() async {
@@ -45,4 +51,12 @@ void _initAuth() {
       serviceLocator(),
     ),
   );
+}
+
+void initCourses(){
+  serviceLocator.registerFactory<CoursesRemoteDatasource>(() => CoursesRemoteDatasourceImpl(),);
+  serviceLocator.registerFactory<CoursesRepository>(() => CoursesRepositoryImpl(serviceLocator(), serviceLocator()),);
+  serviceLocator.registerFactory(() => GetAllCourses(serviceLocator()),);
+  serviceLocator.registerLazySingleton(() => CoursesBloc(serviceLocator()));
+
 }

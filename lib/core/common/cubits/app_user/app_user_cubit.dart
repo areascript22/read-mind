@@ -8,11 +8,11 @@ part 'app_user_state.dart';
 class AppUserCubit extends Cubit<AppUserState> {
   AppUserCubit() : super(AppUserInitial());
 
-  void updateUser(UserEntity? userEntity){
-    if(userEntity==null){
-        emit(AppUserInitial());
-    }else{
-      emit(AppUserLoggedIn(userEntity));
-    }
+  void updateUser(UserEntity userEntity){
+    emit(AppUserLoggedIn(userEntity));
+  }
+
+  void updateUserFailure(String message){
+    emit(AppUserFailure(message));
   }
 }

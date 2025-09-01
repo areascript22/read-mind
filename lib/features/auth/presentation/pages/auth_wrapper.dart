@@ -1,4 +1,3 @@
-import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
@@ -21,15 +20,19 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AppUserCubit, AppUserState>(
+    return BlocConsumer<AuthBloc, AuthState>(
       builder: (context, state) {
         return Scaffold(
-          body: Center(child: CircularProgressIndicator(color: Colors.green)),
+          body: Center(child: CircularProgressIndicator(color: Colors.red)),
         );
       },
       listener: (context, state) {
-        if (state is AppUserLoggedIn) {
+        if (state is AuthFailureState) {
+          context.go(RouteNames.signIn);
+        }
+        if(state is AuthSuccessState){
           context.go(RouteNames.home);
+
         }
       },
     );
