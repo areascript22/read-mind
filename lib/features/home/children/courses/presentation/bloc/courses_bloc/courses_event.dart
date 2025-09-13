@@ -5,28 +5,28 @@ sealed class CoursesEvent extends Equatable {
   const CoursesEvent();
 }
 
-class CoursesGetAll extends CoursesEvent {
-  const CoursesGetAll();
+class CoursesGetAllEvent extends CoursesEvent {
+  const CoursesGetAllEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class CoursesGetAllEnrolledEvent extends CoursesEvent {
+  const CoursesGetAllEnrolledEvent();
 
   @override
   List<Object?> get props => [];
 }
 
 class CoursesCreateNew extends CoursesEvent {
-  final String token;
   final String title;
   final String description;
-  final String professorId;
 
-  const CoursesCreateNew({
-    required this.token,
-    required this.title,
-    required this.description,
-    required this.professorId,
-  });
+  const CoursesCreateNew(this.title, this.description);
 
   @override
-  List<Object?> get props => [token, title, description, professorId];
+  List<Object?> get props => [];
 }
 
 class CoursesUpdateInfo extends CoursesEvent {

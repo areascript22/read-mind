@@ -1,9 +1,18 @@
-import 'package:client_app/core/common/utils/toast_util.dart';
+import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
-import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc.dart';
+import 'package:client_app/features/home/children/courses/domain/enums/course_option.dart';
+import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc/courses_bloc.dart';
+import 'package:client_app/features/home/children/courses/presentation/widgets/bottomsheet_create_course.dart';
+import 'package:client_app/features/home/children/courses/presentation/widgets/role_course_options.dart';
+import 'package:client_app/shared/widgets/loader_indicator.dart';
+import 'package:client_app/shared/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../bloc/course_option_cubit/course_option_cubit.dart';
 import '../widgets/course_tile.dart';
 import '../widgets/daily_streak.dart';
 
@@ -15,12 +24,22 @@ class CourseManagementPage extends StatefulWidget {
 }
 
 class _CourseManagementPageState extends State<CourseManagementPage> {
+  final RefreshController refreshController = RefreshController();
+  bool userIsProfessor = false;
+
   @override
   void initState() {
     super.initState();
-    context.read<CoursesBloc>().add(CoursesGetAll());
+    _fetchAllCourses();
+    userIsProfessor = context.read<AppUserCubit>().isProfessor;
   }
 
+  void _fetchAllCourses() {
+    if (userIsProfessor) {
+      context.read<CoursesBloc>().add(CoursesGetAllEvent());
+    }
+    context.read<CoursesBloc>().add(CoursesGetAllEnrolledEvent());
+  }
 
   @override
   void dispose() {
@@ -31,28 +50,12 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leadingWidth: 196,
         leading: Padding(
           padding: const EdgeInsets.only(left: 10),
-          child: GestureDetector(
-            onTap: () {},
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.blue,
-                  child: Text(
-                    "sharedViewModel.user?.name.substring(0, 2) ?? ''",
-                  ),
-                ),
-                //   Text(sharedViewModel.user?.role.name ?? ''),
-              ],
-            ),
-          ),
+          child: GestureDetector(onTap: () {}, child: UserAvatar()),
         ),
         actions: [
-          //Profile picture
-
-          //Icon
           Padding(
             padding: const EdgeInsets.only(right: 15),
             child: Row(
@@ -73,166 +76,142 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
           ),
         ),
       ),
-      // drawer: DrawerCustom(),
+
       body: Column(
         children: [
-          //PORTRAIT
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 10),
-            //height: 200,
-            decoration: BoxDecoration(
-              color: Color(0xFFF5F8FD),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                   // Image.asset('assets/img/notes.png', height: 150),
-                    Column(
-                      children: [
-                        //Percent
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: '0',
-                                style: TextStyle(
-                                  color: Colors.blueAccent,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 35,
-                                ),
-                              ),
-                              TextSpan(
-                                text: ' %',
+          _buildVocabulary(),
+          DailyStreakWidget(currentStreak: 1, attendance: [true, true, true]),
+          RolCourseOptions(),
+          Expanded(
+            child: BlocConsumer<CoursesBloc, CoursesState>(
+              listener: (context, state) {
+                if (state is CoursesLoaded) {
+                  refreshController.refreshCompleted();
+                } else if (state is CourseFailure) {
+                  refreshController.refreshFailed();
+                }
+              },
+              builder: (context, state) {
+                return SmartRefresher(
+                  controller: refreshController,
+                  enablePullDown: true,
+                  onRefresh: () {
+                    final selectedOption = context.read<CourseOptionCubit>().state;
 
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.blueAccent,
-                                ),
-                              ),
-                            ],
+                    if(selectedOption == CourseOptions.yourCourses) {
+                      context.read<CoursesBloc>().add(CoursesGetAllEnrolledEvent());
+                      return;
+                    }
+
+                    context.read<CoursesBloc>().add(CoursesGetAllEvent());
+                  },
+                  header: WaterDropHeader(
+                    complete: Icon(Icons.check, color: Colors.blue[400]),
+                    waterDropColor: Colors.blue[400]!,
+                  ),
+                  child: _buildContentByState(state),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: _buildFloatingActionButton(),
+    );
+  }
+
+  Widget _buildContentByState(CoursesState state) {
+    if (state is CoursesLoaded) {
+      return _listViewCourses(state.courses);
+    }
+
+    if (state is CourseFailure) {
+      return Center(
+        child: Text(state.message, style: const TextStyle(color: Colors.red)),
+      );
+    }
+
+    return const LoaderIndicator();
+  }
+
+  Container _buildVocabulary() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: Color(0xFFF5F8FD),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  //Percent
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '0',
+                          style: TextStyle(
+                            color: Colors.blueAccent,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 35,
                           ),
                         ),
-                        Text(
-                          "Vocabulario",
+                        TextSpan(
+                          text: ' %',
+
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 27,
+                            fontSize: 17,
+                            color: Colors.blueAccent,
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  Text(
+                    "Vocabulario",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 27),
+                  ),
+                ],
+              ),
+            ],
           ),
-          //DAILY STREAK
-          DailyStreakWidget(currentStreak: 1, attendance: [true, true, true]),
-          //BUILD COURSES
-          BlocConsumer<CoursesBloc, CoursesState>(
-            builder: (context, state) {
-
-            return CircularProgressIndicator(color: Colors.blue,);
-          }, listener: (context, state) {
-            if(state is CoursesLoaded){
-              ToastMessageUtil.showToast("Loaded", context);
-            }
-          },)
-
-
-
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-
-        // onPressed: () {
-        //   stateManager.courses = [];
-        // },
-        child: const Icon(Icons.add, color: Colors.blue),
-      ),
     );
   }
 
-  //All courses of this preofessor
+  FloatingActionButton _buildFloatingActionButton() {
+    return FloatingActionButton(
+      onPressed: () {
+        showBottomSheetCreateCourse(context);
+      },
+      child: const Icon(Icons.add, color: Colors.blue),
+    );
+  }
+
   Widget _listViewCourses(List<CourseEntity> courses) {
-    return Expanded(
-      child: ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        itemCount: courses.length,
-        itemBuilder: (context, index) {
-          final course = courses[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.of(context, rootNavigator: true).pushReplacementNamed(
-                '/course_content_feature',
-                arguments: course,
-              );
-            },
-            child: CourseTile(
-              course: course,
-              courseId: course.id.toString(),
-              title: course.name,
-              studentCount: 12,
-              imageAssetPath: "",
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  //Page when there is not courses
-  Widget _buildPageWithoutCourses(
-    BuildContext context,
-  ) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("Aun no estas incrito en un curso"),
-        //Image
-        // SizedBox(
-        //   height: 200,
-        //   child: Image.asset("assets/img/background_1.png"),
-        // ),
-        //Creat join Classroom
-        //const SizedBox(height: 10),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: [
-        //     CustomElevatedButton(
-        //       color: Colors.grey[300],
-        //       onTap: () async {
-        //         //Check if i have permissions
-        //         if (sharedVM.user?.role.name == Roles.student) {
-        //           //Check if role reqeust is in pending status
-        //           await courseVM.checkRequestRoleStatus(context, courseVM);
-
-        //           return;
-        //         }
-        //         if (context.mounted) {
-        //           Navigator.pushNamed(context, "/create_course");
-        //         }
-        //       },
-        //       child: const Text(
-        //         "Crear un curso",
-        //         style: TextStyle(color: Colors.blue),
-        //       ),
-        //     ),
-        //     const SizedBox(width: 20),
-        //     CustomElevatedButton(
-        //       onTap: () {
-        //         Navigator.pushNamed(context, '/join_course');
-        //       },
-        //       child: const Text("Unirse a un curso"),
-        //     ),
-        //   ],
-        // ),
-      ],
+    if (courses.isEmpty) {
+      return Center(
+        child: Text("No hay cursos disponibles"),
+      );
+    }
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      itemCount: courses.length,
+      itemBuilder: (context, index) {
+        final course = courses[index];
+        return GestureDetector(
+          onTap: () {
+            context.go("${RouteNames.courseContent}/${course.id.toString()}");
+          },
+          child: CourseTile(course: course),
+        );
+      },
     );
   }
 }

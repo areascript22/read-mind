@@ -25,6 +25,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEvent>((event, emit) => emit(AuthLoadingState()));
     on<AuthSignInEvent>(_onAuthSignIn);
     on<AuthIsUserLoggedIn>(_onAuthUserIsLoggedIn);
+    on<AuthSignUpEvent>(_onAuthSignUp);
   }
 
   void _onAuthSignIn(AuthSignInEvent event, Emitter<AuthState> emit) async {
@@ -32,8 +33,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       UserSignInParams(email: event.email, password: event.password),
     );
     response.fold(
-      (l) => emit(AuthFailureState(l.message)),
-      (r) => emit(AuthSuccessState()),
+      (l) => _emitAuthFailure(emit, l.message),
+      (r) => _emitAuthSuccess(emit, r),
     );
   }
 
@@ -43,12 +44,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     final response = await currentUser(Noparams());
     response.fold(
-      (l) => _emitAuthFailure(emit,l.message),
+      (l) => _emitAuthFailure(emit, l.message),
       (r) => _emitAuthSuccess(emit, r),
     );
   }
 
-  void _emitAuthFailure(Emitter<AuthState> emit, String message){
+  void _onAuthSignUp(AuthSignUpEvent event, Emitter<AuthState> emit) async {
+    final response = await userSignUp(
+      UserSignUpParams(
+        email: event.email,
+        password: event.password,
+        name: event.name,
+        lastName: event.lastName,
+      ),
+    );
+    response.fold(
+      (l) => _emitAuthFailure(emit, l.message),
+      (r) => _emitAuthSuccess(emit, r),
+    );
+  }
+
+  void _emitAuthFailure(Emitter<AuthState> emit, String message) {
     appUserCubit.updateUserFailure(message);
     emit(AuthFailureState(message));
   }

@@ -8,6 +8,10 @@ class Environments {
   static String testHostWIFI = "192.168.100.29";
   static String baseHost ="192.168.100.36";
 
+  static String baseUrl = Platform.isAndroid
+      ? "http://$baseHost:3000/api"
+      : "http://localhost:3000/api";
+
   static String authUrl =
       Platform.isAndroid
           ? "http://$baseHost:3000/api/auth"

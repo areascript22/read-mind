@@ -32,3 +32,12 @@ class CoursesLoaded extends CoursesState {
   @override
   List<Object?> get props => [courses];
 }
+
+class CoursesCreatedNew extends CoursesState{
+  final CourseEntity course;
+
+  const CoursesCreatedNew(this.course);
+
+  @override
+  List<Object?> get props => [course];
+}

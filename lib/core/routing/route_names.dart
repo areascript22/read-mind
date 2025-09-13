@@ -4,4 +4,10 @@ class RouteNames{
   static const home = '/home';
   static const signUp='/signUp';
   static const signIn='/signIn';
+
+  static const createCourse='/createCourse';
+  static const enrollCourse='/enrollCourse';
+
+  static const courseContent = '/courseContent';
+  static const courseSettings = '/courseSettings';
 }

@@ -178,7 +178,7 @@ class _SignInPageState extends State<SignInPage> {
                                        context.read<AuthBloc>().add(
                                          AuthSignInEvent(
                                            email:
-                                           emailTextController.text.trim(),
+                                           emailTextController.text.trim().toLowerCase(),
                                            password:
                                            passwordTextController.text
                                                .trim(),
