@@ -7,18 +7,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDependencies();
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider(create: (context) => serviceLocator<AppUserCubit>(),),
-  ], child: const MyApp()));
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => serviceLocator<AppUserCubit>()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final appRouter = AppRouter();
+  @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: AppRouter().router,
+      routerConfig: appRouter.router,
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(

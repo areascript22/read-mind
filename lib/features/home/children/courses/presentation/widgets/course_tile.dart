@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:intl/intl.dart';
 
+import 'bottomsheet_option_course.dart';
+
 class CourseTile extends StatelessWidget {
   final CourseEntity course;
 
@@ -15,21 +17,15 @@ class CourseTile extends StatelessWidget {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       clipBehavior: Clip.antiAlias,
       color: theme.colorScheme.surface,
       child: InkWell(
-        onTap: () {
-          // TODO: Acción al tocar la tarjeta
-        },
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// Encabezado: Título + botón de opciones
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -43,19 +39,38 @@ class CourseTile extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
+
+                  // BlocConsumer<AppUserCubit, AppUserState>(
+                  //   builder: (context, state) {
+                  //     if (state is AppUserLoggedIn) {
+                  //       if (state.userEntity.role.name ==
+                  //           UserRoles.professor.name) {
+                  //         return IconButton(
+                  //           onPressed: () {},
+                  //           icon: Icon(
+                  //             Icons.more_vert,
+                  //             color: theme.colorScheme.onSurfaceVariant,
+                  //           ),
+                  //         );
+                  //       }
+                  //     }
+                  //     return SizedBox.shrink();
+                  //   },
+                  //   listener: (context, state) {},
+                  // ),
                   IconButton(
                     onPressed: () {
-                      // TODO: Mostrar menú contextual
+                      showBottomSheetOptionsCourse(context, course);
                     },
-                    icon: Icon(Icons.more_vert,
-                        color: theme.colorScheme.onSurfaceVariant),
+                    icon: Icon(
+                      Icons.more_vert,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
-
               const SizedBox(height: 8),
 
-              /// Descripción
               if (course.description.isNotEmpty)
                 Text(
                   course.description,
@@ -68,7 +83,6 @@ class CourseTile extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              /// Fecha de creación (o cualquier info secundaria)
               Row(
                 children: [
                   Icon(

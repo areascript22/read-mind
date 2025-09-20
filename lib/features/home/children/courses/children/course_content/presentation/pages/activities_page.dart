@@ -1,8 +1,8 @@
-import 'package:client_app/features/home/children/course_content/presentation/widgets/bottom_sheet_create_content.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../widgets/ai_reading_tile.dart';
+import '../widgets/bottom_sheet_create_content.dart';
 
 class ActivitiesPage extends StatefulWidget {
   const ActivitiesPage({super.key});

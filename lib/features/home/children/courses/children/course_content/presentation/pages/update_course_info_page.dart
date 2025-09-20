@@ -1,19 +1,22 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc/courses_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../widgets/buttons/create_button.dart';
-import '../widgets/course_textfield.dart';
+import '../../../../presentation/widgets/buttons/create_button.dart';
+import '../../../../presentation/widgets/course_textfield.dart';
 
-class CreateCoursePage extends StatefulWidget {
-  const CreateCoursePage({super.key});
+class UpdateCourseInfoPage extends StatefulWidget {
+  final CourseEntity courseEntity;
+
+  const UpdateCourseInfoPage({super.key, required this.courseEntity});
 
   @override
-  State<CreateCoursePage> createState() => _CreateCoursePageState();
+  State<UpdateCourseInfoPage> createState() => _CreateCoursePageState();
 }
 
-class _CreateCoursePageState extends State<CreateCoursePage> {
+class _CreateCoursePageState extends State<UpdateCourseInfoPage> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final titleFocusNode = FocusNode();
@@ -33,11 +36,19 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
       return;
     }
     context.read<CoursesBloc>().add(
-      CoursesCreateNewEvent(
-        titleController.text.trim(),
-        descriptionController.text.trim(),
+      CoursesUpdateInfoEvent(
+        courseId: widget.courseEntity.id.toString(),
+        name: titleController.text.trim(),
+        description: descriptionController.text.trim(),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    titleController.text = widget.courseEntity.name;
+    descriptionController.text = widget.courseEntity.description;
   }
 
   @override
@@ -63,19 +74,19 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.close),
             ),
-            title: const Text("Crear curso"),
+            title: const Text("Actualizar curso"),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 20),
                 child: BlocConsumer<CoursesBloc, CoursesState>(
                   listener: (context, state) {
-                    if (state is CoursesCreatedNew) {
+                    if (state is CourseUpdatedState) {
                       Navigator.pop(context);
-                      context.read<CoursesBloc>().add(CoursesGetAllEvent());
-                      ToastMessageUtil.showToast("Curso creado", context);
+                      ToastMessageUtil.showToast("Datos actualizados", context);
                     }
 
-                    if (state is CourseFailure) {
+                    if (state is CourseFailure &&
+                        state.courseAction == CourseAction.updateInfo) {
                       ToastMessageUtil.showToast(state.message, context);
                     }
                   },
@@ -95,7 +106,7 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
                                 ),
                               )
                               : const Text(
-                                'Crear',
+                                'Actualizar',
                                 style: TextStyle(color: Colors.blue),
                               ),
                     );

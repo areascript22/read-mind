@@ -11,4 +11,16 @@ abstract interface class CoursesRepository {
     required String title,
     required String description,
   });
+
+  Future<Either<Failure, CourseEntity>> removeCourse({
+    required int courseId,
+  });
+
+  Future<Either<Failure, CourseEntity>> updateCourseInviteCode({required int courseId,});
+
+  Future<Either<Failure, CourseEntity>> updateCourseInfo({
+    required String courseId,
+    required String title,
+    required String description,
+  });
 }

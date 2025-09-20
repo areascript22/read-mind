@@ -1,76 +1,96 @@
-
+import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
+import 'package:client_app/features/home/children/courses/presentation/bloc/course_share_invitecode/share_invitecode_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomSheetOptionsCourse extends StatelessWidget {
   final CourseEntity course;
-  const BottomSheetOptionsCourse({
-    super.key,
-    required this.course,
-  });
+
+  const BottomSheetOptionsCourse({super.key, required this.course});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, "/join_course");
-              },
-              child: Text(
-                "Compartir vínculo de invitación",
-                style: Theme.of(context).textTheme.bodyLarge,
+            Text(
+              'Opciones del curso',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 35),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, "/edit_course", arguments: course);
-              },
-              child: Text(
-                "Editar",
-                style: Theme.of(context).textTheme.bodyLarge,
+            const SizedBox(height: 4),
+            Text(
+              course.name,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 35),
-            GestureDetector(
+            const SizedBox(height: 16),
+            const Divider(),
+            _buildShareInviteCodeButton(),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.archive_outlined),
+              title: const Text('Archivar'),
               onTap: () async {
-
+                Navigator.pop(context);
               },
-              child: Text(
-                "Archivar",
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
             ),
+            const SizedBox(height: 12),
           ],
         ),
       ),
     );
   }
+
+  BlocConsumer<ShareInvitecodeCubit, ShareInvitecodeState>
+  _buildShareInviteCodeButton() {
+    return BlocConsumer<ShareInvitecodeCubit, ShareInvitecodeState>(
+      builder: (context, state) {
+        final isLoading = state is ShareInvitecodeLoading;
+        return ListTile(
+          leading: const Icon(Icons.share),
+          title: const Text('Compartir vínculo de invitación'),
+          onTap:
+              isLoading
+                  ? () {}
+                  : () {
+                    context.read<ShareInvitecodeCubit>().shareInviteCode(
+                      course.inviteCode,
+                    );
+                  },
+        );
+      },
+      listener: (context, state) {
+        if (state is ShareInvitecodefailure) {
+          Navigator.pop(context);
+          ToastMessageUtil.showToast(state.message, context);
+        }
+      },
+    );
+  }
 }
 
-void bottomSheetOptionsCourse(
-  BuildContext context,
- CourseEntity course,
-) {
+void showBottomSheetOptionsCourse(BuildContext context, CourseEntity course) {
   showModalBottomSheet(
     context: context,
-    builder: (context) {
-      return BottomSheetOptionsCourse(
-        course: course,
-      );
-    },
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    isScrollControlled: true,
+    builder: (_) => BottomSheetOptionsCourse(course: course),
   );
 }

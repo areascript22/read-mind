@@ -20,3 +20,9 @@ final class CourseContentError extends CourseContentState {
 
    CourseContentError(this.message);
 }
+
+final class CourseContentCodeUpdated extends CourseContentState{
+  final String inviteCode;
+
+  CourseContentCodeUpdated(this.inviteCode);
+}

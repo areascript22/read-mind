@@ -96,10 +96,13 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
                   controller: refreshController,
                   enablePullDown: true,
                   onRefresh: () {
-                    final selectedOption = context.read<CourseOptionCubit>().state;
+                    final selectedOption =
+                        context.read<CourseOptionCubit>().state;
 
-                    if(selectedOption == CourseOptions.yourCourses) {
-                      context.read<CoursesBloc>().add(CoursesGetAllEnrolledEvent());
+                    if (selectedOption == CourseOptions.yourCourses) {
+                      context.read<CoursesBloc>().add(
+                        CoursesGetAllEnrolledEvent(),
+                      );
                       return;
                     }
 
@@ -131,7 +134,11 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
       );
     }
 
-    return const LoaderIndicator();
+    if (state is CourseLoading && state.courseAction == CourseAction.getAll) {
+      return const LoaderIndicator();
+    }
+
+    return const SizedBox.shrink();
   }
 
   Container _buildVocabulary() {
@@ -196,9 +203,7 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
 
   Widget _listViewCourses(List<CourseEntity> courses) {
     if (courses.isEmpty) {
-      return Center(
-        child: Text("No hay cursos disponibles"),
-      );
+      return Center(child: Text("No hay cursos disponibles"));
     }
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
@@ -207,7 +212,10 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
         final course = courses[index];
         return GestureDetector(
           onTap: () {
-            context.go("${RouteNames.courseContent}/${course.id.toString()}");
+            context.go(
+              "${RouteNames.courseContent}/${course.id.toString()}",
+              extra: course,
+            );
           },
           child: CourseTile(course: course),
         );

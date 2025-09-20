@@ -15,6 +15,20 @@ abstract interface class CoursesRemoteDatasource {
     required String title,
     required String description,
   });
+
+  Future<CourseModel> removeCourse({required String token, required int id});
+
+  Future<CourseModel> updateInviteCode({
+    required String token,
+    required int courseId,
+  });
+
+  Future<CourseModel> updateCourseInfo({
+    required String token,
+    required String courseId,
+    required String title,
+    required String description,
+  });
 }
 
 class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
@@ -53,10 +67,7 @@ class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json", "x-token": token},
-        body: jsonEncode({
-          "name": title,
-          "description": description,
-        }),
+        body: jsonEncode({"name": title, "description": description}),
       );
       final data = jsonDecode(response.body);
 
@@ -85,12 +96,88 @@ class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
         throw ServerException(data['message']);
       }
       final courseModels =
-      (data['courses'] as List).map((e) => CourseModel.fromJson(e)).toList();
+          (data['courses'] as List)
+              .map((e) => CourseModel.fromJson(e))
+              .toList();
 
       return courseModels;
     } catch (e) {
       throw ServerException(
         e is ServerException ? e.message : "No se pudo obtener los cursos",
+      );
+    }
+  }
+
+  @override
+  Future<CourseModel> removeCourse({
+    required String token,
+    required int id,
+  }) async {
+    final url = Uri.parse("${Environments.coursesUrl}/$id");
+    try {
+      final response = await http.delete(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+      );
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw ServerException(data['message']);
+      }
+      final course = data['data'];
+      return CourseModel.fromJson(course);
+    } catch (e) {
+      throw ServerException(e is ServerException ? e.message : e.toString());
+    }
+  }
+
+  @override
+  Future<CourseModel> updateCourseInfo({
+    required String token,
+    required String courseId,
+    required String title,
+    required String description,
+  }) async {
+    final url = Uri.parse("${Environments.coursesUrl}/$courseId");
+    try {
+      final response = await http.put(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+        body: jsonEncode({"name": title, "description": description}),
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode != 200) {
+        throw ServerException(data['message']);
+      }
+      return CourseModel.fromJson(data['course']);
+    } catch (e) {
+      throw ServerException(
+        e is ServerException ? e.message : "No se pudo obtener el curso",
+      );
+    }
+  }
+
+  @override
+  Future<CourseModel> updateInviteCode({
+    required String token,
+    required int courseId,
+  }) async {
+    final url = Uri.parse("${Environments.coursesUrl}/$courseId/invite-code");
+    try {
+      final response = await http.patch(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode != 200) {
+        throw ServerException(data['message']);
+      }
+      return CourseModel.fromJson(data['course']);
+    } catch (e) {
+      throw ServerException(
+        e is ServerException
+            ? e.message
+            : "No se pudo actualizar el código de invitación",
       );
     }
   }

@@ -19,50 +19,53 @@ class CoursesGetAllEnrolledEvent extends CoursesEvent {
   List<Object?> get props => [];
 }
 
-class CoursesCreateNew extends CoursesEvent {
+class CoursesCreateNewEvent extends CoursesEvent {
   final String title;
   final String description;
 
-  const CoursesCreateNew(this.title, this.description);
+  const CoursesCreateNewEvent(this.title, this.description);
 
   @override
   List<Object?> get props => [];
 }
 
-class CoursesUpdateInfo extends CoursesEvent {
-  final String token;
+class CoursesUpdateInfoEvent extends CoursesEvent {
   final String courseId;
   final String name;
   final String description;
 
-  const CoursesUpdateInfo({
-    required this.token,
+  const CoursesUpdateInfoEvent({
     required this.courseId,
     required this.name,
     required this.description,
   });
 
   @override
-  List<Object?> get props => [token, courseId, name, description];
+  List<Object?> get props => [courseId, name, description];
 }
 
-class CoursesRemoveById extends CoursesEvent {
-  final String token;
-  final String courseId;
+class CoursesRemoveEvent extends CoursesEvent {
+  final int courseId;
 
-  const CoursesRemoveById({
-    required this.token,
-    required this.courseId,
-  });
+  const CoursesRemoveEvent({required this.courseId});
 
   @override
-  List<Object?> get props => [token, courseId];
+  List<Object?> get props => [courseId];
 }
 
-class CoursesAskForProfessorRole extends CoursesEvent {
+class CoursesUpdateInviteCodeEvent extends CoursesEvent {
+  final int courseId;
+
+  const CoursesUpdateInviteCodeEvent({required this.courseId});
+
+  @override
+  List<Object?> get props => [courseId];
+}
+
+class CoursesAskForProfessorRoleEvent extends CoursesEvent {
   final String token;
 
-  const CoursesAskForProfessorRole({required this.token});
+  const CoursesAskForProfessorRoleEvent({required this.token});
 
   @override
   List<Object?> get props => [token];
@@ -77,14 +80,11 @@ class CoursesCheckRequestRoleStatus extends CoursesEvent {
   List<Object?> get props => [token];
 }
 
-class CoursesEnroll extends CoursesEvent {
+class CoursesEnrollEvent extends CoursesEvent {
   final int courseId;
   final String token;
 
-  const CoursesEnroll({
-    required this.courseId,
-    required this.token,
-  });
+  const CoursesEnrollEvent({required this.courseId, required this.token});
 
   @override
   List<Object?> get props => [courseId, token];

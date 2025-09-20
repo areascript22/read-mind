@@ -59,4 +59,57 @@ class CoursesRepositoryImpl implements CoursesRepository {
       return left(Failure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, CourseEntity>> removeCourse({required int courseId}) async {
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesion de nuevo"));
+      }
+      final response = await remoteDatasource.removeCourse(token: token, id: courseId);
+      return Right(response.toEntity());
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CourseEntity>> updateCourseInfo({
+    required String courseId,
+    required String title,
+    required String description,
+  }) async {
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesion de nuevo"));
+      }
+      final response = await remoteDatasource.updateCourseInfo(
+        token: token,
+        courseId: courseId,
+        title: title,
+        description: description,
+      );
+      return Right(response.toEntity());
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CourseEntity>> updateCourseInviteCode({required int courseId,}) async {
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesion de nuevo"));
+      }
+      final response = await remoteDatasource.updateInviteCode(token: token, courseId: courseId);
+      return Right(response.toEntity());
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
+  }
 }

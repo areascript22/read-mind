@@ -1,12 +1,15 @@
 import 'package:client_app/core/routing/route_names.dart';
-import 'package:client_app/features/home/children/course_content/presentation/pages/person_page.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/person_page.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../../../shared/widgets/appbar_bottom_line.dart';
+
+import '../../../../../../../../shared/widgets/appbar_bottom_line.dart';
 import 'activities_page.dart';
 
 class PagesContainer extends StatefulWidget {
-  const PagesContainer({super.key});
+  final CourseEntity courseEntity;
+  const PagesContainer({super.key, required this.courseEntity});
 
   @override
   State<PagesContainer> createState() => _PagesContainerState();
@@ -34,7 +37,7 @@ class _PagesContainerState extends State<PagesContainer> {
           actions: [
             IconButton(
               onPressed: () {
-                context.push(RouteNames.courseSettings);
+                context.push(RouteNames.courseSettings, extra: widget.courseEntity );
               },
               icon: const Icon(Icons.settings),
             ),
