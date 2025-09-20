@@ -159,6 +159,11 @@ class _SignInPageState extends State<SignInPage> {
                         if (state is AuthFailureState) {
                           ToastMessageUtil.showToast(state.message, context);
                         }
+
+                        if(state is AuthSuccessState){
+                          context.go(RouteNames.home);
+                        }
+
                       },
                       builder: (context, state) {
                         return CustomButton(
@@ -173,7 +178,7 @@ class _SignInPageState extends State<SignInPage> {
                                        context.read<AuthBloc>().add(
                                          AuthSignInEvent(
                                            email:
-                                           emailTextController.text.trim(),
+                                           emailTextController.text.trim().toLowerCase(),
                                            password:
                                            passwordTextController.text
                                                .trim(),

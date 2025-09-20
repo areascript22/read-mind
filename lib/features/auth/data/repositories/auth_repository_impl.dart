@@ -1,4 +1,4 @@
-import 'package:client_app/features/auth/data/datasources/auth_local_datasource.dart';
+import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:client_app/features/auth/data/models/user_model/user_model.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -40,12 +40,14 @@ class AuthRepositoryImpl implements AuthRepository {
     required String lastName,
   }) async {
     try {
-      final userModel = await authRemoteDatasource.signUpWithEmailPassword(
+      final response = await authRemoteDatasource.signUpWithEmailPassword(
         email: email,
         password: password,
         name: name,
         lastName: lastName,
       );
+      await authLocalDataSource.saveJwt(response.token);
+      final userModel = response.userModel;
       return right(userModel.toEntity());
     } on ServerException catch (e) {
       print("Error sing in: ${e.message}");
@@ -57,7 +59,6 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, UserEntity>> getCurrentUser() async {
     try{
       final jwt = await authLocalDataSource.getJwt();
-      print("JWT retuned: ${jwt}");
       if(jwt == null){
         return left(Failure("User is not logged in!!"));
       }

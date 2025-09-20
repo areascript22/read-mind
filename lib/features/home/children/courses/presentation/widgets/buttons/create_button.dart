@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CreateButton extends StatelessWidget {
-  const CreateButton({super.key});
+  final void Function()? onTap;
+  final Widget child;
+  const CreateButton({super.key, required this.onTap, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -10,14 +12,11 @@ class CreateButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: true ? () async {} : null,
+          onTap: onTap,
           borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: Text(
-              'Crear',
-              style: true ? const TextStyle(color: Colors.blue) : null,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: child,
           ),
         ),
       ),
