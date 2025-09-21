@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class BottomSheetCreateCourse extends StatelessWidget {
-  const BottomSheetCreateCourse({
-    super.key,
-  });
+  const BottomSheetCreateCourse({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +28,9 @@ class BottomSheetCreateCourse extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -38,15 +38,17 @@ class BottomSheetCreateCourse extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               "Opciones",
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             Text(
               "Elige cómo quieres proceder",
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
             const SizedBox(height: 24),
@@ -83,17 +85,15 @@ class BottomSheetCreateCourse extends StatelessWidget {
   }
 
   Widget _buildOptionCard(
-      BuildContext context, {
-        required IconData icon,
-        required String title,
-        required String subtitle,
-        required VoidCallback onTap,
-      }) {
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
     return Card(
       margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
@@ -105,7 +105,9 @@ class BottomSheetCreateCourse extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -129,7 +131,9 @@ class BottomSheetCreateCourse extends StatelessWidget {
                     Text(
                       subtitle,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                   ],
@@ -150,7 +154,7 @@ void showBottomSheetCreateCourse(BuildContext context) {
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (context) {
-      return const BottomSheetCreateCourse();
+      return BottomSheetCreateCourse();
     },
   );
 }

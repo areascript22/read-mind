@@ -1,6 +1,14 @@
 part of 'courses_bloc.dart';
 
-enum CourseAction { updateCode, delete, getAll, updateInfo, createNew }
+enum CourseAction {
+  updateCode,
+  delete,
+  getAll,
+  updateInfo,
+  createNew,
+  enroll,
+  unEnroll,
+}
 
 @immutable
 sealed class CoursesState extends Equatable {
@@ -65,4 +73,22 @@ class CourseUpdatedState extends CoursesState {
 
   @override
   List<Object?> get props => [courseEntity];
+}
+
+class CourseEnrolledState extends CoursesState {
+  final String message;
+
+  const CourseEnrolledState(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class CourseUnEnrolledState extends CoursesState {
+  final String message;
+
+  const CourseUnEnrolledState(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

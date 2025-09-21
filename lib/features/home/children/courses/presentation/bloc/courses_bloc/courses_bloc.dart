@@ -4,7 +4,9 @@ import 'package:client_app/features/home/children/courses/domain/entities/course
 import 'package:client_app/features/home/children/courses/domain/usecases/courses_create_new.dart';
 import 'package:client_app/features/home/children/courses/domain/usecases/courses_get_all.dart';
 import 'package:client_app/features/home/children/courses/domain/usecases/courses_get_all_enrolled.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/usecase_enroll_course.dart';
 import 'package:client_app/features/home/children/courses/domain/usecases/usecase_remove_course.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/usecase_unenroll_course.dart';
 import 'package:client_app/features/home/children/courses/domain/usecases/usecase_update_courseinfo.dart';
 import 'package:client_app/features/home/children/courses/domain/usecases/usecase_update_invitecode.dart';
 import 'package:equatable/equatable.dart';
@@ -21,6 +23,8 @@ class CoursesBloc extends Bloc<CoursesEvent, CoursesState> {
   final UseCaseRemoveCourse useCaseRemoveCourse;
   final UseCaseUpdateInviteCode useCaseUpdateInviteCode;
   final UseCaseUpdateCourseInfo useCaseUpdateCourseInfo;
+  final UseCaseEnrollCourse useCaseEnrollCourse;
+  final UseCaseUnEnrollCourse useCaseUnEnrollCourse;
 
   CoursesBloc(
     this.getAllCourses,
@@ -29,6 +33,8 @@ class CoursesBloc extends Bloc<CoursesEvent, CoursesState> {
     this.useCaseRemoveCourse,
     this.useCaseUpdateInviteCode,
     this.useCaseUpdateCourseInfo,
+    this.useCaseEnrollCourse,
+    this.useCaseUnEnrollCourse,
   ) : super(CoursesInitial()) {
     on<CoursesGetAllEvent>(_onCoursesGetAll);
     on<CoursesCreateNewEvent>(_onCoursesCreateNew);
@@ -36,6 +42,8 @@ class CoursesBloc extends Bloc<CoursesEvent, CoursesState> {
     on<CoursesRemoveEvent>(_onCoursesRemove);
     on<CoursesUpdateInviteCodeEvent>(_onCourseUpdateInviteCode);
     on<CoursesUpdateInfoEvent>(_onCoursesUpdateInfo);
+    on<CoursesEnrollEvent>(_onCoursesEnroll);
+    on<CoursesUnEnrollEvent>(_onCoursesUnEnroll);
   }
 
   void _onCoursesGetAll(
@@ -134,6 +142,38 @@ class CoursesBloc extends Bloc<CoursesEvent, CoursesState> {
         ),
       ),
       (r) => emit(CourseUpdatedState(r)),
+    );
+  }
+
+  void _onCoursesEnroll(
+    CoursesEnrollEvent event,
+    Emitter<CoursesState> emit,
+  ) async {
+    emit(CourseLoading(CourseAction.enroll));
+    final response = await useCaseEnrollCourse(
+      EnrollCourseParams(event.inviteCode),
+    );
+    response.fold(
+      (l) => emit(
+        CourseFailure(message: l.message, courseAction: CourseAction.enroll),
+      ),
+      (r) => emit(CourseEnrolledState(r)),
+    );
+  }
+
+  void _onCoursesUnEnroll(
+    CoursesUnEnrollEvent event,
+    Emitter<CoursesState> emit,
+  ) async {
+    emit(CourseLoading(CourseAction.unEnroll));
+    final response = await useCaseUnEnrollCourse(
+      UnEnrollCourseParams(event.courseId),
+    );
+    response.fold(
+      (l) => emit(
+        CourseFailure(message: l.message, courseAction: CourseAction.unEnroll),
+      ),
+      (r) => emit(CourseUnEnrolledState(r)),
     );
   }
 }
