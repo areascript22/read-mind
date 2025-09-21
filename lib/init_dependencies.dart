@@ -5,7 +5,9 @@ import 'package:client_app/features/home/children/courses/domain/repository/cour
 import 'package:client_app/features/home/children/courses/domain/usecases/courses_create_new.dart';
 import 'package:client_app/features/home/children/courses/domain/usecases/courses_get_all.dart';
 import 'package:client_app/features/home/children/courses/domain/usecases/courses_get_all_enrolled.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/usecase_enroll_course.dart';
 import 'package:client_app/features/home/children/courses/domain/usecases/usecase_remove_course.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/usecase_unenroll_course.dart';
 import 'package:client_app/features/home/children/courses/domain/usecases/usecase_update_courseinfo.dart';
 import 'package:client_app/features/home/children/courses/domain/usecases/usecase_update_invitecode.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/course_share_invitecode/share_invitecode_cubit.dart';
@@ -86,6 +88,9 @@ void _initCourses() {
     () => UseCaseUpdateCourseInfo(serviceLocator()),
   );
 
+  serviceLocator.registerFactory(() => UseCaseEnrollCourse(serviceLocator()));
+  serviceLocator.registerFactory(() => UseCaseUnEnrollCourse(serviceLocator()));
+
   //Services
   serviceLocator.registerFactory<ShareService>(() => ShareServiceImpl());
 
@@ -95,6 +100,8 @@ void _initCourses() {
 
   serviceLocator.registerLazySingleton(
     () => CoursesBloc(
+      serviceLocator(),
+      serviceLocator(),
       serviceLocator(),
       serviceLocator(),
       serviceLocator(),

@@ -164,7 +164,46 @@ class _CourseSettingsState extends State<CourseSettings> {
                 ),
 
                 SizedBox(height: 20),
+                BlocConsumer<CoursesBloc, CoursesState>(
+                  builder: (context, state) {
+                    final isLoading =
+                        state is CourseLoading &&
+                        state.courseAction == CourseAction.unEnroll;
+                    return SettingsTile(
+                      icon:
+                          isLoading
+                              ? LoaderIndicator()
+                              : Icon(Icons.logout, color: Colors.white),
+                      title: "Abandonar curso",
+                      onTap:
+                          isLoading
+                              ? () {}
+                              : () {
+                                context.read<CoursesBloc>().add(
+                                  CoursesUnEnrollEvent(
+                                    courseId: widget.courseEntity.id,
+                                  ),
+                                );
+                              },
+                    );
+                  },
+                  listener: (context, state) {
+                    if (state is CourseFailure &&
+                        state.courseAction == CourseAction.unEnroll) {
+                      ToastMessageUtil.showToast(state.message, context);
+                    }
 
+                    if (state is CourseUnEnrolledState) {
+                      ToastMessageUtil.showToast(state.message, context);
+                      context.read<CoursesBloc>().add(
+                        CoursesGetAllEnrolledEvent(),
+                      );
+                      context.go(RouteNames.home);
+                    }
+                  },
+                ),
+
+                SizedBox(height: 20),
                 SettingsTile(
                   icon: Icon(Icons.edit, color: Colors.white),
                   title: "Actualizar datos del curso",
@@ -176,7 +215,6 @@ class _CourseSettingsState extends State<CourseSettings> {
                 ),
 
                 SizedBox(height: 20),
-
                 BlocConsumer<CoursesBloc, CoursesState>(
                   builder: (context, state) {
                     final showLoader =

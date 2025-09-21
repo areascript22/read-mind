@@ -12,15 +12,19 @@ abstract interface class CoursesRepository {
     required String description,
   });
 
-  Future<Either<Failure, CourseEntity>> removeCourse({
+  Future<Either<Failure, CourseEntity>> removeCourse({required int courseId});
+
+  Future<Either<Failure, CourseEntity>> updateCourseInviteCode({
     required int courseId,
   });
-
-  Future<Either<Failure, CourseEntity>> updateCourseInviteCode({required int courseId,});
 
   Future<Either<Failure, CourseEntity>> updateCourseInfo({
     required String courseId,
     required String title,
     required String description,
   });
+
+  Future<Either<Failure, String>> enrollCourse({required String inviteCode});
+
+  Future<Either<Failure, String>> unEnrollCourse({required int courseId});
 }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:client_app/core/error/server_exception.dart';
 import 'package:client_app/features/home/children/courses/data/models/course/course_model.dart';
 import 'package:http/http.dart' as http;
@@ -28,6 +27,16 @@ abstract interface class CoursesRemoteDatasource {
     required String courseId,
     required String title,
     required String description,
+  });
+
+  Future<String> enrollACourse({
+    required String token,
+    required String inviteCode,
+  });
+
+  Future<String> unEnrollACourse({
+    required String token,
+    required String courseId,
   });
 }
 
@@ -178,6 +187,55 @@ class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
         e is ServerException
             ? e.message
             : "No se pudo actualizar el código de invitación",
+      );
+    }
+  }
+
+  @override
+  Future<String> enrollACourse({
+    required String token,
+    required String inviteCode,
+  }) async {
+    final url = Uri.parse("${Environments.courseStudentUrl}/enroll");
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+        body: jsonEncode({'inviteCode': inviteCode}),
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode != 201) {
+        throw ServerException(data['message']);
+      }
+      return data['message'];
+    } catch (e) {
+      throw ServerException(
+        e is ServerException ? e.message : "No se pudo encontrar el curso",
+      );
+    }
+  }
+
+  @override
+  Future<String> unEnrollACourse({
+    required String token,
+    required String courseId,
+  }) async {
+    final url = Uri.parse(
+      "${Environments.courseStudentUrl}/$courseId/unenroll",
+    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode != 200) {
+        throw ServerException(data['message']);
+      }
+      return data['message'];
+    } catch (e) {
+      throw ServerException(
+        e is ServerException ? e.message : "Servicio no disponible",
       );
     }
   }

@@ -6,11 +6,12 @@ class Environments {
   //Authentication
   static String testHostLAN = "192.";
   static String testHostWIFI = "192.168.100.29";
-  static String baseHost ="192.168.100.36";
+  static String baseHost = "192.168.100.36";
 
-  static String baseUrl = Platform.isAndroid
-      ? "http://$baseHost:3000/api"
-      : "http://localhost:3000/api";
+  static String baseUrl =
+      Platform.isAndroid
+          ? "http://$baseHost:3000/api"
+          : "http://localhost:3000/api";
 
   static String authUrl =
       Platform.isAndroid
@@ -32,7 +33,7 @@ class Environments {
           ? "http://$baseHost:3000/api/courseActivity"
           : "http://localhost:3000/api/courseActivity";
 
-  static String courseEnrolllUrl =
+  static String courseStudentUrl =
       Platform.isAndroid
           ? "http://$baseHost:3000/api/courseStudent"
           : "http://localhost:3000/api/courseStudent";
@@ -72,7 +73,7 @@ class Environments {
   }
 
   static void updateCourseEnrollUrl(String newHost) {
-    courseEnrolllUrl =
+    courseStudentUrl =
         Platform.isAndroid
             ? "http://$newHost:3000/api/courseStudent"
             : "http://localhost:3000/api/courseStudent";

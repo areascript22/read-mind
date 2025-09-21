@@ -74,7 +74,9 @@ class AppRouter {
           ),
           GoRoute(
             path: RouteNames.enrollCourse,
-            builder: (context, state) => EnrollCourse(),
+            builder: (context, state) {
+              return EnrollCourse();
+            },
           ),
         ],
       ),

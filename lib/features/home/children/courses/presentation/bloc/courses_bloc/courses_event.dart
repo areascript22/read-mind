@@ -81,11 +81,19 @@ class CoursesCheckRequestRoleStatus extends CoursesEvent {
 }
 
 class CoursesEnrollEvent extends CoursesEvent {
-  final int courseId;
-  final String token;
+  final String inviteCode;
 
-  const CoursesEnrollEvent({required this.courseId, required this.token});
+  const CoursesEnrollEvent({required this.inviteCode});
 
   @override
-  List<Object?> get props => [courseId, token];
+  List<Object?> get props => [inviteCode];
+}
+
+class CoursesUnEnrollEvent extends CoursesEvent {
+  final int courseId;
+
+  const CoursesUnEnrollEvent({required this.courseId});
+
+  @override
+  List<Object?> get props => [courseId];
 }
