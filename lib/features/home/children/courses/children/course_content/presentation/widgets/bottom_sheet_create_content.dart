@@ -1,4 +1,8 @@
+import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/generate_paragraph.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class BottomSheetCreateResource extends StatelessWidget {
   const BottomSheetCreateResource({super.key});
@@ -54,11 +58,10 @@ class BottomSheetCreateResource extends StatelessWidget {
               iconColor: Colors.blue,
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/create_activity', arguments: 1);
+                context.push(RouteNames.courseContentGenerateParagraph);
               },
             ),
 
-            // Opción Cuestionario
             _buildOptionTile(
               context,
               icon: Icons.assignment_turned_in,
@@ -104,13 +107,13 @@ class BottomSheetCreateResource extends StatelessWidget {
   }
 
   Widget _buildOptionTile(
-      BuildContext context, {
-        required IconData icon,
-        required String title,
-        required String subtitle,
-        required Color iconColor,
-        required VoidCallback onTap,
-      }) {
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color iconColor,
+    required VoidCallback onTap,
+  }) {
     return Column(
       children: [
         ListTile(
@@ -122,17 +125,13 @@ class BottomSheetCreateResource extends StatelessWidget {
               color: iconColor.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              color: iconColor,
-              size: 20,
-            ),
+            child: Icon(icon, color: iconColor, size: 20),
           ),
           title: Text(
             title,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
           ),
           subtitle: Text(
             subtitle,

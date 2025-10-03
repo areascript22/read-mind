@@ -1,4 +1,12 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/data/datasources/coursecontent_remote_datasource.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/data/repositories/coursecontent_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/course_content_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_create_ai_reading.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_generate_paragraph.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_getall_activitiies.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_getall_students.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
 import 'package:client_app/features/home/children/courses/data/datasources/courses_remote_datasource.dart';
 import 'package:client_app/features/home/children/courses/data/repository/courses_repository_impl.dart';
 import 'package:client_app/features/home/children/courses/domain/repository/courses_repositories.dart';
@@ -113,5 +121,34 @@ void _initCourses() {
 }
 
 void _initCourseContent() {
-  serviceLocator.registerLazySingleton(() => CourseContentBloc());
+  //Repositories
+  serviceLocator.registerFactory<CourseContentRemoteDataSource>(
+    () => CourseContentRemoteDataSourceImpl(),
+  );
+
+  serviceLocator.registerFactory<CourseContentRepository>(
+    () => CourseContentRepositoryImpl(serviceLocator(), serviceLocator()),
+  );
+  //UseCases
+  serviceLocator.registerFactory(() => UseCaseGetAllStudents(serviceLocator()));
+  serviceLocator.registerFactory(
+    () => UseCaseGenerateParagraph(serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => UseCaseCreateAIReading(serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => UseCaseGetAllActivities(serviceLocator()),
+  );
+  //Boc/Cubit
+  serviceLocator.registerLazySingleton(() => CourseCubit());
+
+  serviceLocator.registerLazySingleton(
+    () => CourseContentBloc(
+      useCaseGetAllStudents: serviceLocator(),
+      useCaseGenerateParagraph: serviceLocator(),
+      useCaseCreateAIReading: serviceLocator(),
+      useCaseGetAllActivities: serviceLocator(),
+    ),
+  );
 }

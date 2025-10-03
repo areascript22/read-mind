@@ -4,6 +4,9 @@ import 'package:client_app/features/auth/presentation/pages/auth_wrapper.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:client_app/features/auth/presentation/pages/splash_screen.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/create_ai_reading_page.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/generate_paragraph.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/update_course_info_page.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/course_option_cubit/course_option_cubit.dart';
@@ -88,6 +91,7 @@ class AppRouter {
               BlocProvider.value(value: serviceLocator<CourseContentBloc>()),
               BlocProvider.value(value: serviceLocator<CoursesBloc>()),
               BlocProvider.value(value: serviceLocator<ShareInvitecodeCubit>()),
+              BlocProvider.value(value: serviceLocator<CourseCubit>()),
             ],
             child: child,
           );
@@ -96,9 +100,9 @@ class AppRouter {
           GoRoute(
             path: "${RouteNames.courseContent}/:id",
             builder: (context, state) {
-              final courseId = state.pathParameters['id'] ?? '';
+              // final courseId = state.pathParameters['id'] ?? '';
               final courseEntity = state.extra as CourseEntity;
-              context.read<CourseContentBloc>().add(LoadCourseEvent(courseId));
+              // context.read<CourseContentBloc>().add(LoadCourseEvent(courseId));
               return PagesContainer(courseEntity: courseEntity);
             },
           ),
@@ -115,6 +119,21 @@ class AppRouter {
             builder: (context, state) {
               final courseEntity = state.extra as CourseEntity;
               return UpdateCourseInfoPage(courseEntity: courseEntity);
+            },
+          ),
+
+          GoRoute(
+            path: RouteNames.courseContentGenerateParagraph,
+            builder: (context, state) {
+              return GenerateParagraphPage();
+            },
+          ),
+
+          GoRoute(
+            path: RouteNames.courseContentCreateAiReading,
+            builder: (context, state) {
+              final content = state.extra as String;
+              return CreateAiReadingPage(content: content);
             },
           ),
         ],
