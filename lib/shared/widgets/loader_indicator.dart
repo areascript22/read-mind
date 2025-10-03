@@ -19,6 +19,8 @@ class LoaderIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: spinnerSize,
+      height: spinnerSize,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

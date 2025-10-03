@@ -1,91 +1,76 @@
+import 'package:client_app/core/common/utils/toast_util.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/course_content_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/widgets/activity_tile.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../../../../../../../../shared/widgets/loader_indicator.dart';
 import '../widgets/ai_reading_tile.dart';
 import '../widgets/bottom_sheet_create_content.dart';
 
 class ActivitiesPage extends StatefulWidget {
-  const ActivitiesPage({super.key});
+  final CourseEntity course;
+  const ActivitiesPage({super.key, required this.course});
 
   @override
   State<ActivitiesPage> createState() => _ActivitiesPageState();
 }
 
 class _ActivitiesPageState extends State<ActivitiesPage> {
-  RefreshController refreshControllerT = RefreshController();
+  RefreshController refreshController = RefreshController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _getAllCourses();
+      context.read<CourseContentBloc>().add(
+        EventGetAllActivities(widget.course.id.toString()),
+      );
     });
-  }
-
-  void _getAllCourses() {
-
   }
 
   @override
   void dispose() {
-    refreshControllerT.dispose();
+    refreshController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body: Center(
-        child: SmartRefresher(
-          header: WaterDropHeader(
-            complete: Icon(Icons.check, color: Colors.blue[400]),
-            waterDropColor: Colors.blue[400]!,
-          ),
-          controller: refreshControllerT,
-          enablePullDown: true,
-          onRefresh:
-              () {},
-          child:
-          false
-              ? _buildDefaoultPage()
-              : ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            itemCount: 10,
-            itemBuilder:
-                (context, index) => GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/AI_activity');
+      body: Column(
+        children: [
+          Expanded(
+            child: BlocConsumer<CourseContentBloc, CourseContentState>(
+              listener: (context, state) {
+                if (state is CourseContentActivitiesLoaded) {
+                  refreshController.refreshCompleted();
+                } else if (state is CourseContentError) {
+                  refreshController.refreshFailed();
+                }
               },
-              child: AIReadingTile(
-                imageUrl:
-                "https://firebasestorage.googleapis.com/v0/b/graduation-project-e4ecf.firebasestorage.app/o/admin_src%2Fimg%2Freading_1.jpg?alt=media&token=7d3f606b-2cbe-4bda-86ec-ca78f9c2b2a3",
-                title: "Actividad de lectura",
-              ),
+              builder: (context, state) {
+                return SmartRefresher(
+                  controller: refreshController,
+                  enablePullDown: true,
+                  onRefresh: () {
+                    context.read<CourseContentBloc>().add(
+                      EventGetAllActivities(widget.course.id.toString()),
+                    );
+                  },
+                  header: WaterDropHeader(
+                    complete: Icon(Icons.check, color: Colors.blue[400]),
+                    waterDropColor: Colors.blue[400]!,
+                  ),
+                  child: _buildContentByState(state),
+                );
+              },
             ),
           ),
-          // : ListView.builder(
-          //   itemCount: courseContentVM.activities.length,
-          //   itemBuilder:
-          //       (context, index) => ListTile(
-          //         leading: CircleAvatar(
-          //           backgroundColor: Colors.blueAccent,
-          //           child: Icon(Icons.notes_outlined),
-          //         ),
-          //         title: Text(
-          //           courseContentVM.activities[index].title,
-          //           style: TextStyle(fontWeight: FontWeight.bold),
-          //         ),
-          //         subtitle: Text(
-          //           "Publicado el: ${courseContentVM.activities[index].updatedAt.day} de ${DateTimeUtils.convertIntToMonth(courseContentVM.activities[index].updatedAt.month)} ",
-          //         ),
-          //         trailing: IconButton(
-          //           onPressed: () {},
-          //           icon: Icon(Icons.more_vert_outlined),
-          //         ),
-          //       ),
-          // ),
-        ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -93,6 +78,43 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
         },
         child: const Icon(Icons.add, color: Colors.blue),
       ),
+    );
+  }
+
+  Widget _buildContentByState(CourseContentState state) {
+    if (state is CourseContentActivitiesLoaded) {
+      return _listViewCourses(state.activities);
+    }
+
+    if (state is CourseContentError &&
+        state.actions == CCActions.getAllActivities) {
+      return Center(
+        child: Text(state.message, style: const TextStyle(color: Colors.red)),
+      );
+    }
+
+    if (state is CourseContentLoading &&
+        state.actions == CCActions.getAllActivities) {
+      return const LoaderIndicator();
+    }
+
+    return const SizedBox.shrink();
+  }
+
+  Widget _listViewCourses(List<ActivityModel> activities) {
+    if (activities.isEmpty) {
+      return Center(child: Text("No hay actividades disponibles"));
+    }
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      itemCount: activities.length,
+      itemBuilder: (context, index) {
+        final activity = activities[index];
+        return GestureDetector(
+          onTap: () {},
+          child: ActivityTile(activity: activity),
+        );
+      },
     );
   }
 

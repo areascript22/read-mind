@@ -1,7 +1,9 @@
 import 'package:client_app/core/routing/route_names.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/person_page.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/students_page.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../../../../shared/widgets/appbar_bottom_line.dart';
@@ -20,6 +22,7 @@ class _PagesContainerState extends State<PagesContainer> {
   @override
   void initState() {
     super.initState();
+    context.read<CourseCubit>().setCourse(widget.courseEntity);
   }
 
   @override
@@ -37,7 +40,10 @@ class _PagesContainerState extends State<PagesContainer> {
           actions: [
             IconButton(
               onPressed: () {
-                context.push(RouteNames.courseSettings, extra: widget.courseEntity );
+                context.push(
+                  RouteNames.courseSettings,
+                  extra: widget.courseEntity,
+                );
               },
               icon: const Icon(Icons.settings),
             ),
@@ -53,8 +59,8 @@ class _PagesContainerState extends State<PagesContainer> {
                   index: _currentIndex,
                   children: [
                     //NewsPage(),
-                    ActivitiesPage(),
-                    PersonPage(),
+                    ActivitiesPage(course: widget.courseEntity),
+                    StudentsPage(courseEntity: widget.courseEntity),
                   ],
                 ),
               ],
@@ -65,11 +71,11 @@ class _PagesContainerState extends State<PagesContainer> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (value) {
-         if(mounted){
-           setState(() {
-             _currentIndex = value;
-           });
-         }
+          if (mounted) {
+            setState(() {
+              _currentIndex = value;
+            });
+          }
         },
         items: const [
           BottomNavigationBarItem(
