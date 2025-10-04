@@ -119,23 +119,4 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
       },
     );
   }
-
-  Column _buildDefaoultPage() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        //
-        //Image
-        SizedBox(
-          height: 300,
-          child: Image.asset("assets/img/background_course_content_1.png"),
-        ),
-        Text("Aquí puedes asignar los trabajo", style: TextStyle(fontSize: 20)),
-        Text(
-          "Puedes agregar tareas y trabajos",
-          style: TextStyle(fontSize: 15),
-        ),
-      ],
-    );
-  }
 }

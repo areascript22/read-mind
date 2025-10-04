@@ -27,7 +27,6 @@ class AuthRepositoryImpl implements AuthRepository {
       await authLocalDataSource.saveJwt(authResponse.token);
       return right(authResponse.userModel.toEntity());
     } on ServerException catch (e) {
-      print("Error test1: ${e.message}");
       return left(Failure(e.message));
     }
   }
@@ -50,23 +49,22 @@ class AuthRepositoryImpl implements AuthRepository {
       final userModel = response.userModel;
       return right(userModel.toEntity());
     } on ServerException catch (e) {
-      print("Error sing in: ${e.message}");
       return left(Failure(e.message));
     }
   }
 
   @override
   Future<Either<Failure, UserEntity>> getCurrentUser() async {
-    try{
+    try {
       final jwt = await authLocalDataSource.getJwt();
-      if(jwt == null){
+      if (jwt == null) {
         return left(Failure("User is not logged in!!"));
       }
       final authResponse = await authRemoteDatasource.getCurrentUser(jwt: jwt);
       await authLocalDataSource.saveJwt(authResponse.token);
       return right(authResponse.userModel.toEntity());
-    }on ServerException catch (e){
-    return left(Failure(e.message));
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
     }
   }
 }

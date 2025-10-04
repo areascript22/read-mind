@@ -63,7 +63,7 @@ class CourseRemovedState extends CoursesState {
   const CourseRemovedState(this.courseEntity);
 
   @override
-  List<Object?> get props => [this.courseEntity];
+  List<Object?> get props => [courseEntity];
 }
 
 class CourseUpdatedState extends CoursesState {

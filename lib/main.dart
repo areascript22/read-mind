@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp.router(
       routerConfig: appRouter.router,
       debugShowCheckedModeBanner: false,
-      title: 'Read Mind 001',
+      title: 'Read Mind 002',
       theme: AppThemes.lightTheme,
       darkTheme: AppThemes.darkTheme,
       themeMode: ThemeMode.system,

@@ -257,13 +257,15 @@ class AppThemes {
     ),
     switchTheme: SwitchThemeData(
       trackColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected))
-          return _darkColorScheme.primary.withOpacity(0.5);
-        return _darkColorScheme.onSurface.withOpacity(0.2);
+        if (states.contains(MaterialState.selected)) {
+          return _darkColorScheme.primary.withValues(alpha: 0.5);
+        }
+        return _darkColorScheme.onSurface.withValues(alpha: 0.2);
       }),
       thumbColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected))
+        if (states.contains(MaterialState.selected)) {
           return _darkColorScheme.primary;
+        }
         return Colors.white;
       }),
     ),

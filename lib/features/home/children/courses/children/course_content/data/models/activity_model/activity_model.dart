@@ -7,7 +7,7 @@ part 'activity_model.g.dart';
 @freezed
 @Freezed(unionKey: 'type')
 abstract class ActivityModel with _$ActivityModel {
-  const factory ActivityModel.AIReading({
+  const factory ActivityModel.aIReading({
     required int id,
     required String title,
     required String description,
