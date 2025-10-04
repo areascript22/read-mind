@@ -87,7 +87,7 @@ class CourseContentRemoteDataSourceImpl
 
       return data['paragraph'];
     } catch (e) {
-      debugPrint("Error generating paragraph: ${e}");
+      debugPrint("Error generating paragraph: $e");
       throw ServerException(
         e is ServerException ? e.message : "Servicio no disponible",
       );

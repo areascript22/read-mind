@@ -10,7 +10,7 @@ import 'package:client_app/features/home/children/courses/domain/usecases/usecas
 import 'package:client_app/features/home/children/courses/domain/usecases/usecase_update_courseinfo.dart';
 import 'package:client_app/features/home/children/courses/domain/usecases/usecase_update_invitecode.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 part 'courses_event.dart';
 
