@@ -4,6 +4,8 @@ import 'package:client_app/features/auth/presentation/pages/auth_wrapper.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:client_app/features/auth/presentation/pages/splash_screen.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/ai_reading_activity.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/create_ai_reading_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/generate_paragraph.dart';
@@ -134,6 +136,14 @@ class AppRouter {
             builder: (context, state) {
               final content = state.extra as String;
               return CreateAiReadingPage(content: content);
+            },
+          ),
+
+          GoRoute(
+            path: RouteNames.activityAIReading,
+            builder: (context, state) {
+              final activityModel = state.extra as ActivityModel;
+              return AiReadingActivity(activityModel: activityModel);
             },
           ),
         ],
