@@ -1,9 +1,9 @@
+import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/features/home/children/courses/presentation/pages/course_management.dart';
+import 'package:client_app/features/home/children/profile/presentation/pages/user_profile.dart';
 import 'package:flutter/material.dart';
-
-
-
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
     _controllers = List.generate(
       3,
-          (index) => AnimationController(
+      (index) => AnimationController(
         vsync: this,
         duration: const Duration(milliseconds: 200),
       ),
@@ -34,13 +34,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         _controllers
             .map(
               (controller) => Tween<double>(begin: 1.0, end: 1.3).animate(
-            CurvedAnimation(
-              parent: controller,
-              curve: Curves.easeOut,
-              reverseCurve: Curves.easeIn,
-            ),
-          ),
-        )
+                CurvedAnimation(
+                  parent: controller,
+                  curve: Curves.easeOut,
+                  reverseCurve: Curves.easeIn,
+                ),
+              ),
+            )
             .toList();
   }
 
@@ -76,10 +76,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 children: [
                   IndexedStack(
                     index: currentIndex,
-                    children: const [
+                    children: [
                       CourseManagementPage(),
                       Center(child: Text("Gramática")),
-                      Center(child: Text("Premium")),
+                      BlocConsumer<AppUserCubit, AppUserState>(
+                        builder: (context, state) {
+                          if (state is AppUserLoggedIn) {
+                            return UserProfilePage(user: state.userEntity);
+                          }
+                          return Center(child: Text('User Profile'));
+                        },
+                        listener: (context, state) {},
+                      ),
                     ],
                   ),
                 ],
@@ -101,16 +109,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           BottomNavigationBarItem(
             icon: Column(
               children: [
-                _buildAnimatedIcon(0, Icon(Icons.house, size: 20)),
+                _buildAnimatedIcon(
+                  0,
+                  SvgPicture.asset(
+                    'assets/images/svg/home.svg',
+                    height: 25,
+                    width: 25,
+                  ),
+                ),
                 SizedBox(height: 4),
                 _buildAnimatedIcon(
                   0,
                   Text(
-                    "Home",
+                    "Inicio",
                     style: TextStyle(
                       fontSize: 10,
                       color:
-                      currentIndex == 0 ? selectedColor : unselectedColor,
+                          currentIndex == 0 ? selectedColor : unselectedColor,
                     ),
                   ),
                 ),
@@ -123,17 +138,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               children: [
                 _buildAnimatedIcon(
                   1,
-                  Icon(Icons.baby_changing_station, size: 20),
+                  SvgPicture.asset(
+                    'assets/images/svg/vocabulary.svg',
+                    height: 25,
+                    width: 25,
+                  ),
                 ),
                 SizedBox(height: 4),
                 _buildAnimatedIcon(
                   1,
                   Text(
-                    "Gramatica",
+                    "Vocabulario",
                     style: TextStyle(
                       fontSize: 10,
                       color:
-                      currentIndex == 1 ? selectedColor : unselectedColor,
+                          currentIndex == 1 ? selectedColor : unselectedColor,
                     ),
                   ),
                 ),
@@ -146,17 +165,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               children: [
                 _buildAnimatedIcon(
                   2,
-                  Icon(Icons.add, size: 20),
+                  SvgPicture.asset(
+                    'assets/images/svg/profile.svg',
+                    height: 25,
+                    width: 25,
+                  ),
                 ),
                 SizedBox(height: 4),
                 _buildAnimatedIcon(
                   2,
                   Text(
-                    "Home",
+                    "Perfil",
                     style: TextStyle(
                       fontSize: 10,
                       color:
-                      currentIndex == 2 ? selectedColor : unselectedColor,
+                          currentIndex == 2 ? selectedColor : unselectedColor,
                     ),
                   ),
                 ),

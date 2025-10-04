@@ -1,3 +1,4 @@
+import 'package:client_app/core/common/utils/date_util.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/models/activity_model/activity_model.dart';
@@ -60,7 +61,7 @@ class ActivityTile extends StatelessWidget {
             Text(description, style: TextStyle(color: Colors.grey[700])),
             const SizedBox(height: 6),
             Text(
-              "📅 Fecha límite: ${dueDate.toLocal()}",
+              "Fecha límite: ${DateUtil.formatDate(dueDate.toString())}",
               style: const TextStyle(fontSize: 12, color: Colors.redAccent),
             ),
           ],
