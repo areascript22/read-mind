@@ -60,7 +60,7 @@ class _StudentsPageState extends State<StudentsPage> {
               },
               listener: (context, state) {
                 if (state is CourseContentError) {
-                  ToastMessageUtil.showToast(state.message, context);
+                  // ToastMessageUtil.showToast(state.message, context);
                 }
               },
             ),

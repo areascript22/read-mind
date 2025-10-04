@@ -39,25 +39,6 @@ class CourseTile extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-
-                  // BlocConsumer<AppUserCubit, AppUserState>(
-                  //   builder: (context, state) {
-                  //     if (state is AppUserLoggedIn) {
-                  //       if (state.userEntity.role.name ==
-                  //           UserRoles.professor.name) {
-                  //         return IconButton(
-                  //           onPressed: () {},
-                  //           icon: Icon(
-                  //             Icons.more_vert,
-                  //             color: theme.colorScheme.onSurfaceVariant,
-                  //           ),
-                  //         );
-                  //       }
-                  //     }
-                  //     return SizedBox.shrink();
-                  //   },
-                  //   listener: (context, state) {},
-                  // ),
                   IconButton(
                     onPressed: () {
                       showBottomSheetOptionsCourse(context, course);

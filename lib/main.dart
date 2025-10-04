@@ -1,5 +1,6 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/routing/app_router.dart';
+import 'package:client_app/core/theme/themes.dart';
 import 'package:client_app/init_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,10 +32,10 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp.router(
       routerConfig: appRouter.router,
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      title: 'Read Mind',
+      theme: AppThemes.lightTheme,
+      darkTheme: AppThemes.darkTheme,
+      themeMode: ThemeMode.system,
     );
   }
 }

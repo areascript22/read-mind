@@ -31,11 +31,13 @@ class _PagesContainerState extends State<PagesContainer> {
       appBar: appbarContainer(
         context,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
             onPressed: () => context.go(RouteNames.home),
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
           actions: [
             IconButton(
@@ -45,7 +47,10 @@ class _PagesContainerState extends State<PagesContainer> {
                   extra: widget.courseEntity,
                 );
               },
-              icon: const Icon(Icons.settings),
+              icon: Icon(
+                Icons.settings,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
           ],
         ),

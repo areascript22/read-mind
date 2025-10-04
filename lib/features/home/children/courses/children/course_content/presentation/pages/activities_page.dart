@@ -1,4 +1,3 @@
-import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/course_content_bloc.dart';
@@ -10,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../../../../../../shared/widgets/loader_indicator.dart';
-import '../widgets/ai_reading_tile.dart';
 import '../widgets/bottom_sheet_create_content.dart';
 
 class ActivitiesPage extends StatefulWidget {

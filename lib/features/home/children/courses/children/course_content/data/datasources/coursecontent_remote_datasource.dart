@@ -83,7 +83,7 @@ class CourseContentRemoteDataSourceImpl
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json", "x-token": token},
-        body: jsonEncode({"topic": topic, "environment": "dev"}),
+        body: jsonEncode({"topic": topic, "environment": "prod"}),
       );
       final data = jsonDecode(response.body);
       if (response.statusCode != 200) {
