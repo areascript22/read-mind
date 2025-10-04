@@ -1,7 +1,5 @@
 import 'package:client_app/core/routing/route_names.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/generate_paragraph.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class BottomSheetCreateResource extends StatelessWidget {

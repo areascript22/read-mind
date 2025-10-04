@@ -2,7 +2,6 @@ import 'package:client_app/core/common/entities/user_entity.dart';
 import 'package:client_app/core/error/failure.dart';
 import 'package:client_app/features/auth/data/models/user_model/user_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/data/models/ai_reading_model/ai_reading_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:fpdart/src/either.dart';

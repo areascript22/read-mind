@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class DrawerCustom extends StatefulWidget {
   const DrawerCustom({super.key});
 
@@ -58,11 +59,11 @@ class _DrawerCustomState extends State<DrawerCustom> {
           ),
           Divider(),
 
-            _buildOption(
-              title: "Administrador",
-              icon: Icons.help_outline_outlined,
-              index: 6,
-            ),
+          _buildOption(
+            title: "Administrador",
+            icon: Icons.help_outline_outlined,
+            index: 6,
+          ),
         ],
       ),
     );
@@ -78,7 +79,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: true ? Colors.blue.withValues (alpha:  0.2) : null,
+        color: Colors.blue.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(25),
       ),
       child: ListTile(
@@ -97,11 +98,8 @@ class _DrawerCustomState extends State<DrawerCustom> {
               rootNavigator: true,
             ).pushReplacementNamed('/admin_feature');
           }
-          },
-        title: Text(
-          title,
-          style: TextStyle(color: Colors.blue),
-        ),
+        },
+        title: Text(title, style: TextStyle(color: Colors.blue)),
         leading: Icon(icon, color: Colors.blue),
       ),
     );

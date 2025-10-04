@@ -4,7 +4,6 @@ import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../bloc/course_content_bloc.dart';
 import '../cubit/course_cubit.dart';

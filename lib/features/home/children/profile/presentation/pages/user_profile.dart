@@ -2,8 +2,6 @@ import 'package:client_app/core/common/entities/user_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../../auth/data/models/user_model/user_model.dart';
-
 class UserProfilePage extends StatelessWidget {
   final UserEntity user;
 

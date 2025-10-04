@@ -1,6 +1,5 @@
 import 'package:client_app/core/common/widget/custom_button.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../../../core/common/utils/toast_util.dart';
 
@@ -16,7 +15,6 @@ class _NoPermissionDialogState extends State<NoPermissionDialog> {
 
   @override
   Widget build(BuildContext context) {
-
     return AlertDialog(
       title: const Text("No tiene permisos"),
       content: Column(
@@ -57,7 +55,7 @@ class _NoPermissionDialogState extends State<NoPermissionDialog> {
         ],
       ),
       actions: [
-        CustomButton (
+        CustomButton(
           onTap: () async {
             if (!_acceptedPolicies) {
               ToastMessageUtil.showToast(
@@ -74,12 +72,6 @@ class _NoPermissionDialogState extends State<NoPermissionDialog> {
   }
 }
 
-void showNoPermissionsDialog(
-  BuildContext context,
-) {
-  showDialog(
-    context: context,
-    builder:
-        (context) => NoPermissionDialog(),
-  );
+void showNoPermissionsDialog(BuildContext context) {
+  showDialog(context: context, builder: (context) => NoPermissionDialog());
 }

@@ -50,7 +50,6 @@ class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
         headers: {"Content-Type": "application/json", "x-token": token},
       );
       final data = jsonDecode(response.body);
-      final coursesTest = data['course'];
       if (response.statusCode != 200) {
         throw ServerException(data['message']);
       }

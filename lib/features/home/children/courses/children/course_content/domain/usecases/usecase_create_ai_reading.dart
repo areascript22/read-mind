@@ -2,7 +2,6 @@ import 'package:client_app/core/common/usecase/usecase.dart';
 import 'package:client_app/core/error/failure.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/course_content_repository.dart';
 import 'package:fpdart/fpdart.dart';
-import '../../../../../../../../core/common/entities/user_entity.dart';
 import '../entities/ai_reading_entity.dart';
 
 class UseCaseCreateAIReading

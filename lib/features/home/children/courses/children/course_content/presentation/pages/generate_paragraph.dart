@@ -106,8 +106,7 @@ class _GenerateParagraphPageState extends State<GenerateParagraphPage> {
                   : () {
                     context.push(
                       RouteNames.courseContentCreateAiReading,
-                      extra:
-                          (state as CourseContentParagraphGenerated).paragraph,
+                      extra: state.paragraph,
                     );
                   },
           child: const Text('Continuar'),

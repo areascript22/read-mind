@@ -41,7 +41,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   @override
   void initState() {
     super.initState();
-    paragraph = (widget.activityModel.content ?? "").trim();
+    paragraph = (widget.activityModel.content).trim();
     _flutterTts = FlutterTts();
     _prepareSentences();
     initializeTts();

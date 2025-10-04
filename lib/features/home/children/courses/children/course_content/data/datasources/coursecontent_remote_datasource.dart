@@ -1,12 +1,7 @@
 import 'dart:convert';
-
-import 'package:client_app/core/error/failure.dart';
 import 'package:client_app/features/auth/data/models/user_model/user_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/data/models/ai_reading_model/ai_reading_model.dart';
-import 'package:client_app/features/home/children/courses/data/models/course/course_model.dart';
 import 'package:flutter/material.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../../../../../core/constants/environment.dart';
