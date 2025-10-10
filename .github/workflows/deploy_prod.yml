@@ -1,0 +1,39 @@
+name: 🚀 Deploy ReadMind (Production)
+
+on:
+  push:
+    branches:
+      - main   # Se ejecuta cuando haces merge de 'qa' a 'main'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Descarga el código
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Configura Flutter
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+
+      # 3️⃣ Instala dependencias
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 4️⃣ Compila el .aab del flavor prod
+      - name: Build appbundle (prod)
+        run: flutter build appbundle --flavor prod --release
+
+      # 5️⃣ Sube el AAB a Google Play (Producción)
+      - name: Upload to Google Play (Production)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          packageName: com.readmind
+          releaseFiles: build/app/outputs/bundle/prodRelease/app-prod-release.aab
+          track: production
+          status: completed
