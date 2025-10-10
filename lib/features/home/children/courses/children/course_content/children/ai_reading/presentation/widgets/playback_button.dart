@@ -1,6 +1,3 @@
-// ---------------------------
-// Small local PlayBackbutton used in the design
-// ---------------------------
 import 'package:flutter/material.dart';
 
 class PlayBackbutton extends StatelessWidget {
