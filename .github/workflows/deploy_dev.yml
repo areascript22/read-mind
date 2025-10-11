@@ -40,6 +40,9 @@ jobs:
       - name: Build appbundle (dev)
         run: flutter build appbundle --flavor dev --release
 
+      - name: List built files
+        run: ls -l build/app/outputs/bundle/devRelease/
+
       # 5️⃣ Sube el AAB a Google Play (Internal Test)
       - name: Upload to Google Play (Internal)
         uses: r0adkll/upload-google-play@v1
