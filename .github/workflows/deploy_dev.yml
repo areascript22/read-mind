@@ -43,11 +43,13 @@ jobs:
       - name: List built files
         run: ls -l build/app/outputs/bundle/devRelease/
 
-      # 5️⃣ Sube el AAB a Google Play (Internal Test)
+      - name: Decode Play Store JSON key
+        run: echo "${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}" > /tmp/playstore_key.json
+
       - name: Upload to Google Play (Internal)
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJson: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          serviceAccountJson: /tmp/playstore_key.json
           packageName: com.readmind.dev
           releaseFiles: build/app/outputs/bundle/devRelease/app-dev-release.aab
           track: internal
