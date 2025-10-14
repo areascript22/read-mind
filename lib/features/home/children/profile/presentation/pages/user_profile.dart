@@ -1,5 +1,11 @@
+import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/common/entities/user_entity.dart';
+import 'package:client_app/core/common/widget/custom_button.dart';
+import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class UserProfilePage extends StatelessWidget {
@@ -22,7 +28,6 @@ class UserProfilePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Avatar iniciales del usuario
             CircleAvatar(
               radius: 50,
               backgroundColor: Colors.blueAccent,
@@ -62,7 +67,14 @@ class UserProfilePage extends StatelessWidget {
             _infoTile(Icons.email, "Correo electrónico", user.email),
             _infoTile(Icons.lock, "Hash de contraseña", user.passwordHash),
             _infoTile(Icons.calendar_today, "Creado el", formattedDate),
-            _infoTile(Icons.badge, "ID de usuario", user.id.toString()),
+            const SizedBox(height: 10),
+            CustomButton(
+              onTap: () {
+                context.read<AppUserCubit>().logout();
+                context.go(RouteNames.splashScreen);
+              },
+              child: Text("Cerrar sesion"),
+            ),
           ],
         ),
       ),

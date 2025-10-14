@@ -1,6 +1,9 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:client_app/core/common/entities/user_entity.dart';
+import 'package:client_app/core/common/enums/user_roles.dart';
 import 'package:client_app/features/home/children/courses/presentation/pages/course_management.dart';
 import 'package:client_app/features/home/children/profile/presentation/pages/user_profile.dart';
+import 'package:client_app/features/home/children/users/presentation/pages/user_management.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,12 +21,42 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late List<Animation<double>> _animations;
   final Color selectedColor = Colors.lightBlue;
   final Color unselectedColor = Colors.grey;
+  late UserEntity? userEntity;
+  late List<Widget> pages;
+  late List<BottomNavigationBarItem> navItems;
 
   @override
   void initState() {
     super.initState();
+    userEntity = context.read<AppUserCubit>().user;
+    _setupPagesAndControllers();
+  }
+
+  void _setupPagesAndControllers() {
+    final isAdmin = [
+      UserRoles.admin.name,
+      UserRoles.superUser.name,
+    ].contains(userEntity?.role.name ?? '');
+
+    pages = [
+      const CourseManagementPage(),
+      const Center(child: Text("Gramática")),
+      if (isAdmin) const UserManagementPage(),
+      BlocConsumer<AppUserCubit, AppUserState>(
+        builder: (context, state) {
+          if (state is AppUserLoggedIn) {
+            return UserProfilePage(user: state.userEntity);
+          }
+          return const Center(child: Text('User Profile'));
+        },
+        listener: (context, state) {},
+      ),
+    ];
+
+    final itemCount = isAdmin ? 4 : 3;
+
     _controllers = List.generate(
-      3,
+      itemCount,
       (index) => AnimationController(
         vsync: this,
         duration: const Duration(milliseconds: 200),
@@ -42,12 +75,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             )
             .toList();
+
+    navItems = [
+      _buildNavItem(0, 'assets/images/svg/home.svg', 'Inicio'),
+      _buildNavItem(1, 'assets/images/svg/vocabulary.svg', 'Vocabulario'),
+      if (isAdmin) _buildNavItem(2, 'assets/images/svg/admin.svg', 'Admin'),
+      _buildNavItem(isAdmin ? 3 : 2, 'assets/images/svg/user.svg', 'Perfil'),
+    ];
   }
 
   void _onTap(int index) {
     setState(() => currentIndex = index);
-
-    // Start animation
     _controllers[index].forward().then((_) {
       _controllers[index].reverse();
     });
@@ -61,134 +99,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(child: IndexedStack(index: currentIndex, children: pages)),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        currentIndex: currentIndex,
+        onTap: _onTap,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        selectedItemColor: selectedColor, // blue
+        unselectedItemColor: unselectedColor, // grey
+        items: navItems,
+      ),
+    );
+  }
+
   Widget _buildAnimatedIcon(int index, Widget icon) {
     return ScaleTransition(scale: _animations[index], child: icon);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  IndexedStack(
-                    index: currentIndex,
-                    children: [
-                      CourseManagementPage(),
-                      Center(child: Text("Gramática")),
-                      BlocConsumer<AppUserCubit, AppUserState>(
-                        builder: (context, state) {
-                          if (state is AppUserLoggedIn) {
-                            return UserProfilePage(user: state.userEntity);
-                          }
-                          return Center(child: Text('User Profile'));
-                        },
-                        listener: (context, state) {},
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+  BottomNavigationBarItem _buildNavItem(int index, String asset, String label) {
+    return BottomNavigationBarItem(
+      icon: _buildAnimatedIcon(
+        index,
+        SvgPicture.asset(asset, height: 25, width: 25),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        //elevation: 4,A
-        backgroundColor: Colors.white,
-        currentIndex: currentIndex,
-        onTap: _onTap,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        //   selectedItemColor: Colors.blue,
-        // unselectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(
-            icon: Column(
-              children: [
-                _buildAnimatedIcon(
-                  0,
-                  SvgPicture.asset(
-                    'assets/images/svg/home.svg',
-                    height: 25,
-                    width: 25,
-                  ),
-                ),
-                SizedBox(height: 4),
-                _buildAnimatedIcon(
-                  0,
-                  Text(
-                    "Inicio",
-                    style: TextStyle(
-                      fontSize: 10,
-                      color:
-                          currentIndex == 0 ? selectedColor : unselectedColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Column(
-              children: [
-                _buildAnimatedIcon(
-                  1,
-                  SvgPicture.asset(
-                    'assets/images/svg/vocabulary.svg',
-                    height: 25,
-                    width: 25,
-                  ),
-                ),
-                SizedBox(height: 4),
-                _buildAnimatedIcon(
-                  1,
-                  Text(
-                    "Vocabulario",
-                    style: TextStyle(
-                      fontSize: 10,
-                      color:
-                          currentIndex == 1 ? selectedColor : unselectedColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Column(
-              children: [
-                _buildAnimatedIcon(
-                  2,
-                  SvgPicture.asset(
-                    'assets/images/svg/profile.svg',
-                    height: 25,
-                    width: 25,
-                  ),
-                ),
-                SizedBox(height: 4),
-                _buildAnimatedIcon(
-                  2,
-                  Text(
-                    "Perfil",
-                    style: TextStyle(
-                      fontSize: 10,
-                      color:
-                          currentIndex == 2 ? selectedColor : unselectedColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            label: '',
-          ),
-        ],
-      ),
+      label: label, // Let BottomNavigationBar handle the text
     );
   }
 }

@@ -21,6 +21,9 @@ import 'package:client_app/features/home/children/courses/domain/usecases/usecas
 import 'package:client_app/features/home/children/courses/presentation/bloc/course_share_invitecode/share_invitecode_cubit.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc/courses_bloc.dart';
 import 'package:client_app/features/home/children/courses/presentation/services/share_service.dart';
+import 'package:client_app/features/home/children/users/data/repositores/user_manager_repository_impl.dart';
+import 'package:client_app/features/home/children/users/domain/repositories/user_manager_repository.dart';
+import 'package:client_app/features/home/children/users/presentation/bloc/user_manager_bloc.dart';
 import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:client_app/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:client_app/features/auth/data/repositories/auth_repository_impl.dart';
@@ -37,12 +40,15 @@ import 'features/home/children/courses/children/course_content/presentation/bloc
 final serviceLocator = GetIt.instance;
 
 Future<void> initDependencies() async {
-  serviceLocator.registerLazySingleton(() => AppUserCubit());
-
   await _initSharedPreferences();
   _initAuth();
   _initCourses();
   _initCourseContent();
+  _initUserManger();
+
+  serviceLocator.registerLazySingleton(
+    () => AppUserCubit(authLocalDataSource: serviceLocator()),
+  );
 }
 
 Future<void> _initSharedPreferences() async {
@@ -150,5 +156,15 @@ void _initCourseContent() {
       useCaseCreateAIReading: serviceLocator(),
       useCaseGetAllActivities: serviceLocator(),
     ),
+  );
+}
+
+void _initUserManger() {
+  serviceLocator.registerFactory<UserManagerRepository>(
+    () => UserManagerRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => UserManagerBloc(userManagerRepository: serviceLocator()),
   );
 }

@@ -1,8 +1,11 @@
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:client_app/features/auth/presentation/widgets/dialog_email_not_verified.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../core/common/cubits/app_user/app_user_cubit.dart';
 
 class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
@@ -30,9 +33,14 @@ class _AuthWrapperState extends State<AuthWrapper> {
         if (state is AuthFailureState) {
           context.go(RouteNames.signIn);
         }
-        if(state is AuthSuccessState){
-          context.go(RouteNames.home);
-
+        if (state is AuthSuccessState) {
+          final user = state.userEntity;
+          if (user.emailVerified) {
+            context.go(RouteNames.home);
+            return;
+          }
+          showEmailNoVerificadoDialog(context, user);
+          context.go(RouteNames.signIn);
         }
       },
     );

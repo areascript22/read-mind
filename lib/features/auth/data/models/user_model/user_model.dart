@@ -16,6 +16,7 @@ abstract class UserModel with _$UserModel {
     required String passwordHash,
     required RoleModel role,
     required DateTime createdAt,
+    @Default(false) bool emailVerified,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
@@ -31,5 +32,6 @@ extension UserModelX on UserModel {
     passwordHash: passwordHash,
     role: role.toEntity(),
     createdAt: createdAt,
+    emailVerified: emailVerified,
   );
 }
