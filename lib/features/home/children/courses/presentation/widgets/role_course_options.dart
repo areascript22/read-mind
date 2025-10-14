@@ -1,4 +1,5 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:client_app/core/common/enums/user_roles.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc/courses_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,8 +19,13 @@ class RolCourseOptions extends StatelessWidget {
     return BlocBuilder<AppUserCubit, AppUserState>(
       builder: (context, state) {
         if (state is AppUserLoggedIn) {
-          final isProfessor = context.read<AppUserCubit>().isProfessor;
-          if (!isProfessor) return SizedBox.shrink();
+          final userRole = context.read<AppUserCubit>().user?.role;
+          final hasPermissions = [
+            UserRoles.professor.name,
+            UserRoles.admin.name,
+            UserRoles.superUser.name,
+          ].contains(userRole?.name ?? 'N/A');
+          if (!hasPermissions) return SizedBox.shrink();
 
           return BlocBuilder<CourseOptionCubit, CourseOptions>(
             builder: (context, selectedOption) {

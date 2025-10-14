@@ -71,6 +71,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _emitAuthSuccess(Emitter<AuthState> emit, UserEntity userEntity) {
     appUserCubit.updateUser(userEntity);
-    emit(AuthSuccessState());
+    emit(AuthSuccessState(userEntity));
   }
 }

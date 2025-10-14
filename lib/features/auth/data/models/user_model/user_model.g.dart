@@ -14,6 +14,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   passwordHash: json['passwordHash'] as String,
   role: RoleModel.fromJson(json['role'] as Map<String, dynamic>),
   createdAt: DateTime.parse(json['createdAt'] as String),
+  emailVerified: json['emailVerified'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -25,4 +26,5 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'passwordHash': instance.passwordHash,
       'role': instance.role,
       'createdAt': instance.createdAt.toIso8601String(),
+      'emailVerified': instance.emailVerified,
     };

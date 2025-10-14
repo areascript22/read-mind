@@ -60,43 +60,6 @@ class BottomSheetCreateResource extends StatelessWidget {
               },
             ),
 
-            _buildOptionTile(
-              context,
-              icon: Icons.assignment_turned_in,
-              title: "Cuestionario",
-              subtitle: "Crear preguntas y respuestas",
-              iconColor: Colors.green,
-              onTap: () {
-                // Agregar la funcionalidad aquí
-              },
-            ),
-
-            // Opción Anuncio
-            _buildOptionTile(
-              context,
-              icon: Icons.announcement_outlined,
-              title: "Anuncio",
-              subtitle: "Compartir información importante",
-              iconColor: Colors.orange,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, '/create_content');
-              },
-            ),
-
-            // Opción Material
-            _buildOptionTile(
-              context,
-              icon: Icons.insert_drive_file_outlined,
-              title: "Material",
-              subtitle: "Subir documentos y archivos",
-              iconColor: Colors.purple,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, '/create_content');
-              },
-            ),
-
             const SizedBox(height: 8),
           ],
         ),
