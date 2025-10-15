@@ -1,10 +1,9 @@
 import 'dart:convert';
+import 'package:client_app/core/constants/app_environment.dart';
 import 'package:client_app/features/auth/data/models/user_model/user_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
-import '../../../../../../../../core/constants/environment.dart';
 import '../../../../../../../../core/error/server_exception.dart';
 
 abstract interface class CourseContentRemoteDataSource {
@@ -41,7 +40,7 @@ class CourseContentRemoteDataSourceImpl
     required String courseId,
   }) async {
     final url = Uri.parse(
-      "${Environments.courseStudentUrl}/$courseId/students",
+      "${AppEnvironment().baseUrl}/courseStudent/$courseId/students",
     );
     try {
       final response = await http.get(
@@ -73,7 +72,7 @@ class CourseContentRemoteDataSourceImpl
   }) async {
     try {
       await Future.delayed(Duration(seconds: 3));
-      final url = Uri.parse("${Environments.baseUrl}/ai/paragraph");
+      final url = Uri.parse("${AppEnvironment().baseUrl}/ai/paragraph");
 
       final response = await http.post(
         url,
@@ -106,7 +105,7 @@ class CourseContentRemoteDataSourceImpl
     try {
       await Future.delayed(Duration(seconds: 3));
       final url = Uri.parse(
-        "${Environments.baseUrl}/courseActivity/$courseId/aiReading",
+        "${AppEnvironment().baseUrl}/courseActivity/$courseId/aiReading",
       );
 
       final response = await http.post(
@@ -140,7 +139,7 @@ class CourseContentRemoteDataSourceImpl
   }) async {
     try {
       final url = Uri.parse(
-        "${Environments.baseUrl}/courseActivity/$courseId/getAllAiReadings",
+        "${AppEnvironment().baseUrl}/courseActivity/$courseId/getAllAiReadings",
       );
 
       final response = await http.get(
