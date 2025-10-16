@@ -11,7 +11,7 @@ class ActivityTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return activity.when(
-      AIReading: (
+      aIReading: (
         id,
         title,
         description,

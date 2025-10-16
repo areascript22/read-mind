@@ -21,7 +21,6 @@ class BottomSheetCreateResource extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header con título y divisor
             Center(
               child: Container(
                 width: 40,
@@ -47,7 +46,6 @@ class BottomSheetCreateResource extends StatelessWidget {
             const Divider(height: 1),
             const SizedBox(height: 16),
 
-            // Opción Lectura AI
             _buildOptionTile(
               context,
               icon: Icons.menu_book_outlined,

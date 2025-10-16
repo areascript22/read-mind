@@ -26,6 +26,15 @@ class AppUserCubit extends Cubit<AppUserState> {
 
   UserEntity? get user =>
       state is AppUserLoggedIn ? (state as AppUserLoggedIn).userEntity : null;
-
+  bool get isStudent => user?.role.name == UserRoles.student.name;
   bool get isProfessor => user?.role.name == UserRoles.professor.name;
+  bool get isAdmin => user?.role.name == UserRoles.admin.name;
+  bool get isSuperUser => user?.role.name == UserRoles.superUser.name;
+  UserRoles get currentRole {
+    if (user == null) return UserRoles.unknown;
+    return UserRoles.values.firstWhere(
+      (e) => e.name == user!.role.name,
+      orElse: () => UserRoles.unknown,
+    );
+  }
 }
