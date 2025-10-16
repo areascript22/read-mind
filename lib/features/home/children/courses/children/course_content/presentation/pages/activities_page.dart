@@ -1,3 +1,5 @@
+import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:client_app/core/common/entities/user_entity.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/course_content_bloc.dart';
@@ -7,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
 import '../../../../../../../../shared/widgets/loader_indicator.dart';
 import '../widgets/bottom_sheet_create_content.dart';
 
@@ -21,6 +22,8 @@ class ActivitiesPage extends StatefulWidget {
 
 class _ActivitiesPageState extends State<ActivitiesPage> {
   RefreshController refreshController = RefreshController();
+  bool courseOwner = false;
+  late UserEntity? user;
 
   @override
   void initState() {
@@ -30,6 +33,8 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
         EventGetAllActivities(widget.course.id.toString()),
       );
     });
+    user = context.read<AppUserCubit>().user;
+    courseOwner = user != null && user!.id == widget.course.id;
   }
 
   @override
@@ -40,6 +45,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userBloc = context.read<AppUserCubit>();
     return Scaffold(
       body: Column(
         children: [
@@ -72,12 +78,15 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showBottomSheetCreateResource(context);
-        },
-        child: const Icon(Icons.add, color: Colors.blue),
-      ),
+      floatingActionButton:
+          courseOwner || userBloc.isAdmin || userBloc.isSuperUser
+              ? FloatingActionButton(
+                onPressed: () {
+                  showBottomSheetCreateResource(context);
+                },
+                child: const Icon(Icons.add, color: Colors.blue),
+              )
+              : null,
     );
   }
 

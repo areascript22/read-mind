@@ -1,4 +1,5 @@
 import 'package:client_app/core/common/entities/user_entity.dart';
+import 'package:client_app/features/home/children/users/domain/entity/composed_request_entity.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../../../../../../core/error/failure.dart';
@@ -19,4 +20,6 @@ abstract interface class UserManagerRepository {
     required String targetUserId,
     required String newRole,
   });
+
+  Future<Either<Failure, List<ComposedRequestEntity>>> getAllRoleRequests();
 }

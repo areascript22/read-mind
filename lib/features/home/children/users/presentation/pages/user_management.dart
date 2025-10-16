@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:client_app/core/common/enums/user_roles.dart';
+import 'package:client_app/features/home/children/users/presentation/pages/role_requests_page.dart';
 import 'package:client_app/features/home/children/users/presentation/widgets/dialog_show_userinfo.dart';
 import 'package:client_app/init_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:client_app/features/home/children/users/presentation/bloc/user_manager_bloc.dart';
 import 'package:client_app/core/common/entities/user_entity.dart';
@@ -102,7 +104,6 @@ class _UserManagementPageBodyState extends State<_UserManagementPageBody> {
         isSearching = true;
       });
 
-      // Simula un endpoint real que retorna lista de UserEntity según búsqueda
       context.read<UserManagerBloc>().add(
         SearchUsersEvent(query: query, role: role ?? ''),
       );
@@ -115,6 +116,35 @@ class _UserManagementPageBodyState extends State<_UserManagementPageBody> {
       appBar: AppBar(
         title: const Text("Gestión de Usuarios"),
         centerTitle: true,
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => RoleRequestsPage()),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(10), // space around the SVG
+              decoration: BoxDecoration(
+                color: Colors.blueAccent.withValues(
+                  alpha: 0.4,
+                ), // background color
+                shape: BoxShape.circle, // makes it perfectly circular
+              ),
+              child: SvgPicture.asset(
+                'assets/images/svg/bell.svg',
+                width: 30,
+                height: 30,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white, // your icon color
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 15),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),

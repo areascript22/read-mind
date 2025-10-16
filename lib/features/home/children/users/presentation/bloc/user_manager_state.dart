@@ -1,5 +1,7 @@
 part of 'user_manager_bloc.dart';
 
+enum UserManagerAction { roleRequests, getAllUsers, searchUser }
+
 @immutable
 sealed class UserManagerState extends Equatable {}
 
@@ -9,8 +11,12 @@ final class UserManagerInitialState extends UserManagerState {
 }
 
 final class UserManagerLoadingState extends UserManagerState {
+  final UserManagerAction action;
+
+  UserManagerLoadingState(this.action);
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [action];
 }
 
 final class UserManagerLoadedState extends UserManagerState {
@@ -24,11 +30,12 @@ final class UserManagerLoadedState extends UserManagerState {
 
 final class UserManagerErrorState extends UserManagerState {
   final String message;
+  final UserManagerAction action;
 
-  UserManagerErrorState(this.message);
+  UserManagerErrorState(this.message, this.action);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, action];
 }
 
 final class UserRoleUpdatingState extends UserManagerState {
@@ -52,4 +59,13 @@ final class UserRoleUpdateErrorState extends UserManagerState {
 
   @override
   List<Object?> get props => [message];
+}
+
+final class RoleRequestsLoaded extends UserManagerState {
+  final List<ComposedRequestEntity> roleRequests;
+
+  RoleRequestsLoaded(this.roleRequests);
+
+  @override
+  List<Object?> get props => [roleRequests];
 }

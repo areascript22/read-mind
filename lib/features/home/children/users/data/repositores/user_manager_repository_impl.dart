@@ -1,12 +1,14 @@
 import 'dart:convert';
-
 import 'package:client_app/core/common/entities/user_entity.dart';
+import 'package:client_app/core/constants/app_environment.dart';
 import 'package:client_app/core/error/failure.dart';
+import 'package:client_app/features/auth/data/models/role_model/role_model.dart';
 import 'package:client_app/features/auth/data/models/user_model/user_model.dart';
+import 'package:client_app/features/home/children/profile/data/model/role_request/role_request_models.dart';
+import 'package:client_app/features/home/children/users/domain/entity/composed_request_entity.dart';
 import 'package:client_app/shared/datasources/auth_local_datasource.dart';
-import 'package:fpdart/src/either.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
-import '../../../../../../core/constants/environment.dart';
 import '../../../../../../core/error/server_exception.dart';
 import '../../domain/repositories/user_manager_repository.dart';
 
@@ -21,15 +23,14 @@ class UserManagerRepositoryImpl implements UserManagerRepository {
     required int limit,
     required String? role,
   }) async {
-    // Build query parameters dynamically
     final queryParams = {
       'page': page.toString(),
       'limit': limit.toString(),
-      if (role != null) 'role': role, // only include role if not null
+      if (role != null) 'role': role,
     };
 
     final url = Uri.parse(
-      "${Environments.baseUrl}/user/all",
+      "${AppEnvironment().baseUrl}/user/all",
     ).replace(queryParameters: queryParams);
     try {
       final token = await authLocalDataSource.getJwt();
@@ -74,7 +75,7 @@ class UserManagerRepositoryImpl implements UserManagerRepository {
     };
 
     final url = Uri.parse(
-      "${Environments.baseUrl}/user/search",
+      "${AppEnvironment().baseUrl}/user/search",
     ).replace(queryParameters: queryParams);
 
     try {
@@ -113,8 +114,9 @@ class UserManagerRepositoryImpl implements UserManagerRepository {
     required String targetUserId,
     required String newRole,
   }) async {
-    print("Sending this data: $targetUserId, $newRole");
-    final url = Uri.parse("${Environments.baseUrl}/roleRequests/updateRole");
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/roleRequests/updateRole",
+    );
 
     try {
       final token = await authLocalDataSource.getJwt();
@@ -138,6 +140,50 @@ class UserManagerRepositoryImpl implements UserManagerRepository {
       return Right(updatedUser);
     } catch (e) {
       print("Error updating usre role: ${e}");
+      if (e is ServerException) {
+        return left(Failure(e.message));
+      }
+      return left(Failure("No se pudo actualizar el rol del usuario"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ComposedRequestEntity>>>
+  getAllRoleRequests() async {
+    final url = Uri.parse("${AppEnvironment().baseUrl}/roleRequests/all");
+
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesión de nuevo"));
+      }
+
+      final response = await http.get(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw ServerException(data['message'] ?? "Error al obtener datos");
+      }
+
+      final composedRequests =
+          (data['data'] as List).map((e) {
+            final roleRequest = RoleRequest.fromJson(e);
+            final user = UserModel.fromJson(e['user']);
+            final requestedRole = RoleModel.fromJson(e['requestedRole']);
+            final composedRequestEntity = ComposedRequestEntity(
+              roleRequestEntity: roleRequest.toEntity(),
+              userEntity: user.toEntity(),
+              roleEntity: requestedRole.toEntity(),
+            );
+            return composedRequestEntity;
+          }).toList();
+
+      return Right(composedRequests);
+    } catch (e) {
       if (e is ServerException) {
         return left(Failure(e.message));
       }

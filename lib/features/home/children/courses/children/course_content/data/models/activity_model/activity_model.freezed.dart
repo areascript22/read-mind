@@ -102,11 +102,11 @@ extension ActivityModelPatterns on ActivityModel {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AIReadingModel value)?  AIReading,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AIReadingModel value)?  aIReading,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case AIReadingModel() when AIReading != null:
-return AIReading(_that);case _:
+case AIReadingModel() when aIReading != null:
+return aIReading(_that);case _:
   return orElse();
 
 }
@@ -124,11 +124,11 @@ return AIReading(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AIReadingModel value)  AIReading,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AIReadingModel value)  aIReading,}){
 final _that = this;
 switch (_that) {
 case AIReadingModel():
-return AIReading(_that);case _:
+return aIReading(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -145,11 +145,11 @@ return AIReading(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AIReadingModel value)?  AIReading,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AIReadingModel value)?  aIReading,}){
 final _that = this;
 switch (_that) {
-case AIReadingModel() when AIReading != null:
-return AIReading(_that);case _:
+case AIReadingModel() when aIReading != null:
+return aIReading(_that);case _:
   return null;
 
 }
@@ -166,10 +166,10 @@ return AIReading(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int id,  String title,  String description,  DateTime dueDate,  String content,  DateTime createdAt,  DateTime updatedAt)?  AIReading,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int id,  String title,  String description,  DateTime dueDate,  String content,  DateTime createdAt,  DateTime updatedAt)?  aIReading,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case AIReadingModel() when AIReading != null:
-return AIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.content,_that.createdAt,_that.updatedAt);case _:
+case AIReadingModel() when aIReading != null:
+return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.content,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -187,10 +187,10 @@ return AIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.cont
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int id,  String title,  String description,  DateTime dueDate,  String content,  DateTime createdAt,  DateTime updatedAt)  AIReading,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int id,  String title,  String description,  DateTime dueDate,  String content,  DateTime createdAt,  DateTime updatedAt)  aIReading,}) {final _that = this;
 switch (_that) {
 case AIReadingModel():
-return AIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.content,_that.createdAt,_that.updatedAt);case _:
+return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.content,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -207,10 +207,10 @@ return AIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.cont
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int id,  String title,  String description,  DateTime dueDate,  String content,  DateTime createdAt,  DateTime updatedAt)?  AIReading,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int id,  String title,  String description,  DateTime dueDate,  String content,  DateTime createdAt,  DateTime updatedAt)?  aIReading,}) {final _that = this;
 switch (_that) {
-case AIReadingModel() when AIReading != null:
-return AIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.content,_that.createdAt,_that.updatedAt);case _:
+case AIReadingModel() when aIReading != null:
+return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.content,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -255,7 +255,7 @@ int get hashCode => Object.hash(runtimeType,id,title,description,dueDate,content
 
 @override
 String toString() {
-  return 'ActivityModel.AIReading(id: $id, title: $title, description: $description, dueDate: $dueDate, content: $content, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'ActivityModel.aIReading(id: $id, title: $title, description: $description, dueDate: $dueDate, content: $content, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 

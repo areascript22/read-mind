@@ -1,3 +1,5 @@
+import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:client_app/core/common/enums/user_roles.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/widgets/dialog_remove_course.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
@@ -202,66 +204,86 @@ class _CourseSettingsState extends State<CourseSettings> {
                     }
                   },
                 ),
-
                 SizedBox(height: 20),
-                SettingsTile(
-                  icon: Icon(Icons.edit, color: Colors.white),
-                  title: "Actualizar datos del curso",
-                  onTap:
-                      () => context.push(
-                        RouteNames.courseUpdateInfo,
-                        extra: courseEntity,
-                      ),
-                ),
-
-                SizedBox(height: 20),
-                BlocConsumer<CoursesBloc, CoursesState>(
-                  builder: (context, state) {
-                    final showLoader =
-                        state is CourseLoading &&
-                        state.courseAction == CourseAction.delete;
-                    return SettingsTile(
-                      icon:
-                          showLoader
-                              ? LoaderIndicator()
-                              : Icon(Icons.delete, color: Colors.white),
-                      title: "Eliminar curso",
-                      onTap: () {
-                        showRemoveDialog(
-                          context: context,
-                          courseName: widget.courseEntity.name,
-                          onConfirm: () {
-                            context.read<CoursesBloc>().add(
-                              CoursesRemoveEvent(
-                                courseId: widget.courseEntity.id,
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                  listener: (context, state) {
-                    if (state is CourseRemovedState) {
-                      context.go(RouteNames.home);
-                      ToastMessageUtil.showToast(
-                        "Curse ${state.courseEntity.name} fue eliminado",
-                        context,
-                      );
-                    }
-
-                    if (state is CourseFailure &&
-                        state.courseAction == CourseAction.delete) {
-                      ToastMessageUtil.showToast(state.message, context);
-                    }
-                  },
-                ),
               ],
             ),
           ),
           //
+          _buildAuthorizedOptions(context),
         ],
       ),
+    );
+  }
+
+  Widget _buildAuthorizedOptions(BuildContext context) {
+    final user = context.read<AppUserCubit>().user;
+    if (user == null) {
+      return SizedBox.shrink();
+    }
+    final hasPermissions = [
+      UserRoles.admin.name,
+      UserRoles.superUser.name,
+    ].contains(user.role.name);
+
+    final courseOwner = courseEntity.teacherId == user.id;
+
+    if (!hasPermissions || !courseOwner) {
+      return SizedBox.shrink();
+    }
+
+    return Column(
+      children: [
+        SettingsTile(
+          icon: Icon(Icons.edit, color: Colors.white),
+          title: "Actualizar datos del curso",
+          onTap:
+              () => context.push(
+                RouteNames.courseUpdateInfo,
+                extra: courseEntity,
+              ),
+        ),
+
+        SizedBox(height: 20),
+        BlocConsumer<CoursesBloc, CoursesState>(
+          builder: (context, state) {
+            final showLoader =
+                state is CourseLoading &&
+                state.courseAction == CourseAction.delete;
+            return SettingsTile(
+              icon:
+                  showLoader
+                      ? LoaderIndicator()
+                      : Icon(Icons.delete, color: Colors.white),
+              title: "Eliminar curso",
+              onTap: () {
+                showRemoveDialog(
+                  context: context,
+                  courseName: widget.courseEntity.name,
+                  onConfirm: () {
+                    context.read<CoursesBloc>().add(
+                      CoursesRemoveEvent(courseId: widget.courseEntity.id),
+                    );
+                  },
+                );
+              },
+            );
+          },
+          listener: (context, state) {
+            if (state is CourseRemovedState) {
+              context.go(RouteNames.home);
+              ToastMessageUtil.showToast(
+                "Curse ${state.courseEntity.name} fue eliminado",
+                context,
+              );
+            }
+
+            if (state is CourseFailure &&
+                state.courseAction == CourseAction.delete) {
+              ToastMessageUtil.showToast(state.message, context);
+            }
+          },
+        ),
+      ],
     );
   }
 }
