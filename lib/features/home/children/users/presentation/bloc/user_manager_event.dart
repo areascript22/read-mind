@@ -38,3 +38,8 @@ class UpdateUserRoleEvent extends UserManagerEvent {
   @override
   List<Object?> get props => [targetUserId, newRole];
 }
+
+class GetAllRoleRequestsEvent extends UserManagerEvent {
+  @override
+  List<Object?> get props => [];
+}
