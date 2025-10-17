@@ -101,4 +101,21 @@ class CourseContentRepositoryImpl implements CourseContentRepository {
       return left(Failure(e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, UserEntity>> getUser({required int id}) async {
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesion de nuevo"));
+      }
+      final response = await courseContentRemoteDataSource.getUser(
+        token: token,
+        id: id,
+      );
+      return Right(response.toEntity());
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
+  }
 }

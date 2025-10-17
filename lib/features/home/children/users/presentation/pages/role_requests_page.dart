@@ -2,11 +2,9 @@ import 'package:client_app/init_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
 import '../../domain/entity/composed_request_entity.dart';
 import '../../presentation/bloc/user_manager_bloc.dart';
 
-// First Widget: Bloc Provider Wrapper
 class RoleRequestsPage extends StatelessWidget {
   const RoleRequestsPage({super.key});
 
@@ -20,7 +18,6 @@ class RoleRequestsPage extends StatelessWidget {
   }
 }
 
-// Second Widget: Page Content with Pull to Refresh
 class RoleRequestsContent extends StatefulWidget {
   const RoleRequestsContent({super.key});
 
@@ -34,7 +31,6 @@ class _RoleRequestsContentState extends State<RoleRequestsContent> {
   @override
   void initState() {
     super.initState();
-    // Load initial data
     context.read<UserManagerBloc>().add(GetAllRoleRequestsEvent());
   }
 
@@ -149,9 +145,6 @@ class _RoleRequestsContentState extends State<RoleRequestsContent> {
   }
 
   void _handleAction(ComposedRequestEntity request, bool isGranted) {
-    // Dispatch event to grant/deny role request
-
-    // Show immediate feedback
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -171,7 +164,6 @@ class _RoleRequestsContentState extends State<RoleRequestsContent> {
   }
 }
 
-// Role Request Tile Widget
 class RoleRequestTile extends StatelessWidget {
   final ComposedRequestEntity request;
   final VoidCallback onGrant;
@@ -234,12 +226,8 @@ class RoleRequestTile extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-
-            // Divider
             Divider(color: Colors.grey[300], height: 1),
             const SizedBox(height: 12),
-
-            // Request Details
             _buildDetailRow('Rol Actual', user.role.name, Icons.person),
             const SizedBox(height: 8),
             _buildDetailRow(
@@ -260,10 +248,7 @@ class RoleRequestTile extends StatelessWidget {
               _formatDate(roleRequest.createdAt),
               Icons.calendar_today,
             ),
-
             const SizedBox(height: 16),
-
-            // Action Buttons (only show for pending requests)
             if (roleRequest.status.name.toLowerCase() == 'pending')
               Row(
                 children: [

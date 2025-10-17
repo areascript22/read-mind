@@ -30,6 +30,8 @@ abstract interface class CourseContentRemoteDataSource {
     required String token,
     required String courseId,
   });
+
+  Future<UserModel> getUser({required String token, required int id});
 }
 
 class CourseContentRemoteDataSourceImpl
@@ -156,6 +158,29 @@ class CourseContentRemoteDataSourceImpl
           .toList();
     } catch (e) {
       debugPrint("Error getting all activities: $e");
+      throw ServerException(
+        e is ServerException ? e.message : "Servicio no disponible",
+      );
+    }
+  }
+
+  @override
+  Future<UserModel> getUser({required String token, required int id}) async {
+    try {
+      final url = Uri.parse("${AppEnvironment().baseUrl}/user/$id");
+
+      final response = await http.get(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode != 200) {
+        throw ServerException(data['message'] ?? 'Servicio no disponible');
+      }
+
+      return UserModel.fromJson(data['data']);
+    } catch (e) {
+      debugPrint("Error getting user info for id: $id, error: $e");
       throw ServerException(
         e is ServerException ? e.message : "Servicio no disponible",
       );

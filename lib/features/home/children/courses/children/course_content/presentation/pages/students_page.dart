@@ -1,9 +1,10 @@
-import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/common/entities/user_entity.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/course_content_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/students/students_bloc.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../../../../core/common/utils/toast_util.dart';
 
 class StudentsPage extends StatefulWidget {
   final CourseEntity courseEntity;
@@ -17,9 +18,12 @@ class _StudentsPageState extends State<StudentsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<CourseContentBloc>().add(
-      EventGetAllStudents(widget.courseEntity.id.toString()),
-    );
+
+    final bloc = context.read<StudentsBloc>();
+
+    // Disparamos ambos eventos al iniciar la página
+    bloc.add(EventGetProfessor(widget.courseEntity.teacherId));
+    bloc.add(EventLoadAllStudents(widget.courseEntity.id));
   }
 
   String _getFirstWords(String text, [int n = 2]) {
@@ -31,39 +35,40 @@ class _StudentsPageState extends State<StudentsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10).copyWith(top: 20),
-        child: Column(
-          children: [
-            BlocConsumer<AppUserCubit, AppUserState>(
-              builder: (context, state) {
-                if (state is AppUserLoggedIn) {
-                  return _buildProfessorSection(state.userEntity);
-                }
-                return SizedBox.shrink();
-              },
-              listener: (context, state) {},
-            ),
+        padding: const EdgeInsets.symmetric(horizontal: 10).copyWith(top: 20),
+        child: BlocConsumer<StudentsBloc, StudentsState>(
+          listener: (context, state) {
+            if (state.error != null) {
+              ToastMessageUtil.showToast(state.error!, context);
+            }
+          },
+          builder: (context, state) {
+            if (state.isLoading &&
+                state.professor == null &&
+                state.students.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-            BlocConsumer<CourseContentBloc, CourseContentState>(
-              builder: (context, state) {
-                if (state is CourseContentStudentsLoaded) {
-                  final items = state.students;
-                  return _buildStudents(items);
-                }
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Sección del profesor
+                if (state.professor != null)
+                  _buildProfessorSection(state.professor!),
 
-                if (state is CourseContentError) {
-                  return Center(child: Text(state.message));
-                }
-
-                return SizedBox.shrink();
-              },
-              listener: (context, state) {
-                if (state is CourseContentError) {
-                  // ToastMessageUtil.showToast(state.message, context);
-                }
-              },
-            ),
-          ],
+                // Sección de estudiantes
+                if (state.students.isNotEmpty)
+                  _buildStudents(state.students)
+                else if (!state.isLoading)
+                  const Padding(
+                    padding: EdgeInsets.only(top: 40),
+                    child: Center(
+                      child: Text('No hay estudiantes matriculados'),
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -71,13 +76,10 @@ class _StudentsPageState extends State<StudentsPage> {
 
   Widget _buildProfessorSection(UserEntity userEntity) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text("Profesor", style: Theme.of(context).textTheme.titleLarge),
-          ],
-        ),
-        Divider(),
+        Text("Profesor", style: Theme.of(context).textTheme.titleLarge),
+        const Divider(),
         Card(
           elevation: 2,
           shape: RoundedRectangleBorder(
@@ -88,7 +90,7 @@ class _StudentsPageState extends State<StudentsPage> {
               radius: 28,
               child: Text(
                 _getFirstWords(userEntity.name),
-                style: TextStyle(fontSize: 24),
+                style: const TextStyle(fontSize: 24),
               ),
             ),
             title: Text(
@@ -99,7 +101,7 @@ class _StudentsPageState extends State<StudentsPage> {
             trailing: const Icon(Icons.school, color: Colors.blue),
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
       ],
     );
   }
@@ -107,16 +109,10 @@ class _StudentsPageState extends State<StudentsPage> {
   Widget _buildStudents(List<UserEntity> students) {
     return Expanded(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Text(
-                "Estudiantes",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ],
-          ),
-          Divider(),
+          Text("Estudiantes", style: Theme.of(context).textTheme.titleLarge),
+          const Divider(),
           Expanded(
             child: ListView.builder(
               itemCount: students.length,

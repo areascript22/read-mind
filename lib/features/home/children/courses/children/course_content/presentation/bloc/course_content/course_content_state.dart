@@ -5,6 +5,7 @@ enum CCActions {
   generateParagraph,
   createAiReading,
   getAllActivities,
+  getUser,
 }
 
 @immutable
@@ -53,4 +54,10 @@ final class CourseContentActivitiesLoaded extends CourseContentState {
   final List<ActivityModel> activities;
 
   CourseContentActivitiesLoaded(this.activities);
+}
+
+final class CourseContentUserLoaded extends CourseContentState {
+  final UserEntity user;
+
+  CourseContentUserLoaded(this.user);
 }
