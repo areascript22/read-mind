@@ -84,7 +84,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
                 onPressed: () {
                   showBottomSheetCreateResource(context);
                 },
-                child: const Icon(Icons.add, color: Colors.blue),
+                child: const Icon(Icons.add),
               )
               : null,
     );

@@ -18,10 +18,7 @@ class _StudentsPageState extends State<StudentsPage> {
   @override
   void initState() {
     super.initState();
-
     final bloc = context.read<StudentsBloc>();
-
-    // Disparamos ambos eventos al iniciar la página
     bloc.add(EventGetProfessor(widget.courseEntity.teacherId));
     bloc.add(EventLoadAllStudents(widget.courseEntity.id));
   }
@@ -37,11 +34,7 @@ class _StudentsPageState extends State<StudentsPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10).copyWith(top: 20),
         child: BlocConsumer<StudentsBloc, StudentsState>(
-          listener: (context, state) {
-            if (state.error != null) {
-              ToastMessageUtil.showToast(state.error!, context);
-            }
-          },
+          listener: (context, state) {},
           builder: (context, state) {
             if (state.isLoading &&
                 state.professor == null &&
@@ -52,11 +45,8 @@ class _StudentsPageState extends State<StudentsPage> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Sección del profesor
                 if (state.professor != null)
                   _buildProfessorSection(state.professor!),
-
-                // Sección de estudiantes
                 if (state.students.isNotEmpty)
                   _buildStudents(state.students)
                 else if (!state.isLoading)
