@@ -1,9 +1,29 @@
+import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class BottomSheetCreateCourse extends StatelessWidget {
+class BottomSheetCreateCourse extends StatefulWidget {
   const BottomSheetCreateCourse({super.key});
+
+  @override
+  State<BottomSheetCreateCourse> createState() =>
+      _BottomSheetCreateCourseState();
+}
+
+class _BottomSheetCreateCourseState extends State<BottomSheetCreateCourse> {
+  late AppUserCubit appUserCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _setPermissions();
+  }
+
+  void _setPermissions() {
+    appUserCubit = context.read<AppUserCubit>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,22 +85,32 @@ class BottomSheetCreateCourse extends StatelessWidget {
             ),
 
             const SizedBox(height: 16),
-
-            _buildOptionCard(
-              context,
-              icon: Icons.create_outlined,
-              title: "Crea un curso",
-              subtitle: "Configurar un nuevo curso desde cero",
-              onTap: () {
-                Navigator.pop(context);
-                context.push(RouteNames.createCourse);
-              },
-            ),
-
-            const SizedBox(height: 16),
+            _buildPrivilegedOptions(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildPrivilegedOptions() {
+    if (!appUserCubit.isProfessor &&
+        !appUserCubit.isAdmin &&
+        !appUserCubit.isSuperUser) {
+      return SizedBox.shrink();
+    }
+    return Column(
+      children: [
+        _buildOptionCard(
+          context,
+          icon: Icons.create_outlined,
+          title: "Crea un curso",
+          subtitle: "Configurar un nuevo curso desde cero",
+          onTap: () {
+            Navigator.pop(context);
+            context.push(RouteNames.createCourse);
+          },
+        ),
+      ],
     );
   }
 

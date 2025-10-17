@@ -23,4 +23,6 @@ abstract interface class CourseContentRepository {
   Future<Either<Failure, List<ActivityModel>>> getAllActivities({
     required String courseId,
   });
+
+  Future<Either<Failure, UserEntity>> getUser({required int id});
 }

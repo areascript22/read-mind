@@ -63,7 +63,6 @@ class _PagesContainerState extends State<PagesContainer> {
                 IndexedStack(
                   index: _currentIndex,
                   children: [
-                    //NewsPage(),
                     ActivitiesPage(course: widget.courseEntity),
                     StudentsPage(courseEntity: widget.courseEntity),
                   ],

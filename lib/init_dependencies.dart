@@ -4,8 +4,10 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/course_content_repository.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_create_ai_reading.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_generate_paragraph.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_get_user.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_getall_activitiies.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_getall_students.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/students/students_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
 import 'package:client_app/features/home/children/courses/data/datasources/courses_remote_datasource.dart';
 import 'package:client_app/features/home/children/courses/data/repository/courses_repository_impl.dart';
@@ -38,7 +40,7 @@ import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'features/home/children/courses/children/course_content/presentation/bloc/course_content_bloc.dart';
+import 'features/home/children/courses/children/course_content/presentation/bloc/course_content/course_content_bloc.dart';
 
 final serviceLocator = GetIt.instance;
 
@@ -150,6 +152,8 @@ void _initCourseContent() {
   serviceLocator.registerFactory(
     () => UseCaseGetAllActivities(serviceLocator()),
   );
+
+  serviceLocator.registerFactory(() => UseCaseGetUser(serviceLocator()));
   //Boc/Cubit
   serviceLocator.registerLazySingleton(() => CourseCubit());
 
@@ -159,7 +163,12 @@ void _initCourseContent() {
       useCaseGenerateParagraph: serviceLocator(),
       useCaseCreateAIReading: serviceLocator(),
       useCaseGetAllActivities: serviceLocator(),
+      useCaseGetUser: serviceLocator(),
     ),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => StudentsBloc(courseContentRepository: serviceLocator()),
   );
 }
 

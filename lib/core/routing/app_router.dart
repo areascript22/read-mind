@@ -6,6 +6,7 @@ import 'package:client_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:client_app/features/auth/presentation/pages/splash_screen.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/ai_reading_activity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/students/students_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/create_ai_reading_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/generate_paragraph.dart';
@@ -21,7 +22,7 @@ import 'package:client_app/init_dependencies.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/home/children/courses/children/course_content/presentation/bloc/course_content_bloc.dart';
+import '../../features/home/children/courses/children/course_content/presentation/bloc/course_content/course_content_bloc.dart';
 import '../../features/home/children/courses/children/course_content/presentation/pages/course_settings.dart';
 import '../../features/home/children/courses/children/course_content/presentation/pages/pages_container.dart';
 
@@ -94,6 +95,7 @@ class AppRouter {
               BlocProvider.value(value: serviceLocator<CoursesBloc>()),
               BlocProvider.value(value: serviceLocator<ShareInvitecodeCubit>()),
               BlocProvider.value(value: serviceLocator<CourseCubit>()),
+              BlocProvider.value(value: serviceLocator<StudentsBloc>()),
             ],
             child: child,
           );

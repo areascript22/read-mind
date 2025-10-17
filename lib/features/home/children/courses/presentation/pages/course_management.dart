@@ -197,7 +197,7 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
       onPressed: () {
         showBottomSheetCreateCourse(context);
       },
-      child: const Icon(Icons.add, color: Colors.blue),
+      child: const Icon(Icons.add),
     );
   }
 

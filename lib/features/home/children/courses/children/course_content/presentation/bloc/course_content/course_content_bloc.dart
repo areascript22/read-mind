@@ -3,12 +3,13 @@ import 'package:client_app/core/common/entities/user_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_create_ai_reading.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_generate_paragraph.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_get_user.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_getall_activitiies.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_getall_students.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../domain/entities/course_entity.dart';
-import '../../domain/entities/ai_reading_entity.dart';
+import '../../../../../domain/entities/course_entity.dart';
+import '../../../domain/entities/ai_reading_entity.dart';
 
 part 'course_content_event.dart';
 part 'course_content_state.dart';
@@ -18,12 +19,14 @@ class CourseContentBloc extends Bloc<CourseContentEvent, CourseContentState> {
   final UseCaseGenerateParagraph useCaseGenerateParagraph;
   final UseCaseCreateAIReading useCaseCreateAIReading;
   final UseCaseGetAllActivities useCaseGetAllActivities;
+  final UseCaseGetUser useCaseGetUser;
 
   CourseContentBloc({
     required this.useCaseGetAllStudents,
     required this.useCaseGenerateParagraph,
     required this.useCaseCreateAIReading,
     required this.useCaseGetAllActivities,
+    required this.useCaseGetUser,
   }) : super(CourseContentInitial()) {
     on<LoadCourseEvent>(_onLoadCourse);
     on<EventGetAllStudents>(_onGetAllStudents);
