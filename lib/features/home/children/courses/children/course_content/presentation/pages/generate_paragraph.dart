@@ -17,7 +17,9 @@ class GenerateParagraphPage extends StatefulWidget {
 
 class _GenerateParagraphPageState extends State<GenerateParagraphPage> {
   final TextEditingController _paragraphController = TextEditingController();
+  final TextEditingController _customTopicController = TextEditingController();
   String? _selectedTopic;
+  bool _showCustomInput = false;
 
   final List<String> _topics = [
     "Technology",
@@ -25,11 +27,6 @@ class _GenerateParagraphPageState extends State<GenerateParagraphPage> {
     "History",
     "Sports",
     "Art",
-    "Literature",
-    "Health",
-    "Music",
-    "Education",
-    "Travel",
   ];
 
   @override
@@ -39,52 +36,15 @@ class _GenerateParagraphPageState extends State<GenerateParagraphPage> {
   }
 
   @override
+  void dispose() {
+    _customTopicController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Generar Párrafo"),
-        actions: [
-          BlocConsumer<CourseContentBloc, CourseContentState>(
-            builder: (context, state) {
-              final loading =
-                  state is CourseContentLoading &&
-                  state.actions == CCActions.generateParagraph;
-              return ElevatedButton(
-                onPressed:
-                    loading
-                        ? () {}
-                        : () {
-                          if (_selectedTopic == null) {
-                            ToastMessageUtil.showToast(
-                              'Elige un tema para continuar',
-                              context,
-                            );
-
-                            return;
-                          }
-                          context.read<CourseContentBloc>().add(
-                            EventGenerateParagraph(_selectedTopic!),
-                          );
-                        },
-                child:
-                    loading
-                        ? LoaderIndicator(spinnerSize: 20)
-                        : const Text("Generar"),
-              );
-            },
-            listener: (context, state) {},
-          ),
-        ],
-        leading: IconButton(
-          onPressed: () {
-            context.read<CourseContentBloc>().add(
-              EventUpdateState(CourseContentInitial()),
-            );
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back),
-        ),
-      ),
+      appBar: _buildAppBar(context),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -93,6 +53,61 @@ class _GenerateParagraphPageState extends State<GenerateParagraphPage> {
         ),
       ),
     );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text("Generar Párrafo"),
+      actions: [
+        BlocConsumer<CourseContentBloc, CourseContentState>(
+          builder: (context, state) {
+            final loading =
+                state is CourseContentLoading &&
+                state.actions == CCActions.generateParagraph;
+            return CustomButton(
+              color: Theme.of(context).colorScheme.secondary,
+              onTap:
+                  loading
+                      ? () {}
+                      : () {
+                        _handleGenerateParagraph(context);
+                      },
+              child:
+                  loading
+                      ? LoaderIndicator(spinnerSize: 20)
+                      : const Text("Generar"),
+            );
+          },
+          listener: (context, state) {},
+        ),
+      ],
+      leading: IconButton(
+        onPressed: () {
+          context.read<CourseContentBloc>().add(
+            EventUpdateState(CourseContentInitial()),
+          );
+          Navigator.pop(context);
+        },
+        icon: const Icon(Icons.arrow_back),
+      ),
+    );
+  }
+
+  void _handleGenerateParagraph(BuildContext context) {
+    String? topicToUse = _selectedTopic;
+    if (_showCustomInput && _customTopicController.text.trim().isNotEmpty) {
+      topicToUse = _customTopicController.text.trim();
+    }
+
+    if (topicToUse == null || topicToUse.isEmpty) {
+      ToastMessageUtil.showToast(
+        'Elige o ingresa un tema para continuar',
+        context,
+      );
+      return;
+    }
+
+    context.read<CourseContentBloc>().add(EventGenerateParagraph(topicToUse));
   }
 
   Widget _buildFooter() {
@@ -184,25 +199,68 @@ class _GenerateParagraphPageState extends State<GenerateParagraphPage> {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-            children:
-                _topics.map((topic) {
-                  final isSelected = _selectedTopic == topic;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: ChoiceChip(
-                      label: Text(topic),
-                      selected: isSelected,
-                      selectedColor: Colors.blue.shade200,
-                      onSelected: (_) {
-                        setState(() {
-                          _selectedTopic = topic;
-                        });
-                      },
-                    ),
-                  );
-                }).toList(),
+            children: [
+              // Chips de temas predefinidos
+              ..._topics.map((topic) {
+                final isSelected = _selectedTopic == topic && !_showCustomInput;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: ChoiceChip(
+                    label: Text(topic),
+                    selected: isSelected,
+                    selectedColor: Colors.blue.shade200,
+                    onSelected: (_) {
+                      setState(() {
+                        _selectedTopic = topic;
+                        _showCustomInput = false;
+                        _customTopicController.clear();
+                      });
+                    },
+                  ),
+                );
+              }).toList(),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: ChoiceChip(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.add, size: 16),
+                      const SizedBox(width: 4),
+                      const Text("Otro..."),
+                    ],
+                  ),
+                  selected: _showCustomInput,
+                  selectedColor: Colors.green.shade200,
+                  onSelected: (_) {
+                    setState(() {
+                      _showCustomInput = true;
+                      _selectedTopic = null;
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
         ),
+
+        if (_showCustomInput) ...[
+          const SizedBox(height: 16),
+          TextField(
+            controller: _customTopicController,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: "Ingresa tu tema",
+              hintText: "Ej: Inteligencia Artificial en la medicina moderna",
+              prefixIcon: Icon(Icons.edit),
+            ),
+            onChanged: (_) {
+              setState(() {}); // Para actualizar validaciones en tiempo real
+            },
+          ),
+        ],
+
         const SizedBox(height: 24),
       ],
     );

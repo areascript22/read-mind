@@ -1,5 +1,6 @@
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class BottomSheetCreateResource extends StatelessWidget {
@@ -52,6 +53,33 @@ class BottomSheetCreateResource extends StatelessWidget {
               title: "Lectura AI",
               subtitle: "Generar contenido con inteligencia artificial",
               iconColor: Colors.blue,
+              svgPath: "assets/images/svg/reading.svg",
+              onTap: () {
+                Navigator.pop(context);
+                context.push(RouteNames.courseContentGenerateParagraph);
+              },
+            ),
+
+            _buildOptionTile(
+              context,
+              icon: Icons.menu_book_outlined,
+              title: "Idea principal",
+              subtitle: "Encuentra la idea principal",
+              iconColor: Colors.blue,
+              svgPath: "assets/images/svg/mind.svg",
+              onTap: () {
+                Navigator.pop(context);
+                context.push(RouteNames.courseContentGenerateParagraph);
+              },
+            ),
+
+            _buildOptionTile(
+              context,
+              icon: Icons.menu_book_outlined,
+              title: "Parafraseo",
+              subtitle: "Parafrasea el parrafo",
+              iconColor: Colors.blue,
+              svgPath: "assets/images/svg/think.svg",
               onTap: () {
                 Navigator.pop(context);
                 context.push(RouteNames.courseContentGenerateParagraph);
@@ -72,6 +100,7 @@ class BottomSheetCreateResource extends StatelessWidget {
     required String subtitle,
     required Color iconColor,
     required VoidCallback onTap,
+    required String svgPath,
   }) {
     return Column(
       children: [
@@ -81,10 +110,10 @@ class BottomSheetCreateResource extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.1),
+              color: iconColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: iconColor, size: 20),
+            child: SvgPicture.asset(svgPath),
           ),
           title: Text(
             title,
