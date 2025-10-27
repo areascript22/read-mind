@@ -17,4 +17,5 @@ class RouteNames {
   static const courseContentCreateAiReading = '/courseContentCreateAiReading';
 
   static const activityAIReading = '/activityAIReading';
+  static const activityParaphrase = '/activityParaphrase';
 }

@@ -1,6 +1,8 @@
+import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/bs_settings.dart';
 
 class AiReadingActivity extends StatefulWidget {
@@ -53,9 +55,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     super.dispose();
   }
 
-  // ---------------------------
-  // TTS initialization / teardown
-  // ---------------------------
   Future<void> initializeTts() async {
     try {
       await _flutterTts.setLanguage("en-US");
@@ -87,12 +86,8 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
         setState(() {});
       });
 
-      _flutterTts.setStartHandler(() {
-        // nothing extra for now
-      });
+      _flutterTts.setStartHandler(() {});
     } catch (e) {
-      // ignore init errors on platforms without proper TTS support
-      // ignore: avoid_print
       print("TTS init error: $e");
     }
   }
@@ -108,9 +103,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     } catch (_) {}
   }
 
-  // ---------------------------
-  // Sentence splitting helpers
-  // ---------------------------
   void _prepareSentences() {
     sentences = _splitIntoSentences(paragraph);
     sentenceStartIndices = _computeSentenceStartIndices(paragraph, sentences);
@@ -175,9 +167,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     }
   }
 
-  // ---------------------------
-  // Playback controls
-  // ---------------------------
   void togglePlayPause() async {
     if (isPlaying) {
       try {
@@ -213,15 +202,10 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     try {
       await _flutterTts.speak(sub);
     } catch (e) {
-      // ignore speak errors
-      // ignore: avoid_print
       print("TTS speak error: $e");
     }
   }
 
-  // ---------------------------
-  // UI Build
-  // ---------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -250,13 +234,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
 
   Widget _buildPlayerControls() {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(15),
-          topRight: Radius.circular(15),
-        ),
-      ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -287,6 +264,21 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
                 label: const Text('Stop'),
               ),
             ],
+          ),
+          const SizedBox(height: 12),
+          ElevatedButton.icon(
+            onPressed: () {
+              context.push(
+                RouteNames.activityParaphrase,
+                extra: widget.activityModel.content,
+              );
+            },
+            icon: const Icon(Icons.arrow_forward),
+            label: const Text('Continuar'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              minimumSize: const Size(double.infinity, 45),
+            ),
           ),
         ],
       ),
@@ -384,7 +376,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
       initialRate: ttsRate,
       initialPitch: ttsPitch,
       onApply: (double newFontSlider, double newRate, double newPitch) async {
-        // Apply incoming settings to parent
         setState(() {
           fontSliderValue = newFontSlider;
           ttsRate = newRate;

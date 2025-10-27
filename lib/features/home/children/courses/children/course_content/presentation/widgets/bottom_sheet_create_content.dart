@@ -59,33 +59,6 @@ class BottomSheetCreateResource extends StatelessWidget {
                 context.push(RouteNames.courseContentGenerateParagraph);
               },
             ),
-
-            _buildOptionTile(
-              context,
-              icon: Icons.menu_book_outlined,
-              title: "Idea principal",
-              subtitle: "Encuentra la idea principal",
-              iconColor: Colors.blue,
-              svgPath: "assets/images/svg/mind.svg",
-              onTap: () {
-                Navigator.pop(context);
-                context.push(RouteNames.courseContentGenerateParagraph);
-              },
-            ),
-
-            _buildOptionTile(
-              context,
-              icon: Icons.menu_book_outlined,
-              title: "Parafraseo",
-              subtitle: "Parafrasea el parrafo",
-              iconColor: Colors.blue,
-              svgPath: "assets/images/svg/think.svg",
-              onTap: () {
-                Navigator.pop(context);
-                context.push(RouteNames.courseContentGenerateParagraph);
-              },
-            ),
-
             const SizedBox(height: 8),
           ],
         ),

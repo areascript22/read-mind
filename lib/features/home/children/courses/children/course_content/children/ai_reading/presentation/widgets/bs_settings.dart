@@ -1,7 +1,3 @@
-// ---------------------------
-// The showGeneralDialog + ReadingAIBS widget (Design adapted)
-// ---------------------------
-
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/playback_button.dart';
 import 'package:flutter/material.dart';
 
@@ -154,9 +150,7 @@ class _ReadingAIBSState extends State<ReadingAIBS> {
                         );
                       }).toList(),
                 ),
-
                 const SizedBox(height: 12),
-                // Optional pitch control (hidden minimal UI)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

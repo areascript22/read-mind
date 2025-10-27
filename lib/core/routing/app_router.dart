@@ -5,6 +5,7 @@ import 'package:client_app/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:client_app/features/auth/presentation/pages/splash_screen.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/ai_reading_activity.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/paraphrase_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/students/students_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
@@ -146,6 +147,14 @@ class AppRouter {
             builder: (context, state) {
               final activityModel = state.extra as ActivityModel;
               return AiReadingActivity(activityModel: activityModel);
+            },
+          ),
+
+          GoRoute(
+            path: RouteNames.activityParaphrase,
+            builder: (context, state) {
+              final originalParagraph = state.extra as String;
+              return ParaphrasePage(originalParagraph: originalParagraph);
             },
           ),
         ],
