@@ -10,6 +10,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/paraphrase_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/summary_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/paragraph_metadata.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/students/students_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/create_ai_reading_page.dart';
@@ -141,8 +142,8 @@ class AppRouter {
           GoRoute(
             path: RouteNames.courseContentCreateAiReading,
             builder: (context, state) {
-              final content = state.extra as String;
-              return CreateAiReadingPage(content: content);
+              final content = state.extra as ParagraphMetadata;
+              return CreateAiReadingPage(paragraphMetadata: content);
             },
           ),
 

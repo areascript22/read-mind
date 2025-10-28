@@ -13,6 +13,9 @@ abstract class ActivityModel with _$ActivityModel {
     required String description,
     required DateTime dueDate,
     required String content,
+    required String length, // New field
+    required String complexity, // New field
+    required String style, // New field
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = AIReadingModel;
@@ -28,6 +31,9 @@ extension ActivityModelX on ActivityModel {
     description: description,
     dueDate: dueDate,
     content: content,
+    length: length, // Map to Entity
+    complexity: complexity, // Map to Entity
+    style: style, // Map to Entity
     createdAt: createdAt,
     updatedAt: updatedAt,
   );

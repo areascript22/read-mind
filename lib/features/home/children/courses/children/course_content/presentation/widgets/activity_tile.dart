@@ -18,6 +18,9 @@ class ActivityTile extends StatelessWidget {
         description,
         dueDate,
         content,
+        length,
+        complexity,
+        style,
         createdAt,
         updatedAt,
       ) {
@@ -28,6 +31,9 @@ class ActivityTile extends StatelessWidget {
           description: description,
           dueDate: dueDate,
           content: content,
+          length: length,
+          complexity: complexity,
+          style: style,
         );
       },
     );
@@ -40,30 +46,91 @@ class ActivityTile extends StatelessWidget {
     required String description,
     required DateTime dueDate,
     required String content,
+    required String length,
+    required String complexity,
+    required String style,
   }) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 3,
-      child: ListTile(
-        leading: SvgPicture.asset('assets/images/svg/reading.svg'),
-        title: Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        subtitle: Column(
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 4),
-            Text(description, style: TextStyle(color: Colors.grey[700])),
+            // Title Row with Icon
+            Row(
+              children: [
+                SvgPicture.asset(
+                  'assets/images/svg/reading.svg',
+                  height: 48,
+                  width: 48,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 6),
+            // Description
             Text(
-              "Fecha límite: ${DateUtil.formatDate(dueDate.toString())}",
-              style: const TextStyle(fontSize: 12, color: Colors.redAccent),
+              description,
+              style: TextStyle(color: Colors.grey[700], fontSize: 14),
+            ),
+            const SizedBox(height: 10),
+            // Metadata Chips
+            Wrap(
+              spacing: 8,
+              runSpacing: 6,
+              children: [
+                _buildInfoChip(Icons.timer, length, Colors.blueAccent),
+                _buildInfoChip(
+                  Icons.bar_chart,
+                  complexity,
+                  Colors.orangeAccent,
+                ),
+                _buildInfoChip(Icons.style, style, Colors.purpleAccent),
+              ],
+            ),
+            const SizedBox(height: 10),
+            // Due date
+            Row(
+              children: [
+                const Icon(
+                  Icons.calendar_today,
+                  size: 14,
+                  color: Colors.redAccent,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  "Fecha límite: ${DateUtil.formatDate(dueDate.toString())}",
+                  style: const TextStyle(fontSize: 12, color: Colors.redAccent),
+                ),
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildInfoChip(IconData icon, String label, Color color) {
+    return Chip(
+      avatar: Icon(icon, size: 16, color: Colors.white),
+      label: Text(
+        label,
+        style: const TextStyle(color: Colors.white, fontSize: 12),
+      ),
+      backgroundColor: color,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
     );
   }
 }

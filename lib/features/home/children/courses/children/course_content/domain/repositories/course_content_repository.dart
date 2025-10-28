@@ -16,9 +16,17 @@ abstract interface class CourseContentRepository {
     required String description,
     required String content,
     required String dueDate,
+    required String length,
+    required String complexity,
+    required String style,
   });
 
-  Future<Either<Failure, String>> generateParagraph({required String topic});
+  Future<Either<Failure, String>> generateParagraph({
+    required String topic,
+    required String length,
+    required String complexity,
+    required String style,
+  });
 
   Future<Either<Failure, List<ActivityModel>>> getAllActivities({
     required String courseId,

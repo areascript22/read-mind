@@ -15,6 +15,9 @@ abstract interface class CourseContentRemoteDataSource {
   Future<String> generateParagraph({
     required String token,
     required String topic,
+    required String length,
+    required String complexity,
+    required String style,
   });
 
   Future<ActivityModel> createAIReading({
@@ -24,6 +27,9 @@ abstract interface class CourseContentRemoteDataSource {
     required String description,
     required String content,
     required String dueDate,
+    required String length,
+    required String complexity,
+    required String style,
   });
 
   Future<List<ActivityModel>> getAllActivities({
@@ -71,6 +77,9 @@ class CourseContentRemoteDataSourceImpl
   Future<String> generateParagraph({
     required String token,
     required String topic,
+    required String length,
+    required String complexity,
+    required String style,
   }) async {
     try {
       await Future.delayed(Duration(seconds: 3));
@@ -79,7 +88,13 @@ class CourseContentRemoteDataSourceImpl
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json", "x-token": token},
-        body: jsonEncode({"topic": topic, "environment": "prod"}),
+        body: jsonEncode({
+          "topic": topic,
+          "length": length,
+          "complexity": complexity,
+          "style": style,
+          "environment": "prod",
+        }),
       );
       final data = jsonDecode(response.body);
       if (response.statusCode != 200) {
@@ -103,6 +118,9 @@ class CourseContentRemoteDataSourceImpl
     required String description,
     required String content,
     required String dueDate,
+    required String length,
+    required String complexity,
+    required String style,
   }) async {
     try {
       await Future.delayed(Duration(seconds: 3));
@@ -118,6 +136,9 @@ class CourseContentRemoteDataSourceImpl
           "description": description,
           "content": content,
           "dueDate": dueDate,
+          "length": length,
+          "complexity": complexity,
+          "style": style,
         }),
       );
       final data = jsonDecode(response.body);

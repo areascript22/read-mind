@@ -18,6 +18,9 @@ class UseCaseCreateAIReading
       description: params.description,
       content: params.content,
       dueDate: params.dueDate,
+      length: params.length,
+      complexity: params.complexity,
+      style: params.style,
     );
   }
 }
@@ -28,6 +31,9 @@ final class CreateAIReadingParams {
   final String description;
   final String content;
   final String dueDate;
+  final String length;
+  final String complexity;
+  final String style;
 
   CreateAIReadingParams(
     this.courseId,
@@ -35,5 +41,8 @@ final class CreateAIReadingParams {
     this.description,
     this.content,
     this.dueDate,
+    this.length,
+    this.complexity,
+    this.style,
   );
 }

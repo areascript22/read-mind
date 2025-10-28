@@ -30,5 +30,8 @@ extension AIReadingModelX on AIReadingModel {
     content: content,
     createdAt: createdAt,
     updatedAt: updatedAt,
+    length: '',
+    complexity: '',
+    style: '',
   );
 }
