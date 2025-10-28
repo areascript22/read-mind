@@ -58,7 +58,12 @@ class CourseContentBloc extends Bloc<CourseContentEvent, CourseContentState> {
   ) async {
     emit(CourseContentLoading(CCActions.generateParagraph));
     final response = await useCaseGenerateParagraph(
-      GenerateParagraphParams(event.topic),
+      GenerateParagraphParams(
+        event.topic,
+        event.length,
+        event.complexity,
+        event.style,
+      ),
     );
     response.fold(
       (l) => emit(CourseContentError(l.message, CCActions.generateParagraph)),
@@ -85,6 +90,9 @@ class CourseContentBloc extends Bloc<CourseContentEvent, CourseContentState> {
         event.description,
         event.content,
         event.dueDate,
+        event.length,
+        event.complexity,
+        event.style,
       ),
     );
     response.fold(

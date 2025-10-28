@@ -8,6 +8,9 @@ class AIReadingEntity extends Equatable {
   final String content;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String length;
+  final String complexity;
+  final String style;
 
   const AIReadingEntity({
     required this.id,
@@ -17,6 +20,9 @@ class AIReadingEntity extends Equatable {
     required this.content,
     required this.createdAt,
     required this.updatedAt,
+    required this.length,
+    required this.complexity,
+    required this.style,
   });
 
   @override

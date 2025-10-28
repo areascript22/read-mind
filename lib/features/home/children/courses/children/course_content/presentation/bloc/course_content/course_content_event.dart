@@ -17,8 +17,16 @@ final class EventGetAllStudents extends CourseContentEvent {
 
 final class EventGenerateParagraph extends CourseContentEvent {
   final String topic;
+  final String length;
+  final String complexity;
+  final String style;
 
-  EventGenerateParagraph(this.topic);
+  EventGenerateParagraph({
+    required this.topic,
+    required this.length,
+    required this.complexity,
+    required this.style,
+  });
 }
 
 final class EventUpdateState extends CourseContentEvent {
@@ -33,6 +41,9 @@ final class EventCreateAIReading extends CourseContentEvent {
   final String description;
   final String content;
   final String dueDate;
+  final String length;
+  final String complexity;
+  final String style;
 
   EventCreateAIReading(
     this.courseId,
@@ -40,6 +51,9 @@ final class EventCreateAIReading extends CourseContentEvent {
     this.description,
     this.content,
     this.dueDate,
+    this.length,
+    this.complexity,
+    this.style,
   );
 }
 

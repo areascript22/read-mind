@@ -13,6 +13,9 @@ AIReadingModel _$AIReadingModelFromJson(Map<String, dynamic> json) =>
       description: json['description'] as String,
       dueDate: DateTime.parse(json['dueDate'] as String),
       content: json['content'] as String,
+      length: json['length'] as String,
+      complexity: json['complexity'] as String,
+      style: json['style'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
@@ -24,6 +27,9 @@ Map<String, dynamic> _$AIReadingModelToJson(AIReadingModel instance) =>
       'description': instance.description,
       'dueDate': instance.dueDate.toIso8601String(),
       'content': instance.content,
+      'length': instance.length,
+      'complexity': instance.complexity,
+      'style': instance.style,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
     };
