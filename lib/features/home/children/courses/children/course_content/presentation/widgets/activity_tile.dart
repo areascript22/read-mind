@@ -1,5 +1,6 @@
 import 'package:client_app/core/common/utils/date_util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../data/models/activity_model/activity_model.dart';
 
@@ -45,11 +46,7 @@ class ActivityTile extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 3,
       child: ListTile(
-        leading: const Icon(
-          Icons.menu_book,
-          color: Colors.blueAccent,
-          size: 32,
-        ),
+        leading: SvgPicture.asset('assets/images/svg/reading.svg'),
         title: Text(
           title,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
