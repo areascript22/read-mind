@@ -2,6 +2,7 @@ import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback_main_idea.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_main_idea_tip.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_tip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -245,7 +246,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 60),
       child: FloatingActionButton.extended(
-        onPressed: () => showParaphraseTipDialog(context),
+        onPressed: () => showMainIdeaTipDialog(context),
         icon: const Icon(Icons.lightbulb),
         label: const Text("Tips"),
         backgroundColor: Colors.amber,

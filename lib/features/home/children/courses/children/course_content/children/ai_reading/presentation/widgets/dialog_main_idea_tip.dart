@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ParaphraseTipDialog extends StatelessWidget {
-  const ParaphraseTipDialog({super.key});
+class MainIdeaTipDialog extends StatelessWidget {
+  const MainIdeaTipDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class ParaphraseTipDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(20.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.amber.withOpacity(0.3),
+              color: Colors.amber.shade200.withOpacity(0.5),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -25,28 +25,29 @@ class ParaphraseTipDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // 🔶 Header with amber gradient
+            // 🟡 Header (Amber gradient)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20.0),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    Colors.amber,
-                    Color(0xFFFFC107), // Amber accent
-                  ],
+                  colors: [Colors.amber.shade700, Colors.amber.shade400],
                 ),
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20.0),
                   topRight: Radius.circular(20.0),
                 ),
               ),
               child: Column(
                 children: const [
-                  Icon(Icons.lightbulb_outline, color: Colors.white, size: 40),
+                  Icon(
+                    Icons.psychology_outlined,
+                    color: Colors.white,
+                    size: 40,
+                  ),
                   SizedBox(height: 10),
                   Text(
-                    "Consejos para parafrasear",
+                    "Consejos para identificar la idea principal",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -65,35 +66,39 @@ class ParaphraseTipDialog extends StatelessWidget {
               child: Column(
                 children: const [
                   _TipItem(
-                    icon: Icons.visibility,
-                    text: "Lee el párrafo con atención",
-                  ),
-                  SizedBox(height: 12),
-                  _TipItem(
-                    icon: Icons.swap_horiz,
+                    icon: Icons.search,
                     text:
-                        "Usa sinónimos y cambia la estructura de las oraciones",
+                        "Lee todo el párrafo antes de intentar identificar la idea principal.",
                   ),
                   SizedBox(height: 12),
                   _TipItem(
-                    icon: Icons.import_export,
-                    text: "Mantén el significado original",
+                    icon: Icons.question_mark_outlined,
+                    text:
+                        "Pregúntate: ¿De qué trata principalmente este texto?",
                   ),
                   SizedBox(height: 12),
                   _TipItem(
-                    icon: Icons.content_copy,
-                    text: "Evita copiar frases textuales",
+                    icon: Icons.highlight_alt,
+                    text:
+                        "Busca frases que resumen el contenido general o se repiten con frecuencia.",
                   ),
                   SizedBox(height: 12),
                   _TipItem(
-                    icon: Icons.brush,
-                    text: "Utiliza tu propio estilo y vocabulario",
+                    icon: Icons.compare,
+                    text:
+                        "Distingue entre detalles secundarios y el mensaje central.",
+                  ),
+                  SizedBox(height: 12),
+                  _TipItem(
+                    icon: Icons.lightbulb,
+                    text:
+                        "Intenta formular la idea principal con tus propias palabras en una sola oración.",
                   ),
                 ],
               ),
             ),
 
-            // 🟠 Button
+            // 🟡 Button
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0, left: 20, right: 20),
               child: SizedBox(
@@ -101,14 +106,14 @@ class ParaphraseTipDialog extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
+                    backgroundColor: Colors.amber.shade600,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                     elevation: 5,
-                    shadowColor: Colors.amberAccent.withOpacity(0.5),
+                    shadowColor: Colors.amber.shade200,
                   ),
                   child: const Text(
                     "Entendido",
@@ -124,6 +129,7 @@ class ParaphraseTipDialog extends StatelessWidget {
   }
 }
 
+// 🟡 Reusable Tip Item Widget
 class _TipItem extends StatelessWidget {
   final IconData icon;
   final String text;
@@ -139,10 +145,10 @@ class _TipItem extends StatelessWidget {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: Colors.amber.withOpacity(0.15),
+            color: Colors.amber.shade100,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, color: Colors.amber, size: 18),
+          child: Icon(icon, color: Colors.amber.shade700, size: 18),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -160,9 +166,6 @@ class _TipItem extends StatelessWidget {
   }
 }
 
-void showParaphraseTipDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) => const ParaphraseTipDialog(),
-  );
+void showMainIdeaTipDialog(BuildContext context) {
+  showDialog(context: context, builder: (context) => const MainIdeaTipDialog());
 }

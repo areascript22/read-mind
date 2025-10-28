@@ -2,6 +2,7 @@ import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback_summary.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_tip.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_summary_tip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -229,7 +230,7 @@ class _SummaryPageState extends State<SummaryPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 60),
       child: FloatingActionButton.extended(
-        onPressed: () => showParaphraseTipDialog(context),
+        onPressed: () => showSummaryTips(context),
         icon: const Icon(Icons.lightbulb),
         label: const Text("Tips"),
         backgroundColor: Colors.amber,
