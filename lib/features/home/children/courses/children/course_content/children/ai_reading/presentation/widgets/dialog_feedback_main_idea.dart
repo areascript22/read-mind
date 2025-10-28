@@ -1,10 +1,10 @@
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_mainidea_entity.dart';
 
-class FeedbackDialog extends StatelessWidget {
-  final FeedbackEntity result;
+class FeedbackMainIdeaDialog extends StatelessWidget {
+  final FeedbackMainIdeaEntity result;
 
-  const FeedbackDialog({super.key, required this.result});
+  const FeedbackMainIdeaDialog({super.key, required this.result});
 
   @override
   Widget build(BuildContext context) {
@@ -18,18 +18,20 @@ class FeedbackDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Resultados de tu paráfrasis",
+                "Resultados de la idea principal",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
 
-              _buildScoreRow("Similitud", result.similarityScore),
+              // Scores
+              _buildScoreRow("Precisión", result.accuracyScore),
               const SizedBox(height: 10),
-              _buildScoreRow("Fluidez", result.fluencyScore),
+              _buildScoreRow("Claridad", result.clarityScore),
               const SizedBox(height: 10),
-              _buildScoreRow("Originalidad", result.originalityScore),
+              _buildScoreRow("Concisión", result.concisenessScore),
               const SizedBox(height: 20),
 
+              // Feedback
               const Text(
                 "Retroalimentación",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -90,9 +92,12 @@ class FeedbackDialog extends StatelessWidget {
   }
 }
 
-void showFeedbackDialog(BuildContext context, FeedbackEntity feedback) {
+void showFeedbackMainIdeaDialog(
+  BuildContext context,
+  FeedbackMainIdeaEntity feedback,
+) {
   showDialog(
     context: context,
-    builder: (_) => FeedbackDialog(result: feedback),
+    builder: (_) => FeedbackMainIdeaDialog(result: feedback),
   );
 }

@@ -1,4 +1,7 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/datasources/coursecontent_remote_datasource.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/repositories/coursecontent_repository_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/course_content_repository.dart';
@@ -51,6 +54,7 @@ Future<void> initDependencies() async {
   _initCourseContent();
   _initUserManger();
   _initProfile();
+  _initCourseActivities();
 
   serviceLocator.registerLazySingleton(
     () => AppUserCubit(authLocalDataSource: serviceLocator()),
@@ -189,5 +193,15 @@ void _initProfile() {
 
   serviceLocator.registerLazySingleton(
     () => ProfileBloc(profileRepository: serviceLocator()),
+  );
+}
+
+void _initCourseActivities() {
+  serviceLocator.registerFactory<AiReadingRepository>(
+    () => AiReadingRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => AiReadingBloc(aiReadingRepository: serviceLocator()),
   );
 }

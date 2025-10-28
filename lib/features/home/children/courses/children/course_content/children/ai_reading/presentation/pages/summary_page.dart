@@ -1,37 +1,34 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
-import 'package:client_app/core/common/widget/custom_button.dart';
-import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback_summary.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_tip.dart';
-import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
 
-class ParaphrasePage extends StatefulWidget {
+class SummaryPage extends StatefulWidget {
   final String originalParagraph;
 
-  const ParaphrasePage({super.key, required this.originalParagraph});
+  const SummaryPage({super.key, required this.originalParagraph});
 
   @override
-  State<ParaphrasePage> createState() => _ParaphrasePageState();
+  State<SummaryPage> createState() => _SummaryPageState();
 }
 
-class _ParaphrasePageState extends State<ParaphrasePage> {
+class _SummaryPageState extends State<SummaryPage> {
   final TextEditingController _controller = TextEditingController();
   bool _isExpanded = false;
 
-  void _submitParaphrase(BuildContext context) {
+  void _submitSummary(BuildContext context) {
     if (_controller.text.trim().isEmpty) {
       ToastMessageUtil.showToast("Escribe algo para continuar", context);
       return;
     }
     context.read<AiReadingBloc>().add(
-      EvaluateParaphraseEvent(
+      EvaluateSummaryEvent(
         paragraph: widget.originalParagraph,
-        paraphrase: _controller.text,
+        summary: _controller.text,
       ),
     );
   }
@@ -43,22 +40,21 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
     return BlocConsumer<AiReadingBloc, AiReadingState>(
       listener: (context, state) {
         if (state is AiReadingError &&
-            state.actionType == AiActionType.paraphrase) {
+            state.actionType == AiActionType.summary) {
           ToastMessageUtil.showToast(state.message, context);
         }
-        if (state is AiReadingSuccess &&
-            state.actionType == AiActionType.paraphrase) {
-          showFeedbackDialog(context, state.feedbackEntity);
+        if (state is SummarySuccess) {
+          showFeedbackSummaryDialog(context, state.feedbackEntity);
         }
       },
       builder: (context, state) {
         final isLoading =
             state is AiReadingLoading &&
-            state.actionType == AiActionType.paraphrase;
+            state.actionType == AiActionType.summary;
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Paraphrase Activity"),
+            title: const Text("Summary activity"),
             centerTitle: true,
             leading: IconButton(
               onPressed: () => Navigator.pop(context),
@@ -155,48 +151,7 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                               const SizedBox(height: 10),
                               _buildRichTextField(),
                               const SizedBox(height: 20),
-                              SizedBox(
-                                width: double.infinity,
-                                height: 50,
-                                child: ElevatedButton(
-                                  onPressed:
-                                      isLoading
-                                          ? null
-                                          : () => _submitParaphrase(context),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blueAccent,
-                                    disabledBackgroundColor:
-                                        Colors.grey.shade400,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child:
-                                      isLoading
-                                          ? const SizedBox(
-                                            height: 24,
-                                            width: 24,
-                                            child: CircularProgressIndicator(
-                                              color: Colors.white,
-                                              strokeWidth: 2.5,
-                                            ),
-                                          )
-                                          : const Text(
-                                            "Submit Paraphrase",
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                ),
-                              ),
-                              SizedBox(height: 15),
-                              CustomButton(
-                                color: Colors.green,
-                                onTap:
-                                    () => context.push(
-                                      RouteNames.activityMainIdea,
-                                      extra: widget.originalParagraph,
-                                    ),
-                                child: Text("Siguiente actividad"),
-                              ),
+                              _buildSubmitButton(isLoading, context),
                             ],
                           ),
                         ),
@@ -208,13 +163,41 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
               if (isLoading)
                 Container(
                   color: Colors.black.withValues(alpha: 0.3),
-                  child: const Center(child: LoaderIndicator()),
+                  child: const Center(child: CircularProgressIndicator()),
                 ),
             ],
           ),
           floatingActionButton: _buildFloatingActionButton(context),
         );
       },
+    );
+  }
+
+  SizedBox _buildSubmitButton(bool isLoading, BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: ElevatedButton(
+        onPressed: isLoading ? null : () => _submitSummary(context),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blueAccent,
+          disabledBackgroundColor: Colors.grey.shade400,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child:
+            isLoading
+                ? const SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2.5,
+                  ),
+                )
+                : const Text("Enviar resumen", style: TextStyle(fontSize: 16)),
+      ),
     );
   }
 
