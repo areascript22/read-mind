@@ -55,7 +55,7 @@ class ReadingAIBS extends StatefulWidget {
 }
 
 class _ReadingAIBSState extends State<ReadingAIBS> {
-  final List<double> speeds = [0.5, 0.75, 1.0, 1.3];
+  final List<double> speeds = [0.25, 0.5, 0.75, 1.0];
   late double selectedSpeed;
   late double localFontSlider;
   late double localPitch;
