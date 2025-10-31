@@ -1,48 +1,107 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/translation_cubit/translation_cubit.dart';
+import 'package:client_app/init_dependencies.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-class BottomSheetTranslateBody extends StatelessWidget {
+class BottomSheetTranslateBody extends StatefulWidget {
   final String word;
-  final VoidCallback onListenPressed;
 
-  const BottomSheetTranslateBody({
-    super.key,
-    required this.word,
-    required this.onListenPressed,
-  });
+  const BottomSheetTranslateBody({super.key, required this.word});
+
+  @override
+  State<BottomSheetTranslateBody> createState() =>
+      _BottomSheetTranslateBodyState();
+}
+
+class _BottomSheetTranslateBodyState extends State<BottomSheetTranslateBody> {
+  late FlutterTts _flutterTts;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeTts();
+
+    // Trigger translation when the bottom sheet opens
+    context.read<TranslationCubit>().translateWord(widget.word);
+  }
+
+  @override
+  void dispose() {
+    _disposeTts();
+    super.dispose();
+  }
+
+  Future<void> _initializeTts() async {
+    _flutterTts = FlutterTts();
+    try {
+      await _flutterTts.setLanguage("en-US");
+      await _flutterTts.setSpeechRate(0.25);
+      await _flutterTts.setPitch(1.0);
+    } catch (e) {
+      debugPrint("TTS initialization error: $e");
+    }
+  }
+
+  Future<void> _speakWord(BuildContext context, String word) async {
+    try {
+      await _flutterTts.setLanguage("en-US");
+      await _flutterTts.setSpeechRate(0.25);
+      await _flutterTts.setPitch(1.0);
+      await _flutterTts.speak(word);
+    } catch (e) {
+      debugPrint("TTS speak error: $e");
+      if (context.mounted) {
+        ToastMessageUtil.showToast('Failed to play audio', context);
+      }
+    }
+  }
+
+  void _disposeTts() {
+    _flutterTts.stop();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(context),
-          const SizedBox(height: 24),
-          _buildOriginalWord(),
-          const SizedBox(height: 16),
+    return BlocConsumer<TranslationCubit, TranslationState>(
+      listener: (context, state) {
+        if (state is TranslationFailure) {
+          ToastMessageUtil.showToast(state.message, context);
+        }
+      },
+      builder: (context, state) {
+        return Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(context),
+              const SizedBox(height: 24),
+              _buildOriginalWord(),
 
-          const Divider(height: 1, color: Colors.grey),
-          const SizedBox(height: 24),
+              const SizedBox(height: 16),
+              const Divider(height: 1, color: Colors.grey),
+              const SizedBox(height: 24),
 
-          // Translation Section
-          _buildTranslationSection(),
-          const SizedBox(height: 8),
-
-          // Additional Info
-          _buildAdditionalInfo(),
-        ],
-      ),
+              if (state is TranslationLoading)
+                const Center(child: CircularProgressIndicator())
+              else if (state is TranslationSuccess)
+                _buildTranslationSection(state.translation.translated)
+              else
+                const SizedBox(),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -97,7 +156,7 @@ class BottomSheetTranslateBody extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: Text(
-            word,
+            widget.word,
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w600,
@@ -115,13 +174,13 @@ class BottomSheetTranslateBody extends StatelessWidget {
             ),
             child: const Icon(Icons.volume_up, color: Colors.white, size: 20),
           ),
-          onPressed: onListenPressed,
+          onPressed: () => _speakWord(context, widget.word),
         ),
       ],
     );
   }
 
-  Widget _buildTranslationSection() {
+  Widget _buildTranslationSection(String translation) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -146,8 +205,8 @@ class BottomSheetTranslateBody extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            const Text(
-              'Spanish',
+            Text(
+              translation,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -156,6 +215,8 @@ class BottomSheetTranslateBody extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 24),
+        _buildAdditionalInfo(),
       ],
     );
   }
@@ -190,38 +251,15 @@ class BottomSheetTranslateBody extends StatelessWidget {
 }
 
 void showTranslateBottomSheet(BuildContext context, String word) {
-  final FlutterTts bottomSheetTts = FlutterTts();
-  Future<void> initializeBottomSheetTts() async {
-    try {
-      await bottomSheetTts.setLanguage("en-US");
-      await bottomSheetTts.setSpeechRate(0.25);
-      await bottomSheetTts.setPitch(1.0);
-    } catch (e) {
-      debugPrint("Bottom sheet TTS init error: $e");
-    }
-  }
-
-  Future<void> speakWord() async {
-    try {
-      await bottomSheetTts.speak(word);
-    } catch (e) {
-      debugPrint("Bottom sheet TTS speak error: $e");
-      if (context.mounted) {
-        ToastMessageUtil.showToast('Failed to play audio', context);
-      }
-    }
-  }
-
-  initializeBottomSheetTts();
-
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
     builder: (context) {
-      return BottomSheetTranslateBody(word: word, onListenPressed: speakWord);
+      return BlocProvider.value(
+        value: serviceLocator<TranslationCubit>(),
+        child: BottomSheetTranslateBody(word: word),
+      );
     },
-  ).whenComplete(() {
-    bottomSheetTts.stop();
-  });
+  );
 }
