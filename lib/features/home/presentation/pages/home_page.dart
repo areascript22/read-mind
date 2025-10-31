@@ -4,6 +4,7 @@ import 'package:client_app/core/common/enums/user_roles.dart';
 import 'package:client_app/features/home/children/courses/presentation/pages/course_management.dart';
 import 'package:client_app/features/home/children/profile/presentation/pages/user_profile.dart';
 import 'package:client_app/features/home/children/users/presentation/pages/user_management.dart';
+import 'package:client_app/features/home/children/vocabulary/presentation/pages/vocabulary_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -40,7 +41,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     pages = [
       const CourseManagementPage(),
-      const Center(child: Text("Gramática")),
+      VocabularyPage(),
       if (isAdmin) const UserManagementPage(),
       BlocConsumer<AppUserCubit, AppUserState>(
         builder: (context, state) {

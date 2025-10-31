@@ -7,6 +7,8 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_mainidea_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_summary_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_repository.dart';
+import 'package:client_app/features/home/data/model/translation_model/translation_model.dart';
+import 'package:client_app/features/home/domain/entity/translation_entity.dart';
 import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fpdart/fpdart.dart';
@@ -126,6 +128,41 @@ class AiReadingRepositoryImpl implements AiReadingRepository {
         return left(Failure(e.message));
       }
       return left(Failure("No se pudo evaluar el resumen"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, TranslationEntity>> translateWord({
+    required String text,
+  }) async {
+    final url = Uri.parse("${AppEnvironment().baseUrl}/translate");
+
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesión de nuevo"));
+      }
+
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+        body: jsonEncode({'text': text}),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw ServerException(data['message'] ?? "Error al traducir $text");
+      }
+
+      final translationModel = TranslationModel.fromJson(data['translation']);
+      return Right(translationModel.toEntity());
+    } catch (e) {
+      debugPrint("Error translating $text: $e");
+      if (e is ServerException) {
+        return left(Failure(e.message));
+      }
+      return left(Failure("No se pudo traducir esta palabra $text"));
     }
   }
 }

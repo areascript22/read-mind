@@ -1,5 +1,7 @@
 import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/bs_translate_word.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
@@ -37,8 +39,11 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
       minFontSize + (fontSliderValue * (maxFontSize - minFontSize));
 
   // TTS params
-  double ttsRate = 1.0; // default mapping to speeds array (0.5..1.3)
+  double ttsRate = 0.5; // default mapping to speeds array (0.5..1.3)
   double ttsPitch = 1.0;
+
+  String? selectedWord;
+  Offset? tapPosition;
 
   @override
   void initState() {
@@ -53,6 +58,10 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   void dispose() {
     _teardownTts();
     super.dispose();
+  }
+
+  void _storeTapPosition(TapDownDetails details) {
+    tapPosition = details.globalPosition;
   }
 
   Future<void> initializeTts() async {
@@ -225,7 +234,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
               child: _buildRichText(),
             ),
           ),
-
           _buildPlayerControls(),
         ],
       ),
@@ -334,14 +342,21 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
       );
     }
 
+    final words = paragraph.split(' ');
     final List<TextSpan> spans = [];
-    for (int i = 0; i < paragraph.length; i++) {
-      final char = paragraph[i];
-      final isRead = i <= currentCharIndex - 1 && currentCharIndex > 0;
+
+    int currentIndex = 0;
+
+    for (final word in words) {
+      final wordStart = paragraph.indexOf(word, currentIndex);
+      final wordEnd = wordStart + word.length;
+      currentIndex = wordEnd;
+
+      final isRead = wordEnd <= currentCharIndex;
       final inCurrentSentence =
           (currentSentenceIndex >= 0 &&
-              i >= sentenceStartIndices[currentSentenceIndex] &&
-              i <
+              wordStart >= sentenceStartIndices[currentSentenceIndex] &&
+              wordStart <
                   (currentSentenceIndex + 1 < sentenceStartIndices.length
                       ? sentenceStartIndices[currentSentenceIndex + 1]
                       : paragraph.length));
@@ -355,18 +370,58 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
         color = Colors.black;
       }
 
-      spans.add(TextSpan(text: char, style: TextStyle(color: color)));
+      // Apply visual highlight if user tapped the word
+      final isSelected = word == selectedWord;
+
+      spans.add(
+        TextSpan(
+          text: '$word ',
+          style: TextStyle(
+            fontSize: fontSize,
+            color: isSelected ? Colors.blueAccent : color,
+            backgroundColor: isSelected ? Colors.blue.withOpacity(0.2) : null,
+          ),
+          recognizer:
+              TapGestureRecognizer()
+                ..onTapDown = _storeTapPosition
+                ..onTap = () {
+                  setState(() {
+                    selectedWord = word;
+                  });
+                  _showTranslateOption(context, word);
+                },
+        ),
+      );
     }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: RichText(
-        text: TextSpan(
-          style: TextStyle(fontSize: fontSize, height: 1.8),
-          children: spans,
-        ),
+        text: TextSpan(style: const TextStyle(height: 1.8), children: spans),
       ),
     );
+  }
+
+  void _showTranslateOption(BuildContext context, String word) async {
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final position = tapPosition ?? Offset.zero;
+
+    final selected = await showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        position.dx,
+        position.dy,
+        overlay.size.width - position.dx,
+        overlay.size.height - position.dy,
+      ),
+      items: [
+        const PopupMenuItem(value: 'translate', child: Text('Translate')),
+        const PopupMenuItem(value: 'save', child: Text('save')),
+      ],
+    );
+    if (selected == "translate") {
+      showTranslateBottomSheet(context, word);
+    }
   }
 
   Future<void> _openSettings() async {
