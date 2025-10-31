@@ -33,6 +33,9 @@ import 'package:client_app/features/home/children/profile/presentation/bloc/prof
 import 'package:client_app/features/home/children/users/data/repositores/user_manager_repository_impl.dart';
 import 'package:client_app/features/home/children/users/domain/repositories/user_manager_repository.dart';
 import 'package:client_app/features/home/children/users/presentation/bloc/user_manager_bloc.dart';
+import 'package:client_app/features/home/children/vocabulary/data/repository/vocabulary_repository_impl.dart';
+import 'package:client_app/features/home/children/vocabulary/domain/repository/vocabulary_repository.dart';
+import 'package:client_app/features/home/children/vocabulary/presentation/bloc/vocabulary_bloc/vocabulary_bloc.dart';
 import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:client_app/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:client_app/features/auth/data/repositories/auth_repository_impl.dart';
@@ -56,6 +59,7 @@ Future<void> initDependencies() async {
   _initUserManger();
   _initProfile();
   _initCourseActivities();
+  _initVocabulary();
 
   serviceLocator.registerLazySingleton(
     () => AppUserCubit(authLocalDataSource: serviceLocator()),
@@ -208,5 +212,15 @@ void _initCourseActivities() {
 
   serviceLocator.registerLazySingleton(
     () => TranslationCubit(aiReadingRepository: serviceLocator()),
+  );
+}
+
+void _initVocabulary() {
+  serviceLocator.registerFactory<VocabularyRepository>(
+    () => VocabularyRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => VocabularyBloc(vocabularyRepository: serviceLocator()),
   );
 }
