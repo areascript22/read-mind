@@ -20,4 +20,6 @@ class RouteNames {
   static const activityParaphrase = '/activityParaphrase';
   static const activityMainIdea = '/activityMainIdea';
   static const activitySummary = '/activitySummary';
+
+  static const studentTracking = '/studentTracking';
 }

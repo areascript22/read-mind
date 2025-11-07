@@ -1,10 +1,12 @@
 import 'package:client_app/core/common/entities/user_entity.dart';
+import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/students/students_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/pages/student_tracking.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/student_tracking_info_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../../../../../core/common/utils/toast_util.dart';
+import 'package:go_router/go_router.dart';
 
 class StudentsPage extends StatefulWidget {
   final CourseEntity courseEntity;
@@ -108,15 +110,27 @@ class _StudentsPageState extends State<StudentsPage> {
               itemCount: students.length,
               itemBuilder: (context, index) {
                 final student = students[index];
-                return Card(
-                  elevation: 1,
-                  margin: const EdgeInsets.symmetric(vertical: 6),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      child: Text(_getFirstWords(student.name)),
+                final studentTrackingInfo = StudentTrackingInfoEntity(
+                  user: student,
+                  course: widget.courseEntity,
+                );
+                return GestureDetector(
+                  onTap: () {
+                    context.push(
+                      RouteNames.studentTracking,
+                      extra: studentTrackingInfo,
+                    );
+                  },
+                  child: Card(
+                    elevation: 1,
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        child: Text(_getFirstWords(student.name)),
+                      ),
+                      title: Text(student.name),
+                      subtitle: Text(student.email),
                     ),
-                    title: Text(student.name),
-                    subtitle: Text(student.email),
                   ),
                 );
               },

@@ -1,3 +1,4 @@
+import 'package:client_app/core/common/entities/user_entity.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:client_app/features/auth/presentation/pages/auth_wrapper.dart';
@@ -16,7 +17,9 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/create_ai_reading_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/generate_paragraph.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/update_course_info_page.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/pages/student_tracking.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/student_tracking_info_entity.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/course_option_cubit/course_option_cubit.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/course_share_invitecode/share_invitecode_cubit.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc/courses_bloc.dart';
@@ -179,6 +182,14 @@ class AppRouter {
             },
           ),
         ],
+      ),
+
+      GoRoute(
+        path: RouteNames.studentTracking,
+        builder: (context, state) {
+          final student = state.extra as StudentTrackingInfoEntity;
+          return StudentTrackingPage(info: student);
+        },
       ),
     ],
   );
