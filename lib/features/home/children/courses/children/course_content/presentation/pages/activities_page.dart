@@ -34,7 +34,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
       );
     });
     user = context.read<AppUserCubit>().user;
-    courseOwner = user != null && user!.id == widget.course.id;
+    courseOwner = user != null && user!.id == widget.course.teacherId;
   }
 
   @override
@@ -121,7 +121,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
         final activity = activities[index];
         return GestureDetector(
           onTap: () {
-            context.push(RouteNames.activityAIReading, extra: activity);
+            //context.push(RouteNames.activityAIReading, extra: activity);
           },
           child: ActivityTile(activity: activity),
         );

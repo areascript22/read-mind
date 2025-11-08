@@ -1,11 +1,15 @@
 import 'package:client_app/core/common/entities/user_entity.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/domian/entity/progress_entity.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/pages/activity_attempt.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/widgets/score_chart.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/student_tracking_info_entity.dart';
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../../../../../../init_dependencies.dart';
+import '../bloc/progress_bloc/progress_bloc.dart';
 
 class StudentTrackingPage extends StatelessWidget {
   final StudentTrackingInfoEntity info;
@@ -13,23 +17,35 @@ class StudentTrackingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activityProgress = [
-      {'title': 'Reading 1', 'score': 80, 'completed': true},
-      {'title': 'Reading 2', 'score': 70, 'completed': true},
-      {'title': 'Reading 3', 'score': 90, 'completed': true},
-    ];
+    return BlocProvider.value(
+      value: serviceLocator<ProgressBloc>(),
+      child: _StudentTrackingContent(info: info),
+    );
+  }
+}
 
-    final completed =
-        activityProgress.where((a) => a['completed'] == true).length;
-    final avgScore =
-        activityProgress
-            .where((a) => (a['score'] as int) > 0)
-            .fold<double>(0, (prev, a) => prev + (a['score'] as int)) /
-        (completed == 0 ? 1 : completed);
+class _StudentTrackingContent extends StatefulWidget {
+  final StudentTrackingInfoEntity info;
+  const _StudentTrackingContent({required this.info});
 
-    //final progressPercent = completed / course['activitiesCount']!;
-    final progressPercent = completed / 1;
+  @override
+  State<_StudentTrackingContent> createState() =>
+      _StudentTrackingContentState();
+}
 
+class _StudentTrackingContentState extends State<_StudentTrackingContent> {
+  @override
+  void initState() {
+    super.initState();
+    print("INIT student tracking");
+
+    context.read<ProgressBloc>().add(
+      LoadProgressEvent(userId: widget.info.user.id),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
@@ -50,36 +66,138 @@ class StudentTrackingPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// HEADER
+            /// HEADER - Sin cambios
             _StudentHeader(
-              student: info.user,
-              course: info.course,
-              progress: progressPercent,
+              student: widget.info.user,
+              course: widget.info.course,
+              progress: 100,
             ),
 
             const SizedBox(height: 24),
 
-            /// SUMMARY CARDS
-            _SummaryCards(total: 2, completed: completed, avgScore: avgScore),
+            /// CONTENIDO PRINCIPAL CON BLOC CONSUMER
+            BlocConsumer<ProgressBloc, ProgressState>(
+              listener: (context, state) {
+                // Mostrar Toast si hay error
+                if (state is ProgressError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: Colors.red,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                // Estados de carga y error
+                if (state is ProgressLoading) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 32.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
 
-            const SizedBox(height: 32),
+                if (state is ProgressError) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 32.0),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 64,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Failed to load progress data',
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              context.read<ProgressBloc>().add(
+                                LoadProgressEvent(userId: widget.info.user.id),
+                              );
+                            },
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
 
-            const SizedBox(height: 16),
-            SizedBox(height: 370, child: ScoreChartWidget()),
+                // Estado cargado - construir contenido con datos reales
+                if (state is ProgressLoaded) {
+                  final trackingData = state.trackingData;
 
-            const SizedBox(height: 32),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _SummaryCards(
+                        total: trackingData.statistics.total,
+                        completed: trackingData.statistics.completed,
+                        avgScore: trackingData.statistics.averageScore,
+                      ),
 
-            /// ACTIVITY LIST
-            Text(
-              "Activity Details",
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
+                      const SizedBox(height: 32),
+
+                      SizedBox(height: 370, child: ScoreChartWidget()),
+
+                      const SizedBox(height: 32),
+
+                      Text(
+                        "Activity Details",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Lista de actividades
+                      ...trackingData.progresses.map(
+                        (progress) => _ActivityTile(activity: progress),
+                      ),
+                    ],
+                  );
+                }
+
+                // Estado inicial - mostrar placeholder
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _SummaryCards(total: 0, completed: 0, avgScore: 0),
+                    const SizedBox(height: 32),
+                    SizedBox(height: 370, child: ScoreChartWidget()),
+                    const SizedBox(height: 32),
+                    Text(
+                      "Activity Details",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 32.0),
+                        child: Text('Loading progress data...'),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
-            const SizedBox(height: 8),
-            ...activityProgress.map((a) => _ActivityTile(activity: a)).toList(),
           ],
         ),
       ),
@@ -87,7 +205,6 @@ class StudentTrackingPage extends StatelessWidget {
   }
 }
 
-/// HEADER WIDGET
 class _StudentHeader extends StatelessWidget {
   final UserEntity student;
   final CourseEntity course;
@@ -239,75 +356,15 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-/// CHART WIDGET
-class _ProgressChart extends StatelessWidget {
-  final List<Map<String, dynamic>> activityProgress;
-  const _ProgressChart({required this.activityProgress});
-
-  @override
-  Widget build(BuildContext context) {
-    final spots =
-        activityProgress.asMap().entries.map((e) {
-          final index = e.key.toDouble();
-          final score = (e.value['score'] as num).toDouble();
-          return FlSpot(index, score);
-        }).toList();
-
-    return LineChart(
-      LineChartData(
-        minY: 0,
-        maxY: 100,
-        gridData: FlGridData(show: false),
-        borderData: FlBorderData(show: false),
-        titlesData: FlTitlesData(
-          leftTitles: const AxisTitles(),
-          rightTitles: const AxisTitles(),
-          topTitles: const AxisTitles(),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 30,
-              getTitlesWidget: (value, meta) {
-                final idx = value.toInt();
-                if (idx >= 0 && idx < activityProgress.length) {
-                  return Text(
-                    'A${idx + 1}',
-                    style: GoogleFonts.poppins(fontSize: 12),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-          ),
-        ),
-        lineBarsData: [
-          LineChartBarData(
-            spots: spots,
-            color: Colors.green,
-            isCurved: true,
-            barWidth: 3,
-            belowBarData: BarAreaData(
-              show: true,
-              color: Colors.green.withOpacity(0.15),
-            ),
-            dotData: const FlDotData(show: true),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// ACTIVITY TILE
 class _ActivityTile extends StatelessWidget {
-  final Map<String, dynamic> activity;
+  final ProgressEntity activity;
   const _ActivityTile({required this.activity});
 
   @override
   Widget build(BuildContext context) {
-    final completed = activity['completed'] as bool;
+    final completed = activity.completed;
     final color = completed ? Colors.green : Colors.grey[400];
-    final score = activity['score'] as int;
+    final score = activity.totalScore;
 
     return GestureDetector(
       onTap: () {
@@ -325,7 +382,7 @@ class _ActivityTile extends StatelessWidget {
         ),
         child: ListTile(
           title: Text(
-            activity['title'],
+            activity.title,
             style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
           ),
           subtitle: Text(
