@@ -6,11 +6,13 @@ import 'package:client_app/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:client_app/features/auth/presentation/pages/splash_screen.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/bloc/ai_reading_bloc/ai_reading_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/ai_reading_activity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/main_idea_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/paraphrase_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/summary_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/paragraph_metadata.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/students/students_bloc.dart';
@@ -107,6 +109,9 @@ class AppRouter {
               BlocProvider.value(value: serviceLocator<CourseCubit>()),
               BlocProvider.value(value: serviceLocator<StudentsBloc>()),
               BlocProvider.value(value: serviceLocator<AiReadingBloc>()),
+              BlocProvider.value(
+                value: serviceLocator<AiReadingProgressCubit>(),
+              ),
             ],
             child: child,
           );
@@ -163,24 +168,24 @@ class AppRouter {
           GoRoute(
             path: RouteNames.activityParaphrase,
             builder: (context, state) {
-              final originalParagraph = state.extra as String;
-              return ParaphrasePage(originalParagraph: originalParagraph);
+              final originalParagraph = state.extra as AIReadingEntity;
+              return ParaphrasePage(aiReadingEntity: originalParagraph);
             },
           ),
 
           GoRoute(
             path: RouteNames.activitySummary,
             builder: (context, state) {
-              final originalParagraph = state.extra as String;
-              return SummaryPage(originalParagraph: originalParagraph);
+              final originalParagraph = state.extra as AIReadingEntity;
+              return SummaryPage(aiReadingEntity: originalParagraph);
             },
           ),
 
           GoRoute(
             path: RouteNames.activityMainIdea,
             builder: (context, state) {
-              final originalParagraph = state.extra as String;
-              return MainIdeaPage(originalParagraph: originalParagraph);
+              final originalParagraph = state.extra as AIReadingEntity;
+              return MainIdeaPage(aiReadingEntity: originalParagraph);
             },
           ),
         ],

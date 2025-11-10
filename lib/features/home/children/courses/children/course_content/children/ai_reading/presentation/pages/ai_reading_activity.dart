@@ -1,8 +1,11 @@
 import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/bs_translate_word.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
+import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/bs_settings.dart';
@@ -17,12 +20,10 @@ class AiReadingActivity extends StatefulWidget {
 }
 
 class _AiReadingActivityState extends State<AiReadingActivity> {
-  // Text / sentences
   String paragraph = "";
   List<String> sentences = [];
   List<int> sentenceStartIndices = [];
 
-  // TTS
   late final FlutterTts _flutterTts;
   bool isPlaying = false;
   bool isSeeking = false;
@@ -30,7 +31,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   int currentCharIndex = 0;
   int currentSentenceIndex = -1;
 
-  // Font size
   double minFontSize = 12;
   double maxFontSize = 30;
   double fontSliderValue = 0.5;
@@ -38,7 +38,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   double get fontSize =>
       minFontSize + (fontSliderValue * (maxFontSize - minFontSize));
 
-  // TTS params
   double ttsRate = 0.5; // default mapping to speeds array (0.5..1.3)
   double ttsPitch = 1.0;
 
@@ -52,6 +51,10 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     _flutterTts = FlutterTts();
     _prepareSentences();
     initializeTts();
+    context.read<AiReadingProgressCubit>().loadAiReadingProgress(
+      widget.activityModel.id,
+    );
+    print("asdfsdfsdfdfgxcvb");
   }
 
   @override
@@ -93,6 +96,10 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
         isPlaying = false;
         _tempCurrentCharIndex = -1;
         setState(() {});
+
+        context.read<AiReadingProgressCubit>().setAiReadingProgress(
+          widget.activityModel.id,
+        );
       });
 
       _flutterTts.setStartHandler(() {});
@@ -220,6 +227,23 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          BlocBuilder<AiReadingProgressCubit, AiReadingProgressState>(
+            builder: (context, state) {
+              if (state.isLoading) {
+                return LoaderIndicator(
+                  spinnerSize: 20,
+                  spinnerColor: Colors.white,
+                );
+              }
+              if (state
+                      .progressByActivity[widget.activityModel.id]
+                      ?.aiReading ??
+                  false) {
+                return Icon(Icons.check);
+              }
+              return SizedBox.shrink();
+            },
+          ),
           IconButton(
             onPressed: _openSettings,
             icon: const Icon(Icons.settings),
@@ -235,8 +259,38 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
             ),
           ),
           _buildPlayerControls(),
+          _buildNextButton(),
         ],
       ),
+    );
+  }
+
+  Widget _buildNextButton() {
+    return BlocConsumer<AiReadingProgressCubit, AiReadingProgressState>(
+      builder: (context, state) {
+        if (state.isLoading) {
+          return LoaderIndicator();
+        }
+        if (state.progressByActivity[widget.activityModel.id]?.aiReading ??
+            false) {
+          return ElevatedButton.icon(
+            onPressed: () {
+              context.push(
+                RouteNames.activityParaphrase,
+                extra: widget.activityModel.toAIReadingEntity(),
+              );
+            },
+            icon: const Icon(Icons.arrow_forward),
+            label: const Text('Continuar'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              minimumSize: const Size(double.infinity, 45),
+            ),
+          );
+        }
+        return SizedBox.shrink();
+      },
+      listener: (context, state) {},
     );
   }
 
@@ -274,20 +328,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
             ],
           ),
           const SizedBox(height: 12),
-          ElevatedButton.icon(
-            onPressed: () {
-              context.push(
-                RouteNames.activityParaphrase,
-                extra: widget.activityModel.content,
-              );
-            },
-            icon: const Icon(Icons.arrow_forward),
-            label: const Text('Continuar'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              minimumSize: const Size(double.infinity, 45),
-            ),
-          ),
         ],
       ),
     );

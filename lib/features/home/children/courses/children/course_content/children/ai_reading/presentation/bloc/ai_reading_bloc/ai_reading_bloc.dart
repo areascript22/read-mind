@@ -16,6 +16,7 @@ class AiReadingBloc extends Bloc<AiReadingEvent, AiReadingState> {
     on<EvaluateParaphraseEvent>(_onEvaluateParaphrase);
     on<EvaluateMainIdeaEvent>(_onEvaluateMainIdea);
     on<EvaluateSummaryEvent>(_onEvaluateSummary);
+    on<AiReadingCompletionEvent>(_onAiReadingCompletion);
   }
 
   void _onEvaluateParaphrase(
@@ -26,6 +27,7 @@ class AiReadingBloc extends Bloc<AiReadingEvent, AiReadingState> {
     final response = await aiReadingRepository.evaluateParaphrase(
       paragraph: event.paragraph,
       paraphrase: event.paraphrase,
+      activityId: event.activityId,
     );
     response.fold(
       (l) => emit(AiReadingError(l.message, AiActionType.paraphrase)),
@@ -41,6 +43,7 @@ class AiReadingBloc extends Bloc<AiReadingEvent, AiReadingState> {
     final response = await aiReadingRepository.evaluateMainIdea(
       paragraph: event.paragraph,
       mainIdea: event.mainIdea,
+      activityId: event.activityId,
     );
     response.fold(
       (l) => emit(AiReadingError(l.message, AiActionType.mainIdea)),
@@ -56,10 +59,16 @@ class AiReadingBloc extends Bloc<AiReadingEvent, AiReadingState> {
     final response = await aiReadingRepository.evaluateSummary(
       paragraph: event.paragraph,
       summary: event.summary,
+      activityId: event.activityId,
     );
     response.fold(
       (l) => emit(AiReadingError(l.message, AiActionType.summary)),
       (r) => emit(SummarySuccess(r)),
     );
   }
+
+  void _onAiReadingCompletion(
+    AiReadingCompletionEvent event,
+    Emitter<AiReadingState> emit,
+  ) {}
 }

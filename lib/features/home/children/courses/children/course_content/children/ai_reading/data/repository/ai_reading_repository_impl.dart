@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:client_app/core/error/failure.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/datasource/local_datasource/local_reading_progress_datasource .dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/models/feedback/feedback_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/models/feedback_summary/feedback_summary.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/models/feedbak_main_idea/feedback_mainidea.dart';
@@ -19,11 +20,16 @@ import '../../../../../../../../../../core/error/server_exception.dart';
 
 class AiReadingRepositoryImpl implements AiReadingRepository {
   final AuthLocalDataSource authLocalDataSource;
-  const AiReadingRepositoryImpl({required this.authLocalDataSource});
+  final LocalReadingProgressDataSource aiReadingProgress;
+  const AiReadingRepositoryImpl({
+    required this.authLocalDataSource,
+    required this.aiReadingProgress,
+  });
   @override
   Future<Either<Failure, FeedbackEntity>> evaluateParaphrase({
     required String paragraph,
     required String paraphrase,
+    required int activityId,
   }) async {
     final url = Uri.parse("${AppEnvironment().baseUrl}/ai/evaluate/paraphrase");
 
@@ -49,6 +55,7 @@ class AiReadingRepositoryImpl implements AiReadingRepository {
       }
 
       final feedbackModel = FeedbackModel.fromJson(data['result']);
+      await aiReadingProgress.setParaphraseCompleted(true, activityId);
       return Right(feedbackModel.toEntity());
     } catch (e) {
       debugPrint("Error evaluating user paraphrase: $e");
@@ -63,6 +70,7 @@ class AiReadingRepositoryImpl implements AiReadingRepository {
   Future<Either<Failure, FeedbackMainIdeaEntity>> evaluateMainIdea({
     required String paragraph,
     required String mainIdea,
+    required int activityId,
   }) async {
     final url = Uri.parse("${AppEnvironment().baseUrl}/ai/evaluate/mainIdea");
 
@@ -85,6 +93,7 @@ class AiReadingRepositoryImpl implements AiReadingRepository {
       }
 
       final feedbackModel = FeedbackMainIdea.fromJson(data['result']);
+      await aiReadingProgress.setMainIdeaCompleted(true, activityId);
       return Right(feedbackModel.toEntity());
     } catch (e) {
       debugPrint("Error evaluating user main idea: $e");
@@ -99,6 +108,7 @@ class AiReadingRepositoryImpl implements AiReadingRepository {
   Future<Either<Failure, FeedbackSummaryEntity>> evaluateSummary({
     required String paragraph,
     required String summary,
+    required int activityId,
   }) async {
     final url = Uri.parse("${AppEnvironment().baseUrl}/ai/evaluate/summary");
 
@@ -121,6 +131,7 @@ class AiReadingRepositoryImpl implements AiReadingRepository {
       }
 
       final feedbackModel = FeedbackSummary.fromJson(data['result']);
+      await aiReadingProgress.setSummaryCompleted(true, activityId);
       return Right(feedbackModel.toEntity());
     } catch (e) {
       debugPrint("Error evaluating user summary: $e");

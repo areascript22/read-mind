@@ -1,17 +1,17 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback_summary.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_tip.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_summary_tip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../../../../../../../../../shared/widgets/loader_indicator.dart';
+import '../../../../domain/entities/ai_reading_entity.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
+import '../cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
 
 class SummaryPage extends StatefulWidget {
-  final String originalParagraph;
+  final AIReadingEntity aiReadingEntity;
 
-  const SummaryPage({super.key, required this.originalParagraph});
+  const SummaryPage({super.key, required this.aiReadingEntity});
 
   @override
   State<SummaryPage> createState() => _SummaryPageState();
@@ -21,6 +21,14 @@ class _SummaryPageState extends State<SummaryPage> {
   final TextEditingController _controller = TextEditingController();
   bool _isExpanded = false;
 
+  @override
+  void initState() {
+    super.initState();
+    context.read<AiReadingProgressCubit>().loadSummaryProgress(
+      widget.aiReadingEntity.id,
+    );
+  }
+
   void _submitSummary(BuildContext context) {
     if (_controller.text.trim().isEmpty) {
       ToastMessageUtil.showToast("Escribe algo para continuar", context);
@@ -28,8 +36,9 @@ class _SummaryPageState extends State<SummaryPage> {
     }
     context.read<AiReadingBloc>().add(
       EvaluateSummaryEvent(
-        paragraph: widget.originalParagraph,
+        paragraph: widget.aiReadingEntity.content,
         summary: _controller.text,
+        activityId: widget.aiReadingEntity.id,
       ),
     );
   }
@@ -46,6 +55,9 @@ class _SummaryPageState extends State<SummaryPage> {
         }
         if (state is SummarySuccess) {
           showFeedbackSummaryDialog(context, state.feedbackEntity);
+          context.read<AiReadingProgressCubit>().loadSummaryProgress(
+            widget.aiReadingEntity.id,
+          );
         }
       },
       builder: (context, state) {
@@ -61,6 +73,28 @@ class _SummaryPageState extends State<SummaryPage> {
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.arrow_back),
             ),
+            actions: [
+              BlocBuilder<AiReadingProgressCubit, AiReadingProgressState>(
+                builder: (context, state) {
+                  if (state.isLoading) {
+                    return LoaderIndicator(
+                      spinnerSize: 20,
+                      spinnerColor: Colors.white,
+                    );
+                  }
+                  if (state
+                          .progressByActivity[widget.aiReadingEntity.id]
+                          ?.summary ??
+                      false) {
+                    return Padding(
+                      padding: EdgeInsets.only(right: 20),
+                      child: Icon(Icons.check),
+                    );
+                  }
+                  return SizedBox.shrink();
+                },
+              ),
+            ],
           ),
           body: Stack(
             children: [
@@ -127,7 +161,7 @@ class _SummaryPageState extends State<SummaryPage> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
-                                    widget.originalParagraph,
+                                    widget.aiReadingEntity.content,
                                     style: const TextStyle(
                                       fontSize: 15,
                                       height: 1.5,
