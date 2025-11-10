@@ -1,5 +1,6 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback_summary.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_summary_attempts.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_summary_tip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import '../../../../../../../../../../shared/widgets/loader_indicator.dart';
 import '../../../../domain/entities/ai_reading_entity.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import '../cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
+import '../cubit/attempts_cubit/attempts_cubit.dart';
 
 class SummaryPage extends StatefulWidget {
   final AIReadingEntity aiReadingEntity;
@@ -58,6 +60,13 @@ class _SummaryPageState extends State<SummaryPage> {
           context.read<AiReadingProgressCubit>().loadSummaryProgress(
             widget.aiReadingEntity.id,
           );
+          context.read<AttemptsCubit>().createSummaryAttempt(
+            aiReadingId: widget.aiReadingEntity.aiReadingId,
+            accuracyScore: state.feedbackEntity.accuracyScore,
+            coverageScore: state.feedbackEntity.coverageScore,
+            clarityScore: state.feedbackEntity.clarityScore,
+            feedback: state.feedbackEntity.feedback,
+          );
         }
       },
       builder: (context, state) {
@@ -74,6 +83,34 @@ class _SummaryPageState extends State<SummaryPage> {
               icon: const Icon(Icons.arrow_back),
             ),
             actions: [
+              BlocConsumer<AttemptsCubit, AttemptsState>(
+                builder: (context, state) {
+                  if (state is AttemptsLoading &&
+                      state.attemptOperation == AttemptOperation.summary) {
+                    return LoaderIndicator(spinnerSize: 20);
+                  }
+                  if (state is AttemptSummaryCreated) {
+                    return IconButton(
+                      onPressed: () {
+                        showSummaryAttemptsDialog(context);
+                      },
+                      icon: Icon(Icons.book),
+                    );
+                  }
+                  return IconButton(
+                    onPressed: () {
+                      showSummaryAttemptsDialog(context);
+                    },
+                    icon: Icon(Icons.book),
+                  );
+                },
+                listener: (context, state) {
+                  if (state is AttemptsError &&
+                      state.attemptOperation == AttemptOperation.summary) {
+                    ToastMessageUtil.showToast(state.message, context);
+                  }
+                },
+              ),
               BlocBuilder<AiReadingProgressCubit, AiReadingProgressState>(
                 builder: (context, state) {
                   if (state.isLoading) {

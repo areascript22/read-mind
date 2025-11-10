@@ -7,6 +7,7 @@ import 'package:client_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:client_app/features/auth/presentation/pages/splash_screen.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/ai_reading_activity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/main_idea_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/paraphrase_page.dart';
@@ -112,6 +113,7 @@ class AppRouter {
               BlocProvider.value(
                 value: serviceLocator<AiReadingProgressCubit>(),
               ),
+              BlocProvider.value(value: serviceLocator<AttemptsCubit>()),
             ],
             child: child,
           );

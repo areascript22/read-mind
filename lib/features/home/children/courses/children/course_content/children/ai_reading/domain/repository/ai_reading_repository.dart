@@ -1,5 +1,4 @@
 import 'package:client_app/core/error/failure.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/activities_completion_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_mainidea_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_summary_entity.dart';

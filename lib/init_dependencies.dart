@@ -2,10 +2,13 @@ import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/datasource/local_datasource/local_reading_progress_datasource%20.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_local_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/attempts_repository_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_local_repository.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/attempts_repository.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/translation_cubit/translation_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/datasources/coursecontent_remote_datasource.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/repositories/activity_progress_repository_impl.dart';
@@ -71,6 +74,7 @@ Future<void> initDependencies() async {
   _initCourseActivities();
   _initVocabulary();
   _initActivityProgress();
+  _initActivityAttempts();
 
   serviceLocator.registerLazySingleton(
     () => AppUserCubit(authLocalDataSource: serviceLocator()),
@@ -268,5 +272,15 @@ void _initActivityProgress() {
 
   serviceLocator.registerLazySingleton(
     () => AiReadingProgressCubit(aiReadingLocalRepository: serviceLocator()),
+  );
+}
+
+void _initActivityAttempts() {
+  serviceLocator.registerFactory<AttemptsRepository>(
+    () => AttemptsRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => AttemptsCubit(attemptsRepository: serviceLocator()),
   );
 }

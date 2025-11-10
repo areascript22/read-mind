@@ -6,7 +6,7 @@ import 'package:client_app/features/home/children/courses/children/student_track
 import 'package:client_app/features/home/children/courses/children/student_tracking/domian/repository/progress_repository.dart';
 import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:fpdart/src/either.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 import '../../../../../../../../core/constants/app_environment.dart';
 import '../../../../../../../../core/error/server_exception.dart';

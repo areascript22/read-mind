@@ -1,6 +1,7 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_attempts.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_tip.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../domain/entities/ai_reading_entity.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import '../cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
+import '../cubit/attempts_cubit/attempts_cubit.dart';
 
 class ParaphrasePage extends StatefulWidget {
   final AIReadingEntity aiReadingEntity;
@@ -61,6 +63,13 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
           context.read<AiReadingProgressCubit>().loadParaphraseProgress(
             widget.aiReadingEntity.id,
           );
+          context.read<AttemptsCubit>().createParaphraseAttempt(
+            aiReadingId: widget.aiReadingEntity.aiReadingId,
+            similarityScore: state.feedbackEntity.similarityScore,
+            fluencyScore: state.feedbackEntity.fluencyScore,
+            originalityScore: state.feedbackEntity.originalityScore,
+            feedback: state.feedbackEntity.feedback,
+          );
         }
       },
       builder: (context, state) {
@@ -77,6 +86,37 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
               icon: const Icon(Icons.arrow_back),
             ),
             actions: [
+              BlocConsumer<AttemptsCubit, AttemptsState>(
+                builder: (context, state) {
+                  if (state is AttemptsLoading &&
+                      state.attemptOperation == AttemptOperation.paraphrase) {
+                    return LoaderIndicator(
+                      spinnerSize: 20,
+                      spinnerColor: Colors.red,
+                    );
+                  }
+                  if (state is AttemptParaphraseCreated) {
+                    return IconButton(
+                      onPressed: () {
+                        showParaphraseAttemptsDialog(context);
+                      },
+                      icon: Icon(Icons.book),
+                    );
+                  }
+                  return IconButton(
+                    onPressed: () {
+                      showParaphraseAttemptsDialog(context);
+                    },
+                    icon: Icon(Icons.book),
+                  );
+                },
+                listener: (context, state) {
+                  if (state is AttemptsError &&
+                      state.attemptOperation == AttemptOperation.paraphrase) {
+                    ToastMessageUtil.showToast(state.message, context);
+                  }
+                },
+              ),
               BlocBuilder<AiReadingProgressCubit, AiReadingProgressState>(
                 builder: (context, state) {
                   if (state.isLoading) {

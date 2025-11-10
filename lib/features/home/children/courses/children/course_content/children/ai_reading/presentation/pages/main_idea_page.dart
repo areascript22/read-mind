@@ -1,6 +1,8 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback_main_idea.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_main_idea_attempts.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_main_idea_tip.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +62,13 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
           context.read<AiReadingProgressCubit>().loadMainIdeaProgress(
             widget.aiReadingEntity.id,
           );
+          context.read<AttemptsCubit>().createMainIdeaAttempt(
+            aiReadingId: widget.aiReadingEntity.aiReadingId,
+            accuracyScore: state.feedbackEntity.accuracyScore,
+            clarityScore: state.feedbackEntity.clarityScore,
+            concisenessScore: state.feedbackEntity.concisenessScore,
+            feedback: state.feedbackEntity.feedback,
+          );
         }
       },
       builder: (context, state) {
@@ -76,6 +85,34 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
               icon: const Icon(Icons.arrow_back),
             ),
             actions: [
+              BlocConsumer<AttemptsCubit, AttemptsState>(
+                builder: (context, state) {
+                  if (state is AttemptsLoading &&
+                      state.attemptOperation == AttemptOperation.mainIdea) {
+                    return LoaderIndicator(spinnerSize: 20);
+                  }
+                  if (state is AttemptMainIdeaCreated) {
+                    return IconButton(
+                      onPressed: () {
+                        showMainIdeaAttemptsDialog(context);
+                      },
+                      icon: Icon(Icons.book),
+                    );
+                  }
+                  return IconButton(
+                    onPressed: () {
+                      showMainIdeaAttemptsDialog(context);
+                    },
+                    icon: Icon(Icons.book),
+                  );
+                },
+                listener: (context, state) {
+                  if (state is AttemptsError &&
+                      state.attemptOperation == AttemptOperation.mainIdea) {
+                    ToastMessageUtil.showToast(state.message, context);
+                  }
+                },
+              ),
               BlocBuilder<AiReadingProgressCubit, AiReadingProgressState>(
                 builder: (context, state) {
                   if (state.isLoading) {

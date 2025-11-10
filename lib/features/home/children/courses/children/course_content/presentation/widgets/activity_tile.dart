@@ -24,6 +24,7 @@ class ActivityTile extends StatelessWidget {
         title,
         description,
         dueDate,
+        aiReadingId,
         content,
         length,
         complexity,

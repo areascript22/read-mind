@@ -5,6 +5,7 @@ class AIReadingEntity extends Equatable {
   final String title;
   final String description;
   final DateTime dueDate;
+  final int aiReadingId;
   final String content;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -17,6 +18,7 @@ class AIReadingEntity extends Equatable {
     required this.title,
     required this.description,
     required this.dueDate,
+    required this.aiReadingId,
     required this.content,
     required this.createdAt,
     required this.updatedAt,
@@ -31,6 +33,7 @@ class AIReadingEntity extends Equatable {
     title,
     description,
     dueDate,
+    aiReadingId,
     content,
     createdAt,
     updatedAt,
