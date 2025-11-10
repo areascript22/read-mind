@@ -2,6 +2,7 @@ import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/bs_translate_word.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +100,12 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
 
         context.read<AiReadingProgressCubit>().setAiReadingProgress(
           widget.activityModel.id,
+        );
+        context.read<ActivityProgressBloc>().add(
+          UpdateProgressEvent(
+            activityId: widget.activityModel.id,
+            dataToUpdate: {"readingCompleted": true},
+          ),
         );
       });
 

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../domain/entities/ai_reading_entity.dart';
+import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import '../cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
 import '../cubit/attempts_cubit/attempts_cubit.dart';
@@ -63,6 +64,14 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
           context.read<AiReadingProgressCubit>().loadParaphraseProgress(
             widget.aiReadingEntity.id,
           );
+
+          context.read<ActivityProgressBloc>().add(
+            UpdateProgressEvent(
+              activityId: widget.aiReadingEntity.id,
+              dataToUpdate: {"paraphraseCompleted": true},
+            ),
+          );
+
           context.read<AttemptsCubit>().createParaphraseAttempt(
             aiReadingId: widget.aiReadingEntity.aiReadingId,
             similarityScore: state.feedbackEntity.similarityScore,

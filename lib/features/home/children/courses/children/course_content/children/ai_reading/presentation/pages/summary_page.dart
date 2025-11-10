@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../../../../../shared/widgets/loader_indicator.dart';
 import '../../../../domain/entities/ai_reading_entity.dart';
+import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import '../cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
 import '../cubit/attempts_cubit/attempts_cubit.dart';
@@ -60,6 +61,14 @@ class _SummaryPageState extends State<SummaryPage> {
           context.read<AiReadingProgressCubit>().loadSummaryProgress(
             widget.aiReadingEntity.id,
           );
+
+          context.read<ActivityProgressBloc>().add(
+            UpdateProgressEvent(
+              activityId: widget.aiReadingEntity.id,
+              dataToUpdate: {"completed": true, "summaryCompleted": true},
+            ),
+          );
+
           context.read<AttemptsCubit>().createSummaryAttempt(
             aiReadingId: widget.aiReadingEntity.aiReadingId,
             accuracyScore: state.feedbackEntity.accuracyScore,

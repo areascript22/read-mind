@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../../../../../../../shared/widgets/loader_indicator.dart';
+import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import '../cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
 
@@ -62,6 +63,14 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
           context.read<AiReadingProgressCubit>().loadMainIdeaProgress(
             widget.aiReadingEntity.id,
           );
+
+          context.read<ActivityProgressBloc>().add(
+            UpdateProgressEvent(
+              activityId: widget.aiReadingEntity.id,
+              dataToUpdate: {"mainIdeaCompleted": true},
+            ),
+          );
+
           context.read<AttemptsCubit>().createMainIdeaAttempt(
             aiReadingId: widget.aiReadingEntity.aiReadingId,
             accuracyScore: state.feedbackEntity.accuracyScore,
