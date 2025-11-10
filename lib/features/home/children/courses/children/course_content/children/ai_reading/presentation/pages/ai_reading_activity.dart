@@ -52,10 +52,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     _flutterTts = FlutterTts();
     _prepareSentences();
     initializeTts();
-    context.read<AiReadingProgressCubit>().loadAiReadingProgress(
-      widget.activityModel.id,
-    );
-    print("asdfsdfsdfdfgxcvb");
   }
 
   @override
@@ -98,9 +94,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
         _tempCurrentCharIndex = -1;
         setState(() {});
 
-        context.read<AiReadingProgressCubit>().setAiReadingProgress(
-          widget.activityModel.id,
-        );
         context.read<ActivityProgressBloc>().add(
           UpdateProgressEvent(
             activityId: widget.activityModel.id,
@@ -234,20 +227,24 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          BlocBuilder<AiReadingProgressCubit, AiReadingProgressState>(
+          BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
             builder: (context, state) {
-              if (state.isLoading) {
+              if (state is ProgressLoading) {
                 return LoaderIndicator(
                   spinnerSize: 20,
                   spinnerColor: Colors.white,
                 );
               }
-              if (state
-                      .progressByActivity[widget.activityModel.id]
-                      ?.aiReading ??
-                  false) {
+              if (state is ProgressCreated &&
+                  state.createdProgress.subactivitiesCompleted.reading) {
                 return Icon(Icons.check);
               }
+
+              if (state is ProgressUpdated &&
+                  state.updatedProgress.subactivitiesCompleted.reading) {
+                return Icon(Icons.check);
+              }
+
               return SizedBox.shrink();
             },
           ),
@@ -273,31 +270,41 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   }
 
   Widget _buildNextButton() {
-    return BlocConsumer<AiReadingProgressCubit, AiReadingProgressState>(
+    return BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
       builder: (context, state) {
-        if (state.isLoading) {
+        if (state is ProgressLoading) {
           return LoaderIndicator();
         }
-        if (state.progressByActivity[widget.activityModel.id]?.aiReading ??
-            false) {
-          return ElevatedButton.icon(
-            onPressed: () {
-              context.push(
-                RouteNames.activityParaphrase,
-                extra: widget.activityModel.toAIReadingEntity(),
-              );
-            },
-            icon: const Icon(Icons.arrow_forward),
-            label: const Text('Continuar'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              minimumSize: const Size(double.infinity, 45),
-            ),
-          );
+        if (state is ProgressCreated &&
+            state.createdProgress.subactivitiesCompleted.reading) {
+          return _buildButton(context);
         }
+
+        if (state is ProgressUpdated &&
+            state.updatedProgress.subactivitiesCompleted.reading) {
+          return _buildButton(context);
+        }
+
         return SizedBox.shrink();
       },
       listener: (context, state) {},
+    );
+  }
+
+  ElevatedButton _buildButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () {
+        context.push(
+          RouteNames.activityParaphrase,
+          extra: widget.activityModel.toAIReadingEntity(),
+        );
+      },
+      icon: const Icon(Icons.arrow_forward),
+      label: const Text('Continuar'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green,
+        minimumSize: const Size(double.infinity, 45),
+      ),
     );
   }
 

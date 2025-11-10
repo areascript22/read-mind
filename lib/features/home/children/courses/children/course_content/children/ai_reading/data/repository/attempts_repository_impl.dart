@@ -164,9 +164,12 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
   }
 
   @override
-  Future<Either<Failure, List<MainIdeaAttemptEntity>>>
-  getAllMainIdeaAttempts() async {
-    final url = Uri.parse("${AppEnvironment().baseUrl}/attempts/mainIdea");
+  Future<Either<Failure, List<MainIdeaAttemptEntity>>> getAllMainIdeaAttempts({
+    required int aiReadingId,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/attempts/mainIdea/$aiReadingId",
+    );
 
     try {
       final token = await authLocalDataSource.getJwt();
@@ -202,8 +205,10 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
 
   @override
   Future<Either<Failure, List<ParaphraseAttemptEntity>>>
-  getAllParaphraseAttempts() async {
-    final url = Uri.parse("${AppEnvironment().baseUrl}/attempts/paraphrase");
+  getAllParaphraseAttempts({required int aiReadingId}) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/attempts/paraphrase/$aiReadingId",
+    );
 
     try {
       final token = await authLocalDataSource.getJwt();
@@ -239,9 +244,12 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
   }
 
   @override
-  Future<Either<Failure, List<SummaryAttemptEntity>>>
-  getAllSummaryAttempts() async {
-    final url = Uri.parse("${AppEnvironment().baseUrl}/attempts/summary");
+  Future<Either<Failure, List<SummaryAttemptEntity>>> getAllSummaryAttempts({
+    required int aiReadingId,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/attempts/summary/$aiReadingId",
+    );
 
     try {
       final token = await authLocalDataSource.getJwt();

@@ -110,9 +110,7 @@ class AppRouter {
               BlocProvider.value(value: serviceLocator<CourseCubit>()),
               BlocProvider.value(value: serviceLocator<StudentsBloc>()),
               BlocProvider.value(value: serviceLocator<AiReadingBloc>()),
-              BlocProvider.value(
-                value: serviceLocator<AiReadingProgressCubit>(),
-              ),
+
               BlocProvider.value(value: serviceLocator<AttemptsCubit>()),
             ],
             child: child,

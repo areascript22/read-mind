@@ -266,12 +266,8 @@ void _initActivityProgress() {
     () => ProgressBloc(progressRepository: serviceLocator()),
   );
 
-  serviceLocator.registerFactory(
-    () => ActivityProgressBloc(activityProgressRepository: serviceLocator()),
-  );
-
   serviceLocator.registerLazySingleton(
-    () => AiReadingProgressCubit(aiReadingLocalRepository: serviceLocator()),
+    () => ActivityProgressBloc(activityProgressRepository: serviceLocator()),
   );
 }
 

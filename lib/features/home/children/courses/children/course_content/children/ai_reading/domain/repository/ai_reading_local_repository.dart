@@ -10,8 +10,4 @@ abstract interface class AiReadingLocalRepository {
     required int activityId,
   });
   Future<Either<Failure, bool>> isAiSummaryCompleted({required int activityId});
-
-  Future<Either<Failure, bool>> setAiReadingCompletion({
-    required int activityId,
-  });
 }

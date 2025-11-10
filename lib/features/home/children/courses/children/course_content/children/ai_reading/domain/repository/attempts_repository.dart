@@ -30,7 +30,11 @@ abstract interface class AttemptsRepository {
   });
 
   Future<Either<Failure, List<ParaphraseAttemptEntity>>>
-  getAllParaphraseAttempts();
-  Future<Either<Failure, List<MainIdeaAttemptEntity>>> getAllMainIdeaAttempts();
-  Future<Either<Failure, List<SummaryAttemptEntity>>> getAllSummaryAttempts();
+  getAllParaphraseAttempts({required int aiReadingId});
+  Future<Either<Failure, List<MainIdeaAttemptEntity>>> getAllMainIdeaAttempts({
+    required int aiReadingId,
+  });
+  Future<Either<Failure, List<SummaryAttemptEntity>>> getAllSummaryAttempts({
+    required int aiReadingId,
+  });
 }

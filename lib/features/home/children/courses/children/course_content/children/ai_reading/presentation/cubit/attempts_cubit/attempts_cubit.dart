@@ -33,7 +33,7 @@ class AttemptsCubit extends Cubit<AttemptsState> {
           message: l.message,
         ),
       ),
-      (r) => AttemptParaphraseCreated(paraphraseAttemptEntity: r),
+      (r) => emit(AttemptParaphraseCreated(paraphraseAttemptEntity: r)),
     );
   }
 
@@ -59,7 +59,7 @@ class AttemptsCubit extends Cubit<AttemptsState> {
           message: l.message,
         ),
       ),
-      (r) => AttemptMainIdeaCreated(mainIdeaAttemptEntity: r),
+      (r) => emit(AttemptMainIdeaCreated(mainIdeaAttemptEntity: r)),
     );
   }
 
@@ -85,13 +85,15 @@ class AttemptsCubit extends Cubit<AttemptsState> {
           message: l.message,
         ),
       ),
-      (r) => AttemptSummaryCreated(summaryAttemptEntity: r),
+      (r) => emit(AttemptSummaryCreated(summaryAttemptEntity: r)),
     );
   }
 
-  void getAllParaphraseAttempts() async {
+  void getAllParaphraseAttempts({required int aiReadingId}) async {
     emit(AttemptsLoading(attemptOperation: AttemptOperation.paraphraseAll));
-    final response = await attemptsRepository.getAllParaphraseAttempts();
+    final response = await attemptsRepository.getAllParaphraseAttempts(
+      aiReadingId: aiReadingId,
+    );
     response.fold(
       (l) => emit(
         AttemptsError(
@@ -103,9 +105,11 @@ class AttemptsCubit extends Cubit<AttemptsState> {
     );
   }
 
-  void getAllMainIdeaAttempts() async {
+  void getAllMainIdeaAttempts(int aiReadingId) async {
     emit(AttemptsLoading(attemptOperation: AttemptOperation.mainIdeaAll));
-    final response = await attemptsRepository.getAllMainIdeaAttempts();
+    final response = await attemptsRepository.getAllMainIdeaAttempts(
+      aiReadingId: aiReadingId,
+    );
     response.fold(
       (l) => emit(
         AttemptsError(
@@ -117,9 +121,11 @@ class AttemptsCubit extends Cubit<AttemptsState> {
     );
   }
 
-  void getAllSummaryAttempts() async {
+  void getAllSummaryAttempts(int aiReadingId) async {
     emit(AttemptsLoading(attemptOperation: AttemptOperation.summaryAll));
-    final response = await attemptsRepository.getAllSummaryAttempts();
+    final response = await attemptsRepository.getAllSummaryAttempts(
+      aiReadingId: aiReadingId,
+    );
     response.fold(
       (l) => emit(
         AttemptsError(

@@ -11,7 +11,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../../../../../../../shared/widgets/loader_indicator.dart';
 import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
-import '../cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
 
 class MainIdeaPage extends StatefulWidget {
   final AIReadingEntity aiReadingEntity;
@@ -29,9 +28,6 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
   @override
   void initState() {
     super.initState();
-    context.read<AiReadingProgressCubit>().loadMainIdeaProgress(
-      widget.aiReadingEntity.id,
-    );
   }
 
   void _submitMainIdea(BuildContext context) {
@@ -60,9 +56,6 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
         }
         if (state is MainIdeaSuccess) {
           showFeedbackMainIdeaDialog(context, state.feedbackEntity);
-          context.read<AiReadingProgressCubit>().loadMainIdeaProgress(
-            widget.aiReadingEntity.id,
-          );
 
           context.read<ActivityProgressBloc>().add(
             UpdateProgressEvent(
@@ -103,14 +96,20 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                   if (state is AttemptMainIdeaCreated) {
                     return IconButton(
                       onPressed: () {
-                        showMainIdeaAttemptsDialog(context);
+                        showMainIdeaAttemptsDialog(
+                          context,
+                          widget.aiReadingEntity,
+                        );
                       },
                       icon: Icon(Icons.book),
                     );
                   }
                   return IconButton(
                     onPressed: () {
-                      showMainIdeaAttemptsDialog(context);
+                      showMainIdeaAttemptsDialog(
+                        context,
+                        widget.aiReadingEntity,
+                      );
                     },
                     icon: Icon(Icons.book),
                   );
@@ -122,18 +121,24 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                   }
                 },
               ),
-              BlocBuilder<AiReadingProgressCubit, AiReadingProgressState>(
+              BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
                 builder: (context, state) {
-                  if (state.isLoading) {
+                  if (state is ProgressLoading) {
                     return LoaderIndicator(
                       spinnerSize: 20,
                       spinnerColor: Colors.white,
                     );
                   }
-                  if (state
-                          .progressByActivity[widget.aiReadingEntity.id]
-                          ?.mainIdea ??
-                      false) {
+                  if (state is ProgressCreated &&
+                      state.createdProgress.subactivitiesCompleted.mainIdea) {
+                    return Padding(
+                      padding: EdgeInsets.only(right: 20),
+                      child: Icon(Icons.check),
+                    );
+                  }
+
+                  if (state is ProgressUpdated &&
+                      state.updatedProgress.subactivitiesCompleted.mainIdea) {
                     return Padding(
                       padding: EdgeInsets.only(right: 20),
                       child: Icon(Icons.check),
@@ -268,31 +273,36 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
   }
 
   Widget _buildNextButton() {
-    return BlocConsumer<AiReadingProgressCubit, AiReadingProgressState>(
+    return BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
       builder: (context, state) {
-        if (state.isLoading) {
+        if (state is ProgressLoading) {
           return LoaderIndicator();
         }
-        if (state.progressByActivity[widget.aiReadingEntity.id]?.mainIdea ??
-            false) {
-          return ElevatedButton.icon(
-            onPressed: () {
-              context.push(
-                RouteNames.activitySummary,
-                extra: widget.aiReadingEntity,
-              );
-            },
-            icon: const Icon(Icons.arrow_forward),
-            label: const Text('Siguiente actividad'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              minimumSize: const Size(double.infinity, 45),
-            ),
-          );
+        if (state is ProgressCreated &&
+            state.createdProgress.subactivitiesCompleted.mainIdea) {
+          return _buildButton(context);
+        }
+        if (state is ProgressUpdated &&
+            state.updatedProgress.subactivitiesCompleted.mainIdea) {
+          return _buildButton(context);
         }
         return SizedBox.shrink();
       },
       listener: (context, state) {},
+    );
+  }
+
+  ElevatedButton _buildButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () {
+        context.push(RouteNames.activitySummary, extra: widget.aiReadingEntity);
+      },
+      icon: const Icon(Icons.arrow_forward),
+      label: const Text('Siguiente actividad'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green,
+        minimumSize: const Size(double.infinity, 45),
+      ),
     );
   }
 

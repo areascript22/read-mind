@@ -10,7 +10,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../domain/entities/ai_reading_entity.dart';
 import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
-import '../cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
 import '../cubit/attempts_cubit/attempts_cubit.dart';
 
 class ParaphrasePage extends StatefulWidget {
@@ -29,9 +28,6 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
   @override
   void initState() {
     super.initState();
-    context.read<AiReadingProgressCubit>().loadParaphraseProgress(
-      widget.aiReadingEntity.id,
-    );
   }
 
   void _submitParaphrase(BuildContext context) {
@@ -61,9 +57,6 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
         if (state is AiReadingSuccess &&
             state.actionType == AiActionType.paraphrase) {
           showFeedbackDialog(context, state.feedbackEntity);
-          context.read<AiReadingProgressCubit>().loadParaphraseProgress(
-            widget.aiReadingEntity.id,
-          );
 
           context.read<ActivityProgressBloc>().add(
             UpdateProgressEvent(
@@ -107,14 +100,20 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                   if (state is AttemptParaphraseCreated) {
                     return IconButton(
                       onPressed: () {
-                        showParaphraseAttemptsDialog(context);
+                        showParaphraseAttemptsDialog(
+                          context,
+                          widget.aiReadingEntity,
+                        );
                       },
                       icon: Icon(Icons.book),
                     );
                   }
                   return IconButton(
                     onPressed: () {
-                      showParaphraseAttemptsDialog(context);
+                      showParaphraseAttemptsDialog(
+                        context,
+                        widget.aiReadingEntity,
+                      );
                     },
                     icon: Icon(Icons.book),
                   );
@@ -126,23 +125,24 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                   }
                 },
               ),
-              BlocBuilder<AiReadingProgressCubit, AiReadingProgressState>(
+              BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
                 builder: (context, state) {
-                  if (state.isLoading) {
+                  if (state is ProgressLoading) {
                     return LoaderIndicator(
                       spinnerSize: 20,
                       spinnerColor: Colors.white,
                     );
                   }
-                  if (state
-                          .progressByActivity[widget.aiReadingEntity.id]
-                          ?.paraphrase ??
-                      false) {
-                    return Padding(
-                      padding: EdgeInsets.only(right: 20),
-                      child: Icon(Icons.check),
-                    );
+                  if (state is ProgressCreated &&
+                      state.createdProgress.subactivitiesCompleted.paraphrase) {
+                    return Icon(Icons.check);
                   }
+
+                  if (state is ProgressUpdated &&
+                      state.updatedProgress.subactivitiesCompleted.paraphrase) {
+                    return Icon(Icons.check);
+                  }
+
                   return SizedBox.shrink();
                 },
               ),
@@ -294,31 +294,40 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
   }
 
   Widget _buildNextButton() {
-    return BlocConsumer<AiReadingProgressCubit, AiReadingProgressState>(
+    return BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
       builder: (context, state) {
-        if (state.isLoading) {
+        if (state is ProgressLoading) {
           return LoaderIndicator();
         }
-        if (state.progressByActivity[widget.aiReadingEntity.id]?.paraphrase ??
-            false) {
-          return ElevatedButton.icon(
-            onPressed: () {
-              context.push(
-                RouteNames.activityMainIdea,
-                extra: widget.aiReadingEntity,
-              );
-            },
-            icon: const Icon(Icons.arrow_forward),
-            label: const Text('Siguiente actividad'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              minimumSize: const Size(double.infinity, 45),
-            ),
-          );
+        if (state is ProgressCreated &&
+            state.createdProgress.subactivitiesCompleted.paraphrase) {
+          return _buildButton(context);
         }
+        if (state is ProgressUpdated &&
+            state.updatedProgress.subactivitiesCompleted.paraphrase) {
+          return _buildButton(context);
+        }
+
         return SizedBox.shrink();
       },
       listener: (context, state) {},
+    );
+  }
+
+  ElevatedButton _buildButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () {
+        context.push(
+          RouteNames.activityMainIdea,
+          extra: widget.aiReadingEntity,
+        );
+      },
+      icon: const Icon(Icons.arrow_forward),
+      label: const Text('Siguiente actividad'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green,
+        minimumSize: const Size(double.infinity, 45),
+      ),
     );
   }
 

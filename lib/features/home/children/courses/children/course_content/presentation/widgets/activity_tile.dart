@@ -58,8 +58,8 @@ class ActivityTile extends StatelessWidget {
     required String complexity,
     required String style,
   }) {
-    return BlocProvider(
-      create: (context) => serviceLocator<ActivityProgressBloc>(),
+    return BlocProvider.value(
+      value: serviceLocator<ActivityProgressBloc>(),
       child: _AIReadingTileContent(
         activityId: id,
         title: title,
@@ -115,7 +115,6 @@ class _AIReadingTileContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Ahora usa el Bloc específico de este tile
         context.read<ActivityProgressBloc>().add(
           CreateInitialProgressEvent(activityId: activityId),
         );
@@ -134,7 +133,8 @@ class _AIReadingTileContent extends StatelessWidget {
                 builder: (context, state) {
                   // Solo este tile mostrará el loader cuando esté en loading
                   if (state is ProgressLoading &&
-                      state.operation == ProgressActOperation.create) {
+                      state.operation == ProgressActOperation.create &&
+                      activityId == state.activityId) {
                     return Row(
                       children: [
                         LoaderIndicator(spinnerSize: 15),
@@ -153,11 +153,14 @@ class _AIReadingTileContent extends StatelessWidget {
                 },
                 listener: (context, state) {
                   if (state is ProgressError &&
-                      state.operation == ProgressActOperation.create) {
+                      state.operation == ProgressActOperation.create &&
+                      activityId == state.activityId) {
                     ToastMessageUtil.showToast(state.message, context);
                   }
 
-                  if (state is ProgressCreated) {
+                  if (state is ProgressCreated &&
+                      activityId == state.activityId) {
+                    print("sadfasdfssdfasdf");
                     // Navegar a la actividad cuando se crea el progreso
                     context.push(RouteNames.activityAIReading, extra: activity);
                   }

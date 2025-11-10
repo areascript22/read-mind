@@ -19,7 +19,12 @@ class ActivityProgressBloc
     CreateInitialProgressEvent event,
     Emitter<ActivityProgressState> emit,
   ) async {
-    emit(ProgressLoading(operation: ProgressActOperation.create));
+    emit(
+      ProgressLoading(
+        operation: ProgressActOperation.create,
+        activityId: event.activityId,
+      ),
+    );
 
     final result = await activityProgressRepository
         .createInitialActivityProgress(activityId: event.activityId);
@@ -30,11 +35,12 @@ class ActivityProgressBloc
           ProgressError(
             message: f.message,
             operation: ProgressActOperation.create,
+            activityId: event.activityId,
           ),
         );
       },
       (r) {
-        emit(ProgressCreated(createdProgress: r));
+        emit(ProgressCreated(createdProgress: r, activityId: event.activityId));
       },
     );
   }
@@ -43,7 +49,12 @@ class ActivityProgressBloc
     UpdateProgressEvent event,
     Emitter<ActivityProgressState> emit,
   ) async {
-    emit(ProgressLoading(operation: ProgressActOperation.update));
+    emit(
+      ProgressLoading(
+        operation: ProgressActOperation.update,
+        activityId: event.activityId,
+      ),
+    );
 
     final result = await activityProgressRepository.updateActivityProgress(
       activityId: event.activityId,
@@ -56,11 +67,12 @@ class ActivityProgressBloc
           ProgressError(
             message: f.message,
             operation: ProgressActOperation.update,
+            activityId: event.activityId,
           ),
         );
       },
       (r) {
-        emit(ProgressUpdated(updatedProgress: r));
+        emit(ProgressUpdated(updatedProgress: r, activityId: event.activityId));
       },
     );
   }

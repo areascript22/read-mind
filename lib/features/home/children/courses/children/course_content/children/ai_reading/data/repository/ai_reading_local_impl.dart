@@ -81,21 +81,4 @@ class AiReadingLocalRepositoryImpl implements AiReadingLocalRepository {
       return left(Failure("No se pudo cargar el valor"));
     }
   }
-
-  @override
-  Future<Either<Failure, bool>> setAiReadingCompletion({
-    required int activityId,
-  }) async {
-    try {
-      final aiReading = await localReadingProgressDatasource
-          .setAiReadingCompleted(true, activityId);
-      return Right(aiReading);
-    } catch (e) {
-      debugPrint("Error setting ai reading completion: $e");
-      if (e is ServerException) {
-        return left(Failure(e.message));
-      }
-      return left(Failure("No se guardar el valor"));
-    }
-  }
 }

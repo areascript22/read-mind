@@ -8,7 +8,6 @@ import '../../../../../../../../../../shared/widgets/loader_indicator.dart';
 import '../../../../domain/entities/ai_reading_entity.dart';
 import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
-import '../cubit/ai_reading_progress_cubit/ai_reading_progress_cubit.dart';
 import '../cubit/attempts_cubit/attempts_cubit.dart';
 
 class SummaryPage extends StatefulWidget {
@@ -27,9 +26,6 @@ class _SummaryPageState extends State<SummaryPage> {
   @override
   void initState() {
     super.initState();
-    context.read<AiReadingProgressCubit>().loadSummaryProgress(
-      widget.aiReadingEntity.id,
-    );
   }
 
   void _submitSummary(BuildContext context) {
@@ -58,9 +54,6 @@ class _SummaryPageState extends State<SummaryPage> {
         }
         if (state is SummarySuccess) {
           showFeedbackSummaryDialog(context, state.feedbackEntity);
-          context.read<AiReadingProgressCubit>().loadSummaryProgress(
-            widget.aiReadingEntity.id,
-          );
 
           context.read<ActivityProgressBloc>().add(
             UpdateProgressEvent(
@@ -101,14 +94,20 @@ class _SummaryPageState extends State<SummaryPage> {
                   if (state is AttemptSummaryCreated) {
                     return IconButton(
                       onPressed: () {
-                        showSummaryAttemptsDialog(context);
+                        showSummaryAttemptsDialog(
+                          context,
+                          widget.aiReadingEntity,
+                        );
                       },
                       icon: Icon(Icons.book),
                     );
                   }
                   return IconButton(
                     onPressed: () {
-                      showSummaryAttemptsDialog(context);
+                      showSummaryAttemptsDialog(
+                        context,
+                        widget.aiReadingEntity,
+                      );
                     },
                     icon: Icon(Icons.book),
                   );
@@ -120,18 +119,24 @@ class _SummaryPageState extends State<SummaryPage> {
                   }
                 },
               ),
-              BlocBuilder<AiReadingProgressCubit, AiReadingProgressState>(
+              BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
                 builder: (context, state) {
-                  if (state.isLoading) {
+                  if (state is ProgressLoading) {
                     return LoaderIndicator(
                       spinnerSize: 20,
                       spinnerColor: Colors.white,
                     );
                   }
-                  if (state
-                          .progressByActivity[widget.aiReadingEntity.id]
-                          ?.summary ??
-                      false) {
+                  if (state is ProgressCreated &&
+                      state.createdProgress.subactivitiesCompleted.summary) {
+                    return Padding(
+                      padding: EdgeInsets.only(right: 20),
+                      child: Icon(Icons.check),
+                    );
+                  }
+
+                  if (state is ProgressUpdated &&
+                      state.updatedProgress.subactivitiesCompleted.summary) {
                     return Padding(
                       padding: EdgeInsets.only(right: 20),
                       child: Icon(Icons.check),

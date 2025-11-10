@@ -5,21 +5,26 @@ import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../../../../domain/entities/ai_reading_entity.dart';
 import '../cubit/attempts_cubit/attempts_cubit.dart';
 
-Future<void> showMainIdeaAttemptsDialog(BuildContext context) async {
+Future<void> showMainIdeaAttemptsDialog(
+  BuildContext context,
+  AIReadingEntity aiReadingEntity,
+) async {
   showDialog(
     context: context,
     builder:
         (_) => BlocProvider.value(
           value: serviceLocator<AttemptsCubit>(),
-          child: _MainIdeaAttemptsDialogBody(),
+          child: _MainIdeaAttemptsDialogBody(aiReadingEntity: aiReadingEntity),
         ),
   );
 }
 
 class _MainIdeaAttemptsDialogBody extends StatefulWidget {
-  const _MainIdeaAttemptsDialogBody({super.key});
+  final AIReadingEntity aiReadingEntity;
+  const _MainIdeaAttemptsDialogBody({super.key, required this.aiReadingEntity});
 
   @override
   State<_MainIdeaAttemptsDialogBody> createState() =>
@@ -35,7 +40,9 @@ class _MainIdeaAttemptsDialogBodyState
   @override
   void initState() {
     super.initState();
-    context.read<AttemptsCubit>().getAllMainIdeaAttempts();
+    context.read<AttemptsCubit>().getAllMainIdeaAttempts(
+      widget.aiReadingEntity.aiReadingId,
+    );
   }
 
   @override
@@ -117,10 +124,11 @@ class _MainIdeaAttemptsDialogBodyState
                         enablePullDown: true,
                         header: const WaterDropHeader(),
                         onRefresh:
-                            () =>
-                                context
-                                    .read<AttemptsCubit>()
-                                    .getAllParaphraseAttempts(),
+                            () => context
+                                .read<AttemptsCubit>()
+                                .getAllMainIdeaAttempts(
+                                  widget.aiReadingEntity.aiReadingId,
+                                ),
                         child: ListView.builder(
                           itemCount: paraphrases.length,
                           itemBuilder: (context, index) {

@@ -119,12 +119,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
       itemCount: activities.length,
       itemBuilder: (context, index) {
         final activity = activities[index];
-        return GestureDetector(
-          onTap: () {
-            //context.push(RouteNames.activityAIReading, extra: activity);
-          },
-          child: ActivityTile(activity: activity),
-        );
+        return ActivityTile(activity: activity);
       },
     );
   }
