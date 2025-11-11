@@ -1,17 +1,19 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback_summary.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_tip.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_summary_attempts.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_summary_tip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../../../../../../../../../shared/widgets/loader_indicator.dart';
+import '../../../../domain/entities/ai_reading_entity.dart';
+import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
+import '../cubit/attempts_cubit/attempts_cubit.dart';
 
 class SummaryPage extends StatefulWidget {
-  final String originalParagraph;
+  final AIReadingEntity aiReadingEntity;
 
-  const SummaryPage({super.key, required this.originalParagraph});
+  const SummaryPage({super.key, required this.aiReadingEntity});
 
   @override
   State<SummaryPage> createState() => _SummaryPageState();
@@ -21,6 +23,11 @@ class _SummaryPageState extends State<SummaryPage> {
   final TextEditingController _controller = TextEditingController();
   bool _isExpanded = false;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void _submitSummary(BuildContext context) {
     if (_controller.text.trim().isEmpty) {
       ToastMessageUtil.showToast("Escribe algo para continuar", context);
@@ -28,8 +35,9 @@ class _SummaryPageState extends State<SummaryPage> {
     }
     context.read<AiReadingBloc>().add(
       EvaluateSummaryEvent(
-        paragraph: widget.originalParagraph,
+        paragraph: widget.aiReadingEntity.content,
         summary: _controller.text,
+        activityId: widget.aiReadingEntity.id,
       ),
     );
   }
@@ -46,6 +54,21 @@ class _SummaryPageState extends State<SummaryPage> {
         }
         if (state is SummarySuccess) {
           showFeedbackSummaryDialog(context, state.feedbackEntity);
+
+          context.read<ActivityProgressBloc>().add(
+            UpdateProgressEvent(
+              aiReadingId: widget.aiReadingEntity.aiReadingId,
+              dataToUpdate: {"completed": true, "summaryCompleted": true},
+            ),
+          );
+
+          context.read<AttemptsCubit>().createSummaryAttempt(
+            aiReadingId: widget.aiReadingEntity.aiReadingId,
+            accuracyScore: state.feedbackEntity.accuracyScore,
+            coverageScore: state.feedbackEntity.coverageScore,
+            clarityScore: state.feedbackEntity.clarityScore,
+            feedback: state.feedbackEntity.feedback,
+          );
         }
       },
       builder: (context, state) {
@@ -61,6 +84,68 @@ class _SummaryPageState extends State<SummaryPage> {
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.arrow_back),
             ),
+            actions: [
+              BlocConsumer<AttemptsCubit, AttemptsState>(
+                builder: (context, state) {
+                  if (state is AttemptsLoading &&
+                      state.attemptOperation == AttemptOperation.summary) {
+                    return LoaderIndicator(spinnerSize: 20);
+                  }
+                  if (state is AttemptSummaryCreated) {
+                    return IconButton(
+                      onPressed: () {
+                        showSummaryAttemptsDialog(
+                          context,
+                          widget.aiReadingEntity,
+                        );
+                      },
+                      icon: Icon(Icons.book),
+                    );
+                  }
+                  return IconButton(
+                    onPressed: () {
+                      showSummaryAttemptsDialog(
+                        context,
+                        widget.aiReadingEntity,
+                      );
+                    },
+                    icon: Icon(Icons.book),
+                  );
+                },
+                listener: (context, state) {
+                  if (state is AttemptsError &&
+                      state.attemptOperation == AttemptOperation.summary) {
+                    ToastMessageUtil.showToast(state.message, context);
+                  }
+                },
+              ),
+              BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
+                builder: (context, state) {
+                  if (state is ProgressLoading) {
+                    return LoaderIndicator(
+                      spinnerSize: 20,
+                      spinnerColor: Colors.white,
+                    );
+                  }
+                  if (state is ProgressCreated &&
+                      state.createdProgress.subactivitiesCompleted.summary) {
+                    return Padding(
+                      padding: EdgeInsets.only(right: 20),
+                      child: Icon(Icons.check),
+                    );
+                  }
+
+                  if (state is ProgressUpdated &&
+                      state.updatedProgress.subactivitiesCompleted.summary) {
+                    return Padding(
+                      padding: EdgeInsets.only(right: 20),
+                      child: Icon(Icons.check),
+                    );
+                  }
+                  return SizedBox.shrink();
+                },
+              ),
+            ],
           ),
           body: Stack(
             children: [
@@ -127,7 +212,7 @@ class _SummaryPageState extends State<SummaryPage> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
-                                    widget.originalParagraph,
+                                    widget.aiReadingEntity.content,
                                     style: const TextStyle(
                                       fontSize: 15,
                                       height: 1.5,

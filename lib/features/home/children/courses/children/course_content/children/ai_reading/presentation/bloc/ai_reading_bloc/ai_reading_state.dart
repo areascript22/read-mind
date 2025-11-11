@@ -1,6 +1,6 @@
 part of 'ai_reading_bloc.dart';
 
-enum AiActionType { paraphrase, mainIdea, summary }
+enum AiActionType { paraphrase, mainIdea, summary, aiReading }
 
 @immutable
 sealed class AiReadingState extends Equatable {}

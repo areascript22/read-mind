@@ -22,7 +22,7 @@ ActivityModel _$ActivityModelFromJson(
 /// @nodoc
 mixin _$ActivityModel {
 
- int get id; String get title; String get description; DateTime get dueDate; String get content; String get length;// New field
+ int get id; String get title; String get description; DateTime get dueDate; int get aiReadingId; String get content; String get length;// New field
  String get complexity;// New field
  String get style;// New field
  DateTime get createdAt; DateTime get updatedAt;
@@ -38,16 +38,16 @@ $ActivityModelCopyWith<ActivityModel> get copyWith => _$ActivityModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ActivityModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.content, content) || other.content == content)&&(identical(other.length, length) || other.length == length)&&(identical(other.complexity, complexity) || other.complexity == complexity)&&(identical(other.style, style) || other.style == style)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ActivityModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.aiReadingId, aiReadingId) || other.aiReadingId == aiReadingId)&&(identical(other.content, content) || other.content == content)&&(identical(other.length, length) || other.length == length)&&(identical(other.complexity, complexity) || other.complexity == complexity)&&(identical(other.style, style) || other.style == style)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,dueDate,content,length,complexity,style,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,title,description,dueDate,aiReadingId,content,length,complexity,style,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'ActivityModel(id: $id, title: $title, description: $description, dueDate: $dueDate, content: $content, length: $length, complexity: $complexity, style: $style, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'ActivityModel(id: $id, title: $title, description: $description, dueDate: $dueDate, aiReadingId: $aiReadingId, content: $content, length: $length, complexity: $complexity, style: $style, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -58,7 +58,7 @@ abstract mixin class $ActivityModelCopyWith<$Res>  {
   factory $ActivityModelCopyWith(ActivityModel value, $Res Function(ActivityModel) _then) = _$ActivityModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String title, String description, DateTime dueDate, String content, String length, String complexity, String style, DateTime createdAt, DateTime updatedAt
+ int id, String title, String description, DateTime dueDate, int aiReadingId, String content, String length, String complexity, String style, DateTime createdAt, DateTime updatedAt
 });
 
 
@@ -75,13 +75,14 @@ class _$ActivityModelCopyWithImpl<$Res>
 
 /// Create a copy of ActivityModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? dueDate = null,Object? content = null,Object? length = null,Object? complexity = null,Object? style = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? dueDate = null,Object? aiReadingId = null,Object? content = null,Object? length = null,Object? complexity = null,Object? style = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,dueDate: null == dueDate ? _self.dueDate : dueDate // ignore: cast_nullable_to_non_nullable
-as DateTime,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as DateTime,aiReadingId: null == aiReadingId ? _self.aiReadingId : aiReadingId // ignore: cast_nullable_to_non_nullable
+as int,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,length: null == length ? _self.length : length // ignore: cast_nullable_to_non_nullable
 as String,complexity: null == complexity ? _self.complexity : complexity // ignore: cast_nullable_to_non_nullable
 as String,style: null == style ? _self.style : style // ignore: cast_nullable_to_non_nullable
@@ -172,10 +173,10 @@ return aIReading(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int id,  String title,  String description,  DateTime dueDate,  String content,  String length,  String complexity,  String style,  DateTime createdAt,  DateTime updatedAt)?  aIReading,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int id,  String title,  String description,  DateTime dueDate,  int aiReadingId,  String content,  String length,  String complexity,  String style,  DateTime createdAt,  DateTime updatedAt)?  aIReading,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AIReadingModel() when aIReading != null:
-return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.content,_that.length,_that.complexity,_that.style,_that.createdAt,_that.updatedAt);case _:
+return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.aiReadingId,_that.content,_that.length,_that.complexity,_that.style,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -193,10 +194,10 @@ return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.cont
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int id,  String title,  String description,  DateTime dueDate,  String content,  String length,  String complexity,  String style,  DateTime createdAt,  DateTime updatedAt)  aIReading,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int id,  String title,  String description,  DateTime dueDate,  int aiReadingId,  String content,  String length,  String complexity,  String style,  DateTime createdAt,  DateTime updatedAt)  aIReading,}) {final _that = this;
 switch (_that) {
 case AIReadingModel():
-return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.content,_that.length,_that.complexity,_that.style,_that.createdAt,_that.updatedAt);case _:
+return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.aiReadingId,_that.content,_that.length,_that.complexity,_that.style,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -213,10 +214,10 @@ return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.cont
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int id,  String title,  String description,  DateTime dueDate,  String content,  String length,  String complexity,  String style,  DateTime createdAt,  DateTime updatedAt)?  aIReading,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int id,  String title,  String description,  DateTime dueDate,  int aiReadingId,  String content,  String length,  String complexity,  String style,  DateTime createdAt,  DateTime updatedAt)?  aIReading,}) {final _that = this;
 switch (_that) {
 case AIReadingModel() when aIReading != null:
-return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.content,_that.length,_that.complexity,_that.style,_that.createdAt,_that.updatedAt);case _:
+return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.aiReadingId,_that.content,_that.length,_that.complexity,_that.style,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -228,13 +229,14 @@ return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.cont
 @JsonSerializable()
 
 class AIReadingModel implements ActivityModel {
-  const AIReadingModel({required this.id, required this.title, required this.description, required this.dueDate, required this.content, required this.length, required this.complexity, required this.style, required this.createdAt, required this.updatedAt});
+  const AIReadingModel({required this.id, required this.title, required this.description, required this.dueDate, required this.aiReadingId, required this.content, required this.length, required this.complexity, required this.style, required this.createdAt, required this.updatedAt});
   factory AIReadingModel.fromJson(Map<String, dynamic> json) => _$AIReadingModelFromJson(json);
 
 @override final  int id;
 @override final  String title;
 @override final  String description;
 @override final  DateTime dueDate;
+@override final  int aiReadingId;
 @override final  String content;
 @override final  String length;
 // New field
@@ -258,16 +260,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AIReadingModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.content, content) || other.content == content)&&(identical(other.length, length) || other.length == length)&&(identical(other.complexity, complexity) || other.complexity == complexity)&&(identical(other.style, style) || other.style == style)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AIReadingModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.aiReadingId, aiReadingId) || other.aiReadingId == aiReadingId)&&(identical(other.content, content) || other.content == content)&&(identical(other.length, length) || other.length == length)&&(identical(other.complexity, complexity) || other.complexity == complexity)&&(identical(other.style, style) || other.style == style)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,dueDate,content,length,complexity,style,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,title,description,dueDate,aiReadingId,content,length,complexity,style,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'ActivityModel.aIReading(id: $id, title: $title, description: $description, dueDate: $dueDate, content: $content, length: $length, complexity: $complexity, style: $style, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'ActivityModel.aIReading(id: $id, title: $title, description: $description, dueDate: $dueDate, aiReadingId: $aiReadingId, content: $content, length: $length, complexity: $complexity, style: $style, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -278,7 +280,7 @@ abstract mixin class $AIReadingModelCopyWith<$Res> implements $ActivityModelCopy
   factory $AIReadingModelCopyWith(AIReadingModel value, $Res Function(AIReadingModel) _then) = _$AIReadingModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, String description, DateTime dueDate, String content, String length, String complexity, String style, DateTime createdAt, DateTime updatedAt
+ int id, String title, String description, DateTime dueDate, int aiReadingId, String content, String length, String complexity, String style, DateTime createdAt, DateTime updatedAt
 });
 
 
@@ -295,13 +297,14 @@ class _$AIReadingModelCopyWithImpl<$Res>
 
 /// Create a copy of ActivityModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? dueDate = null,Object? content = null,Object? length = null,Object? complexity = null,Object? style = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? dueDate = null,Object? aiReadingId = null,Object? content = null,Object? length = null,Object? complexity = null,Object? style = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(AIReadingModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,dueDate: null == dueDate ? _self.dueDate : dueDate // ignore: cast_nullable_to_non_nullable
-as DateTime,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as DateTime,aiReadingId: null == aiReadingId ? _self.aiReadingId : aiReadingId // ignore: cast_nullable_to_non_nullable
+as int,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,length: null == length ? _self.length : length // ignore: cast_nullable_to_non_nullable
 as String,complexity: null == complexity ? _self.complexity : complexity // ignore: cast_nullable_to_non_nullable
 as String,style: null == style ? _self.style : style // ignore: cast_nullable_to_non_nullable

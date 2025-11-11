@@ -1,20 +1,21 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback_main_idea.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_main_idea_attempts.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_main_idea_tip.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_tip.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../../../../../../../core/common/widget/custom_button.dart';
+import '../../../../../../../../../../shared/widgets/loader_indicator.dart';
+import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
 
 class MainIdeaPage extends StatefulWidget {
-  final String originalParagraph;
+  final AIReadingEntity aiReadingEntity;
 
-  const MainIdeaPage({super.key, required this.originalParagraph});
+  const MainIdeaPage({super.key, required this.aiReadingEntity});
 
   @override
   State<MainIdeaPage> createState() => _MainIdeaPageState();
@@ -24,6 +25,11 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
   final TextEditingController _controller = TextEditingController();
   bool _isExpanded = false;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void _submitMainIdea(BuildContext context) {
     if (_controller.text.trim().isEmpty) {
       ToastMessageUtil.showToast("Escribe algo para continuar", context);
@@ -31,8 +37,9 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
     }
     context.read<AiReadingBloc>().add(
       EvaluateMainIdeaEvent(
-        paragraph: widget.originalParagraph,
+        paragraph: widget.aiReadingEntity.content,
         mainIdea: _controller.text,
+        activityId: widget.aiReadingEntity.id,
       ),
     );
   }
@@ -49,6 +56,21 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
         }
         if (state is MainIdeaSuccess) {
           showFeedbackMainIdeaDialog(context, state.feedbackEntity);
+
+          context.read<ActivityProgressBloc>().add(
+            UpdateProgressEvent(
+              aiReadingId: widget.aiReadingEntity.aiReadingId,
+              dataToUpdate: {"mainIdeaCompleted": true},
+            ),
+          );
+
+          context.read<AttemptsCubit>().createMainIdeaAttempt(
+            aiReadingId: widget.aiReadingEntity.aiReadingId,
+            accuracyScore: state.feedbackEntity.accuracyScore,
+            clarityScore: state.feedbackEntity.clarityScore,
+            concisenessScore: state.feedbackEntity.concisenessScore,
+            feedback: state.feedbackEntity.feedback,
+          );
         }
       },
       builder: (context, state) {
@@ -64,6 +86,68 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
               onPressed: () => context.pop(),
               icon: const Icon(Icons.arrow_back),
             ),
+            actions: [
+              BlocConsumer<AttemptsCubit, AttemptsState>(
+                builder: (context, state) {
+                  if (state is AttemptsLoading &&
+                      state.attemptOperation == AttemptOperation.mainIdea) {
+                    return LoaderIndicator(spinnerSize: 20);
+                  }
+                  if (state is AttemptMainIdeaCreated) {
+                    return IconButton(
+                      onPressed: () {
+                        showMainIdeaAttemptsDialog(
+                          context,
+                          widget.aiReadingEntity,
+                        );
+                      },
+                      icon: Icon(Icons.book),
+                    );
+                  }
+                  return IconButton(
+                    onPressed: () {
+                      showMainIdeaAttemptsDialog(
+                        context,
+                        widget.aiReadingEntity,
+                      );
+                    },
+                    icon: Icon(Icons.book),
+                  );
+                },
+                listener: (context, state) {
+                  if (state is AttemptsError &&
+                      state.attemptOperation == AttemptOperation.mainIdea) {
+                    ToastMessageUtil.showToast(state.message, context);
+                  }
+                },
+              ),
+              BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
+                builder: (context, state) {
+                  if (state is ProgressLoading) {
+                    return LoaderIndicator(
+                      spinnerSize: 20,
+                      spinnerColor: Colors.white,
+                    );
+                  }
+                  if (state is ProgressCreated &&
+                      state.createdProgress.subactivitiesCompleted.mainIdea) {
+                    return Padding(
+                      padding: EdgeInsets.only(right: 20),
+                      child: Icon(Icons.check),
+                    );
+                  }
+
+                  if (state is ProgressUpdated &&
+                      state.updatedProgress.subactivitiesCompleted.mainIdea) {
+                    return Padding(
+                      padding: EdgeInsets.only(right: 20),
+                      child: Icon(Icons.check),
+                    );
+                  }
+                  return SizedBox.shrink();
+                },
+              ),
+            ],
           ),
           body: Stack(
             children: [
@@ -130,7 +214,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
-                                    widget.originalParagraph,
+                                    widget.aiReadingEntity.content,
                                     style: const TextStyle(
                                       fontSize: 15,
                                       height: 1.5,
@@ -157,15 +241,16 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                               const SizedBox(height: 20),
                               _buildSubmitButton(isLoading, context),
                               const SizedBox(height: 15),
-                              CustomButton(
-                                color: Colors.green,
-                                onTap:
-                                    () => context.push(
-                                      RouteNames.activitySummary,
-                                      extra: widget.originalParagraph,
-                                    ),
-                                child: Text("Siguiente actividad"),
-                              ),
+                              _buildNextButton(),
+                              // CustomButton(
+                              //   color: Colors.green,
+                              //   onTap:
+                              //       () => context.push(
+                              //         RouteNames.activitySummary,
+                              //         extra: widget.originalParagraph,
+                              //       ),
+                              //   child: Text("Siguiente actividad"),
+                              // ),
                             ],
                           ),
                         ),
@@ -184,6 +269,40 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
           floatingActionButton: _buildFloatingActionButton(context),
         );
       },
+    );
+  }
+
+  Widget _buildNextButton() {
+    return BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
+      builder: (context, state) {
+        if (state is ProgressLoading) {
+          return LoaderIndicator();
+        }
+        if (state is ProgressCreated &&
+            state.createdProgress.subactivitiesCompleted.mainIdea) {
+          return _buildButton(context);
+        }
+        if (state is ProgressUpdated &&
+            state.updatedProgress.subactivitiesCompleted.mainIdea) {
+          return _buildButton(context);
+        }
+        return SizedBox.shrink();
+      },
+      listener: (context, state) {},
+    );
+  }
+
+  ElevatedButton _buildButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () {
+        context.push(RouteNames.activitySummary, extra: widget.aiReadingEntity);
+      },
+      icon: const Icon(Icons.arrow_forward),
+      label: const Text('Siguiente actividad'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green,
+        minimumSize: const Size(double.infinity, 45),
+      ),
     );
   }
 

@@ -146,7 +146,7 @@ class CourseContentRemoteDataSourceImpl
         throw ServerException(data['message']);
       }
 
-      return ActivityModel.fromJson(data['aiReading']);
+      return ActivityModel.fromJson(data['data']);
     } catch (e) {
       debugPrint("Error saving ai reading: $e");
       throw ServerException(

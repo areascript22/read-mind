@@ -1,19 +1,21 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
-import 'package:client_app/core/common/widget/custom_button.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_attempts.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_tip.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
+import '../../../../domain/entities/ai_reading_entity.dart';
+import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
+import '../cubit/attempts_cubit/attempts_cubit.dart';
 
 class ParaphrasePage extends StatefulWidget {
-  final String originalParagraph;
+  final AIReadingEntity aiReadingEntity;
 
-  const ParaphrasePage({super.key, required this.originalParagraph});
+  const ParaphrasePage({super.key, required this.aiReadingEntity});
 
   @override
   State<ParaphrasePage> createState() => _ParaphrasePageState();
@@ -23,6 +25,11 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
   final TextEditingController _controller = TextEditingController();
   bool _isExpanded = false;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void _submitParaphrase(BuildContext context) {
     if (_controller.text.trim().isEmpty) {
       ToastMessageUtil.showToast("Escribe algo para continuar", context);
@@ -30,8 +37,9 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
     }
     context.read<AiReadingBloc>().add(
       EvaluateParaphraseEvent(
-        paragraph: widget.originalParagraph,
+        paragraph: widget.aiReadingEntity.content,
         paraphrase: _controller.text,
+        activityId: widget.aiReadingEntity.id,
       ),
     );
   }
@@ -49,6 +57,21 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
         if (state is AiReadingSuccess &&
             state.actionType == AiActionType.paraphrase) {
           showFeedbackDialog(context, state.feedbackEntity);
+
+          context.read<ActivityProgressBloc>().add(
+            UpdateProgressEvent(
+              aiReadingId: widget.aiReadingEntity.aiReadingId,
+              dataToUpdate: {"paraphraseCompleted": true},
+            ),
+          );
+
+          context.read<AttemptsCubit>().createParaphraseAttempt(
+            aiReadingId: widget.aiReadingEntity.aiReadingId,
+            similarityScore: state.feedbackEntity.similarityScore,
+            fluencyScore: state.feedbackEntity.fluencyScore,
+            originalityScore: state.feedbackEntity.originalityScore,
+            feedback: state.feedbackEntity.feedback,
+          );
         }
       },
       builder: (context, state) {
@@ -64,6 +87,66 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.arrow_back),
             ),
+            actions: [
+              BlocConsumer<AttemptsCubit, AttemptsState>(
+                builder: (context, state) {
+                  if (state is AttemptsLoading &&
+                      state.attemptOperation == AttemptOperation.paraphrase) {
+                    return LoaderIndicator(
+                      spinnerSize: 20,
+                      spinnerColor: Colors.red,
+                    );
+                  }
+                  if (state is AttemptParaphraseCreated) {
+                    return IconButton(
+                      onPressed: () {
+                        showParaphraseAttemptsDialog(
+                          context,
+                          widget.aiReadingEntity,
+                        );
+                      },
+                      icon: Icon(Icons.book),
+                    );
+                  }
+                  return IconButton(
+                    onPressed: () {
+                      showParaphraseAttemptsDialog(
+                        context,
+                        widget.aiReadingEntity,
+                      );
+                    },
+                    icon: Icon(Icons.book),
+                  );
+                },
+                listener: (context, state) {
+                  if (state is AttemptsError &&
+                      state.attemptOperation == AttemptOperation.paraphrase) {
+                    ToastMessageUtil.showToast(state.message, context);
+                  }
+                },
+              ),
+              BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
+                builder: (context, state) {
+                  if (state is ProgressLoading) {
+                    return LoaderIndicator(
+                      spinnerSize: 20,
+                      spinnerColor: Colors.white,
+                    );
+                  }
+                  if (state is ProgressCreated &&
+                      state.createdProgress.subactivitiesCompleted.paraphrase) {
+                    return Icon(Icons.check);
+                  }
+
+                  if (state is ProgressUpdated &&
+                      state.updatedProgress.subactivitiesCompleted.paraphrase) {
+                    return Icon(Icons.check);
+                  }
+
+                  return SizedBox.shrink();
+                },
+              ),
+            ],
           ),
           body: Stack(
             children: [
@@ -130,7 +213,7 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
-                                    widget.originalParagraph,
+                                    widget.aiReadingEntity.content,
                                     style: const TextStyle(
                                       fontSize: 15,
                                       height: 1.5,
@@ -188,15 +271,7 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                                 ),
                               ),
                               SizedBox(height: 15),
-                              CustomButton(
-                                color: Colors.green,
-                                onTap:
-                                    () => context.push(
-                                      RouteNames.activityMainIdea,
-                                      extra: widget.originalParagraph,
-                                    ),
-                                child: Text("Siguiente actividad"),
-                              ),
+                              _buildNextButton(),
                             ],
                           ),
                         ),
@@ -215,6 +290,44 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
           floatingActionButton: _buildFloatingActionButton(context),
         );
       },
+    );
+  }
+
+  Widget _buildNextButton() {
+    return BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
+      builder: (context, state) {
+        if (state is ProgressLoading) {
+          return LoaderIndicator();
+        }
+        if (state is ProgressCreated &&
+            state.createdProgress.subactivitiesCompleted.paraphrase) {
+          return _buildButton(context);
+        }
+        if (state is ProgressUpdated &&
+            state.updatedProgress.subactivitiesCompleted.paraphrase) {
+          return _buildButton(context);
+        }
+
+        return SizedBox.shrink();
+      },
+      listener: (context, state) {},
+    );
+  }
+
+  ElevatedButton _buildButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () {
+        context.push(
+          RouteNames.activityMainIdea,
+          extra: widget.aiReadingEntity,
+        );
+      },
+      icon: const Icon(Icons.arrow_forward),
+      label: const Text('Siguiente actividad'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green,
+        minimumSize: const Size(double.infinity, 45),
+      ),
     );
   }
 

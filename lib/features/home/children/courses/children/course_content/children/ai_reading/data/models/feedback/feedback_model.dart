@@ -1,7 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
 import '../../../domain/entities/feedback_entity.dart';
-
 part 'feedback_model.freezed.dart';
 part 'feedback_model.g.dart';
 

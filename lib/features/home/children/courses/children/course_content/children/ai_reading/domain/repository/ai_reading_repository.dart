@@ -9,16 +9,19 @@ abstract interface class AiReadingRepository {
   Future<Either<Failure, FeedbackEntity>> evaluateParaphrase({
     required String paragraph,
     required String paraphrase,
+    required int activityId,
   });
 
   Future<Either<Failure, FeedbackMainIdeaEntity>> evaluateMainIdea({
     required String paragraph,
     required String mainIdea,
+    required int activityId,
   });
 
   Future<Either<Failure, FeedbackSummaryEntity>> evaluateSummary({
     required String paragraph,
     required String summary,
+    required int activityId,
   });
 
   Future<Either<Failure, TranslationEntity>> translateWord({

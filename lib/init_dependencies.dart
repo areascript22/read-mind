@@ -1,18 +1,30 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/datasource/local_datasource/local_reading_progress_datasource%20.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_local_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/data/repository/attempts_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_local_repository.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_repository.dart';
+import 'package:client_app/features/home/children/courses/domain/repository/attempts_repository.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/bloc/ai_reading_bloc/ai_reading_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/translation_cubit/translation_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/datasources/coursecontent_remote_datasource.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/data/repositories/activity_progress_repository_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/repositories/coursecontent_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/activity_progress_repository.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/course_content_repository.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_create_ai_reading.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_generate_paragraph.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_get_user.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_getall_activitiies.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_getall_students.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/students/students_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/data/repository/progress_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/domian/repository/progress_repository.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/bloc/progress_bloc/tracking_bloc.dart';
 import 'package:client_app/features/home/children/courses/data/datasources/courses_remote_datasource.dart';
 import 'package:client_app/features/home/children/courses/data/repository/courses_repository_impl.dart';
 import 'package:client_app/features/home/children/courses/domain/repository/courses_repositories.dart';
@@ -60,6 +72,8 @@ Future<void> initDependencies() async {
   _initProfile();
   _initCourseActivities();
   _initVocabulary();
+  _initActivityProgress();
+  _initActivityAttempts();
 
   serviceLocator.registerLazySingleton(
     () => AppUserCubit(authLocalDataSource: serviceLocator()),
@@ -68,7 +82,7 @@ Future<void> initDependencies() async {
 
 Future<void> _initSharedPreferences() async {
   final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-  serviceLocator.registerFactory<SharedPreferences>(() => sharedPrefs);
+  serviceLocator.registerLazySingleton(() => sharedPrefs);
 }
 
 void _initAuth() {
@@ -203,7 +217,10 @@ void _initProfile() {
 
 void _initCourseActivities() {
   serviceLocator.registerFactory<AiReadingRepository>(
-    () => AiReadingRepositoryImpl(authLocalDataSource: serviceLocator()),
+    () => AiReadingRepositoryImpl(
+      authLocalDataSource: serviceLocator(),
+      aiReadingProgress: serviceLocator(),
+    ),
   );
 
   serviceLocator.registerLazySingleton(
@@ -222,5 +239,48 @@ void _initVocabulary() {
 
   serviceLocator.registerLazySingleton(
     () => VocabularyBloc(vocabularyRepository: serviceLocator()),
+  );
+}
+
+void _initActivityAttempts() {
+  serviceLocator.registerFactory<AttemptsRepository>(
+    () => AttemptsRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => AttemptsCubit(attemptsRepository: serviceLocator()),
+  );
+}
+
+void _initActivityProgress() {
+  serviceLocator.registerFactory(
+    () => LocalReadingProgressDataSource(sharedPreferences: serviceLocator()),
+  );
+
+  serviceLocator.registerFactory<ProgressRepository>(
+    () => ProgressRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerFactory<ActivityProgressRepository>(
+    () => ActivityProgressRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerFactory<AiReadingLocalRepository>(
+    () => AiReadingLocalRepositoryImpl(
+      localReadingProgressDatasource: serviceLocator(),
+    ),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => TrackingBloc(
+      progressRepository: serviceLocator(),
+      attemptsRepository: AttemptsRepositoryImpl(
+        authLocalDataSource: serviceLocator(),
+      ),
+    ),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => ActivityProgressBloc(activityProgressRepository: serviceLocator()),
   );
 }

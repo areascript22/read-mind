@@ -1,10 +1,12 @@
+import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/common/entities/user_entity.dart';
+import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/students/students_bloc.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/student_tracking_info_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../../../../../core/common/utils/toast_util.dart';
+import 'package:go_router/go_router.dart';
 
 class StudentsPage extends StatefulWidget {
   final CourseEntity courseEntity;
@@ -15,12 +17,18 @@ class StudentsPage extends StatefulWidget {
 }
 
 class _StudentsPageState extends State<StudentsPage> {
+  bool ownCourse = false;
+  late AppUserCubit appUserCubit;
+
   @override
   void initState() {
     super.initState();
     final bloc = context.read<StudentsBloc>();
     bloc.add(EventGetProfessor(widget.courseEntity.teacherId));
     bloc.add(EventLoadAllStudents(widget.courseEntity.id));
+
+    appUserCubit = context.read<AppUserCubit>();
+    ownCourse = widget.courseEntity.teacherId == appUserCubit.user?.id;
   }
 
   String _getFirstWords(String text, [int n = 2]) {
@@ -108,21 +116,42 @@ class _StudentsPageState extends State<StudentsPage> {
               itemCount: students.length,
               itemBuilder: (context, index) {
                 final student = students[index];
-                return Card(
-                  elevation: 1,
-                  margin: const EdgeInsets.symmetric(vertical: 6),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      child: Text(_getFirstWords(student.name)),
-                    ),
-                    title: Text(student.name),
-                    subtitle: Text(student.email),
-                  ),
+                final studentTrackingInfo = StudentTrackingInfoEntity(
+                  user: student,
+                  course: widget.courseEntity,
+                );
+                return _buildStudentsTile(
+                  context,
+                  studentTrackingInfo,
+                  student,
                 );
               },
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  GestureDetector _buildStudentsTile(
+    BuildContext context,
+    StudentTrackingInfoEntity studentTrackingInfo,
+    UserEntity student,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        if (ownCourse || appUserCubit.isSuperUser || appUserCubit.isAdmin) {
+          context.push(RouteNames.studentTracking, extra: studentTrackingInfo);
+        }
+      },
+      child: Card(
+        elevation: 1,
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        child: ListTile(
+          leading: CircleAvatar(child: Text(_getFirstWords(student.name))),
+          title: Text(student.name),
+          subtitle: Text(student.email),
+        ),
       ),
     );
   }
