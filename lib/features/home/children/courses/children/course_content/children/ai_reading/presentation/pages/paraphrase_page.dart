@@ -60,7 +60,7 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
 
           context.read<ActivityProgressBloc>().add(
             UpdateProgressEvent(
-              activityId: widget.aiReadingEntity.id,
+              aiReadingId: widget.aiReadingEntity.aiReadingId,
               dataToUpdate: {"paraphraseCompleted": true},
             ),
           );

@@ -34,7 +34,7 @@ class ActivityTile extends StatelessWidget {
       ) {
         return _buildAIReadingTile(
           context,
-          id: id,
+          id: aiReadingId,
           title: title,
           description: description,
           dueDate: dueDate,
@@ -116,7 +116,7 @@ class _AIReadingTileContent extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.read<ActivityProgressBloc>().add(
-          CreateInitialProgressEvent(activityId: activityId),
+          CreateInitialProgressEvent(aiReadingId: activityId),
         );
       },
       child: Card(

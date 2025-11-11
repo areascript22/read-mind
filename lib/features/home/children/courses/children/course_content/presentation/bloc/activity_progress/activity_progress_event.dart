@@ -4,14 +4,14 @@ part of 'activity_progress_bloc.dart';
 sealed class ActivityProgressEvent {}
 
 class CreateInitialProgressEvent extends ActivityProgressEvent {
-  final int activityId;
+  final int aiReadingId;
 
-  CreateInitialProgressEvent({required this.activityId});
+  CreateInitialProgressEvent({required this.aiReadingId});
 }
 
 class UpdateProgressEvent extends ActivityProgressEvent {
-  final int activityId;
+  final int aiReadingId;
   final Map<String, dynamic> dataToUpdate;
 
-  UpdateProgressEvent({required this.activityId, required this.dataToUpdate});
+  UpdateProgressEvent({required this.aiReadingId, required this.dataToUpdate});
 }

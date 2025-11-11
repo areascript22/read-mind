@@ -1,11 +1,12 @@
+import 'package:client_app/features/home/children/courses/children/student_tracking/domian/entity/progress_entity.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class ScoreChartWidget extends StatelessWidget {
-  const ScoreChartWidget({Key? key}) : super(key: key);
+  final List<ProgressEntity> studentTracking;
+  const ScoreChartWidget({super.key, required this.studentTracking});
 
-  // Datos mockeados para el gráfico
-  List<Map<String, dynamic>> get _mockProgresses => [
+  List<Map<String, dynamic>> get _mockProgresses1 => [
     {
       'title': 'Reading Comprehension',
       'totalScore': 85,
@@ -115,16 +116,16 @@ class ScoreChartWidget extends StatelessWidget {
                     touchTooltipData: BarTouchTooltipData(
                       tooltipBgColor: Colors.blueGrey[800]!,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                        final activity = _mockProgresses[groupIndex];
+                        final activity = studentTracking[groupIndex];
                         return BarTooltipItem(
-                          '${activity['title']}\n',
+                          '${activity.title}\n',
                           const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                           children: [
                             TextSpan(
-                              text: 'Score: ${activity['totalScore']}',
+                              text: 'Score: ${activity.totalScore}',
                               style: const TextStyle(
                                 color: Colors.yellow,
                                 fontSize: 14,
@@ -132,7 +133,7 @@ class ScoreChartWidget extends StatelessWidget {
                             ),
                             TextSpan(
                               text:
-                                  '\nStatus: ${activity['completed'] ? 'Completed' : 'In Progress'}',
+                                  '\nStatus: ${activity.completed ? 'Completed' : 'In Progress'}',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
@@ -144,7 +145,7 @@ class ScoreChartWidget extends StatelessWidget {
                     ),
                   ),
                   barGroups:
-                      _mockProgresses.asMap().entries.map((entry) {
+                      studentTracking.asMap().entries.map((entry) {
                         final index = entry.key;
                         final activity = entry.value;
 
@@ -152,9 +153,9 @@ class ScoreChartWidget extends StatelessWidget {
                           x: index,
                           barRods: [
                             BarChartRodData(
-                              toY: activity['totalScore'].toDouble(),
+                              toY: activity.totalScore.toDouble(),
                               color:
-                                  activity['completed']
+                                  activity.completed
                                       ? Colors.green[400]!
                                       : Colors.blue[400]!,
                               width: 16,

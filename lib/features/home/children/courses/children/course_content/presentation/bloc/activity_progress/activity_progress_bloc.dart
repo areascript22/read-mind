@@ -22,12 +22,12 @@ class ActivityProgressBloc
     emit(
       ProgressLoading(
         operation: ProgressActOperation.create,
-        activityId: event.activityId,
+        activityId: event.aiReadingId,
       ),
     );
 
     final result = await activityProgressRepository
-        .createInitialActivityProgress(activityId: event.activityId);
+        .createInitialActivityProgress(aiReadingId: event.aiReadingId);
 
     result.fold(
       (f) {
@@ -35,12 +35,14 @@ class ActivityProgressBloc
           ProgressError(
             message: f.message,
             operation: ProgressActOperation.create,
-            activityId: event.activityId,
+            activityId: event.aiReadingId,
           ),
         );
       },
       (r) {
-        emit(ProgressCreated(createdProgress: r, activityId: event.activityId));
+        emit(
+          ProgressCreated(createdProgress: r, activityId: event.aiReadingId),
+        );
       },
     );
   }
@@ -52,12 +54,12 @@ class ActivityProgressBloc
     emit(
       ProgressLoading(
         operation: ProgressActOperation.update,
-        activityId: event.activityId,
+        activityId: event.aiReadingId,
       ),
     );
 
     final result = await activityProgressRepository.updateActivityProgress(
-      activityId: event.activityId,
+      aiReadingId: event.aiReadingId,
       dataToUpdate: event.dataToUpdate,
     );
 
@@ -67,12 +69,14 @@ class ActivityProgressBloc
           ProgressError(
             message: f.message,
             operation: ProgressActOperation.update,
-            activityId: event.activityId,
+            activityId: event.aiReadingId,
           ),
         );
       },
       (r) {
-        emit(ProgressUpdated(updatedProgress: r, activityId: event.activityId));
+        emit(
+          ProgressUpdated(updatedProgress: r, activityId: event.aiReadingId),
+        );
       },
     );
   }

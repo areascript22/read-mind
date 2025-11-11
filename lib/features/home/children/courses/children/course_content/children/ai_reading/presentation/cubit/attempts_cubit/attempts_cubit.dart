@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/attempts_repository.dart';
+import 'package:client_app/features/home/children/courses/domain/repository/attempts_repository.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/main_idea_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/paraphrase_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/summary_attempt_entity.dart';

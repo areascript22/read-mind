@@ -19,9 +19,9 @@ class ActivityProgressRepositoryImpl implements ActivityProgressRepository {
 
   @override
   Future<Either<Failure, ProgressEntity>> createInitialActivityProgress({
-    required int activityId,
+    required int aiReadingId,
   }) async {
-    final url = Uri.parse("${AppEnvironment().baseUrl}/progress/$activityId");
+    final url = Uri.parse("${AppEnvironment().baseUrl}/progress/$aiReadingId");
 
     try {
       final token = await authLocalDataSource.getJwt();
@@ -63,10 +63,10 @@ class ActivityProgressRepositoryImpl implements ActivityProgressRepository {
 
   @override
   Future<Either<Failure, ProgressEntity>> updateActivityProgress({
-    required int activityId,
+    required int aiReadingId,
     required Map dataToUpdate,
   }) async {
-    final url = Uri.parse("${AppEnvironment().baseUrl}/progress/$activityId");
+    final url = Uri.parse("${AppEnvironment().baseUrl}/progress/$aiReadingId");
 
     try {
       final token = await authLocalDataSource.getJwt();

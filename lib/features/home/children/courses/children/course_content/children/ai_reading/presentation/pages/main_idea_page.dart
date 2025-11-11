@@ -59,7 +59,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
 
           context.read<ActivityProgressBloc>().add(
             UpdateProgressEvent(
-              activityId: widget.aiReadingEntity.id,
+              aiReadingId: widget.aiReadingEntity.aiReadingId,
               dataToUpdate: {"mainIdeaCompleted": true},
             ),
           );

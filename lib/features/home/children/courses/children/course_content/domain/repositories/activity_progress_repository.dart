@@ -4,10 +4,10 @@ import '../../../student_tracking/domian/entity/progress_entity.dart';
 
 abstract interface class ActivityProgressRepository {
   Future<Either<Failure, ProgressEntity>> createInitialActivityProgress({
-    required int activityId,
+    required int aiReadingId,
   });
   Future<Either<Failure, ProgressEntity>> updateActivityProgress({
-    required int activityId,
+    required int aiReadingId,
     required Map dataToUpdate,
   });
 }

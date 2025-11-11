@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../../../../../init_dependencies.dart';
-import '../bloc/progress_bloc/progress_bloc.dart';
+import '../bloc/progress_bloc/tracking_bloc.dart';
 
 class StudentTrackingPage extends StatelessWidget {
   final StudentTrackingInfoEntity info;
@@ -18,7 +18,7 @@ class StudentTrackingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: serviceLocator<ProgressBloc>(),
+      value: serviceLocator<TrackingBloc>(),
       child: _StudentTrackingContent(info: info),
     );
   }
@@ -37,10 +37,8 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
   @override
   void initState() {
     super.initState();
-    print("INIT student tracking");
-
-    context.read<ProgressBloc>().add(
-      LoadProgressEvent(userId: widget.info.user.id),
+    context.read<TrackingBloc>().add(
+      LoadTrackingEvent(userId: widget.info.user.id),
     );
   }
 
@@ -66,7 +64,6 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// HEADER - Sin cambios
             _StudentHeader(
               student: widget.info.user,
               course: widget.info.course,
@@ -75,11 +72,9 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
 
             const SizedBox(height: 24),
 
-            /// CONTENIDO PRINCIPAL CON BLOC CONSUMER
-            BlocConsumer<ProgressBloc, ProgressState>(
+            BlocConsumer<TrackingBloc, TrackingState>(
               listener: (context, state) {
-                // Mostrar Toast si hay error
-                if (state is ProgressError) {
+                if (state is TrackingError) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(state.message),
@@ -90,8 +85,7 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
                 }
               },
               builder: (context, state) {
-                // Estados de carga y error
-                if (state is ProgressLoading) {
+                if (state is TrackingLoading) {
                   return const Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 32.0),
@@ -100,7 +94,7 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
                   );
                 }
 
-                if (state is ProgressError) {
+                if (state is TrackingError) {
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 32.0),
@@ -122,8 +116,8 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
                           const SizedBox(height: 8),
                           ElevatedButton(
                             onPressed: () {
-                              context.read<ProgressBloc>().add(
-                                LoadProgressEvent(userId: widget.info.user.id),
+                              context.read<TrackingBloc>().add(
+                                LoadTrackingEvent(userId: widget.info.user.id),
                               );
                             },
                             child: const Text('Retry'),
@@ -134,8 +128,7 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
                   );
                 }
 
-                // Estado cargado - construir contenido con datos reales
-                if (state is ProgressLoaded) {
+                if (state is TrackingLoaded) {
                   final trackingData = state.trackingData;
 
                   return Column(
@@ -149,7 +142,12 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
 
                       const SizedBox(height: 32),
 
-                      SizedBox(height: 370, child: ScoreChartWidget()),
+                      SizedBox(
+                        height: 370,
+                        child: ScoreChartWidget(
+                          studentTracking: trackingData.progresses,
+                        ),
+                      ),
 
                       const SizedBox(height: 32),
 
@@ -165,7 +163,10 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
 
                       // Lista de actividades
                       ...trackingData.progresses.map(
-                        (progress) => _ActivityTile(activity: progress),
+                        (progress) => _ActivityTile(
+                          activity: progress,
+                          studentTrackingInfoEntity: widget.info,
+                        ),
                       ),
                     ],
                   );
@@ -177,7 +178,7 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
                   children: [
                     _SummaryCards(total: 0, completed: 0, avgScore: 0),
                     const SizedBox(height: 32),
-                    SizedBox(height: 370, child: ScoreChartWidget()),
+                    // SizedBox(height: 370, child: ScoreChartWidget()),
                     const SizedBox(height: 32),
                     Text(
                       "Activity Details",
@@ -358,7 +359,11 @@ class _StatCard extends StatelessWidget {
 
 class _ActivityTile extends StatelessWidget {
   final ProgressEntity activity;
-  const _ActivityTile({required this.activity});
+  final StudentTrackingInfoEntity studentTrackingInfoEntity;
+  const _ActivityTile({
+    required this.activity,
+    required this.studentTrackingInfoEntity,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -370,7 +375,11 @@ class _ActivityTile extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ActivityAttemptsPage()),
+          MaterialPageRoute(
+            builder:
+                (context) =>
+                    ActivityAttemptsPage(aiReadingId: activity.aiReadingId),
+          ),
         );
       },
       child: Container(

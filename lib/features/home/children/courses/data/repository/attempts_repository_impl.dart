@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:client_app/core/error/failure.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/attempts_repository.dart';
+import 'package:client_app/features/home/children/courses/domain/repository/attempts_repository.dart';
 import 'package:client_app/features/home/children/courses/data/models/main_idea_attempt/main_idea_attempt.dart';
 import 'package:client_app/features/home/children/courses/data/models/paraphrase_attempt/paraphrase_attempt.dart';
 import 'package:client_app/features/home/children/courses/data/models/summary_attempt/summary_attempt.dart';
@@ -10,9 +10,9 @@ import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
-import '../../../../../../../../../../core/constants/app_environment.dart';
-import '../../../../../../../../../../core/error/server_exception.dart';
-import '../../../../../../domain/entities/main_idea_attempt_entity.dart';
+import '../../../../../../core/constants/app_environment.dart';
+import '../../../../../../core/error/server_exception.dart';
+import '../../domain/entities/main_idea_attempt_entity.dart';
 
 class AttemptsRepositoryImpl implements AttemptsRepository {
   final AuthLocalDataSource authLocalDataSource;

@@ -8,6 +8,7 @@ abstract class ProgressModel with _$ProgressModel {
   const factory ProgressModel({
     required int progressId,
     required int activityId,
+    required int aiReadingId,
     required String title,
     required String? description,
     required String courseName,
@@ -44,6 +45,7 @@ extension ProgressModelExtension on ProgressModel {
     return ProgressEntity(
       progressId: progressId,
       activityId: activityId,
+      aiReadingId: aiReadingId,
       title: title,
       description: description,
       courseName: courseName,

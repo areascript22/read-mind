@@ -57,7 +57,7 @@ class _SummaryPageState extends State<SummaryPage> {
 
           context.read<ActivityProgressBloc>().add(
             UpdateProgressEvent(
-              activityId: widget.aiReadingEntity.id,
+              aiReadingId: widget.aiReadingEntity.aiReadingId,
               dataToUpdate: {"completed": true, "summaryCompleted": true},
             ),
           );

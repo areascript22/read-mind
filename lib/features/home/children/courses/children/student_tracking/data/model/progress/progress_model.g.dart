@@ -10,6 +10,7 @@ _ProgressModel _$ProgressModelFromJson(Map<String, dynamic> json) =>
     _ProgressModel(
       progressId: (json['progressId'] as num).toInt(),
       activityId: (json['activityId'] as num).toInt(),
+      aiReadingId: (json['aiReadingId'] as num).toInt(),
       title: json['title'] as String,
       description: json['description'] as String?,
       courseName: json['courseName'] as String,
@@ -31,6 +32,7 @@ Map<String, dynamic> _$ProgressModelToJson(_ProgressModel instance) =>
     <String, dynamic>{
       'progressId': instance.progressId,
       'activityId': instance.activityId,
+      'aiReadingId': instance.aiReadingId,
       'title': instance.title,
       'description': instance.description,
       'courseName': instance.courseName,

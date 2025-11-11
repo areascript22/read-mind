@@ -1,7 +1,7 @@
-// Entity con los mismos campos
 class ProgressEntity {
   final int progressId;
   final int activityId;
+  final int aiReadingId;
   final String title;
   final String? description;
   final String courseName;
@@ -18,6 +18,7 @@ class ProgressEntity {
   ProgressEntity({
     required this.progressId,
     required this.activityId,
+    required this.aiReadingId,
     required this.title,
     required this.description,
     required this.courseName,
