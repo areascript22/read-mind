@@ -1,15 +1,13 @@
 import 'package:client_app/core/common/entities/user_entity.dart';
-import 'package:client_app/features/home/children/courses/children/student_tracking/domian/entity/progress_entity.dart';
-import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/pages/activity_attempt.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/widgets/score_chart.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/student_tracking_info_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../../../../../../../init_dependencies.dart';
 import '../bloc/progress_bloc/tracking_bloc.dart';
+import '../widgets/activity_tracking_tile.dart';
 
 class StudentTrackingPage extends StatelessWidget {
   final StudentTrackingInfoEntity info;
@@ -161,47 +159,48 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
                       ),
                       const SizedBox(height: 8),
 
-                      // Lista de actividades
                       ...trackingData.progresses.map(
-                        (progress) => _ActivityTile(
+                        (progress) => ActivityTrackingTile(
                           activity: progress,
-                          studentTrackingInfoEntity: widget.info,
+                          userEntity: widget.info.user,
                         ),
                       ),
                     ],
                   );
                 }
 
-                // Estado inicial - mostrar placeholder
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _SummaryCards(total: 0, completed: 0, avgScore: 0),
-                    const SizedBox(height: 32),
-                    // SizedBox(height: 370, child: ScoreChartWidget()),
-                    const SizedBox(height: 32),
-                    Text(
-                      "Activity Details",
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 32.0),
-                        child: Text('Loading progress data...'),
-                      ),
-                    ),
-                  ],
-                );
+                return _buildStatisticsWithNoData();
               },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Column _buildStatisticsWithNoData() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _SummaryCards(total: 0, completed: 0, avgScore: 0),
+        const SizedBox(height: 32),
+        const SizedBox(height: 32),
+        Text(
+          "Activity Details",
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 32.0),
+            child: Text('Loading progress data...'),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -351,59 +350,6 @@ class _StatCard extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ActivityTile extends StatelessWidget {
-  final ProgressEntity activity;
-  final StudentTrackingInfoEntity studentTrackingInfoEntity;
-  const _ActivityTile({
-    required this.activity,
-    required this.studentTrackingInfoEntity,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final completed = activity.completed;
-    final color = completed ? Colors.green : Colors.grey[400];
-    final score = activity.totalScore;
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) =>
-                    ActivityAttemptsPage(aiReadingId: activity.aiReadingId),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: const [BoxShadow(blurRadius: 4, color: Colors.black12)],
-        ),
-        child: ListTile(
-          title: Text(
-            activity.title,
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-          ),
-          subtitle: Text(
-            completed ? "Completed - Score: $score%" : "Not completed",
-            style: GoogleFonts.poppins(
-              color: completed ? Colors.green : Colors.redAccent,
-            ),
-          ),
-          trailing: Icon(
-            completed ? Icons.check_circle : Icons.hourglass_bottom,
-            color: color,
-          ),
         ),
       ),
     );

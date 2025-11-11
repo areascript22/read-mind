@@ -1,15 +1,22 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/widgets/paraphrase_attempt_tile_t.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
+import '../../../../../../../../core/common/entities/user_entity.dart';
 import '../../../../domain/entities/paraphrase_attempt_entity.dart';
 import '../bloc/progress_bloc/tracking_bloc.dart';
 
 class ParaphraseAttemptsPage extends StatefulWidget {
   final int aiReadingId;
-  const ParaphraseAttemptsPage({super.key, required this.aiReadingId});
+  final UserEntity userEntity;
+  const ParaphraseAttemptsPage({
+    super.key,
+    required this.aiReadingId,
+    required this.userEntity,
+  });
 
   @override
   State<ParaphraseAttemptsPage> createState() => _ParaphraseAttemptsPageState();
@@ -26,7 +33,10 @@ class _ParaphraseAttemptsPageState extends State<ParaphraseAttemptsPage> {
 
   void _fetchParaphrases() {
     context.read<TrackingBloc>().add(
-      FetchAllParaphrasesAttempts(aiReadingId: widget.aiReadingId),
+      FetchAllParaphrasesAttempts(
+        aiReadingId: widget.aiReadingId,
+        targetUserId: widget.userEntity.id,
+      ),
     );
   }
 
@@ -64,23 +74,7 @@ class _ParaphraseAttemptsPageState extends State<ParaphraseAttemptsPage> {
               itemCount: paraphrases.length,
               itemBuilder: (context, index) {
                 final attempt = paraphrases[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  child: ListTile(
-                    title: Text(
-                      "Similarity: ${attempt.similarityScore.toStringAsFixed(2)} | Fluency: ${attempt.fluencyScore.toStringAsFixed(2)}",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(attempt.feedback),
-                    trailing: Text(
-                      "${attempt.createdAt.toLocal()}".split(' ')[0],
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                );
+                return ParaphraseAttemptTileTracking(attempt: attempt);
               },
             ),
           );

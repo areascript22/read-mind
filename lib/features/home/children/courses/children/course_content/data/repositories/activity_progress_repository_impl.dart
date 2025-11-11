@@ -36,7 +36,7 @@ class ActivityProgressRepositoryImpl implements ActivityProgressRepository {
           "completed": false,
           "totalProgress": 25,
           "totalScore": 10,
-          "readingCompleted": true,
+          "readingCompleted": false,
           "paraphraseCompleted": false,
           "mainIdeaCompleted": false,
           "summaryCompleted": false,

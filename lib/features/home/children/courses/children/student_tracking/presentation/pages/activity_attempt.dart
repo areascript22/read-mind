@@ -1,3 +1,4 @@
+import 'package:client_app/core/common/entities/user_entity.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/bloc/progress_bloc/tracking_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/pages/paraphrase_attempt_page.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/pages/summary_attempt_page.dart';
@@ -9,7 +10,12 @@ import 'mianidea_attempt_page.dart';
 
 class ActivityAttemptsPage extends StatelessWidget {
   final int aiReadingId;
-  const ActivityAttemptsPage({super.key, required this.aiReadingId});
+  final UserEntity userEntity;
+  const ActivityAttemptsPage({
+    super.key,
+    required this.aiReadingId,
+    required this.userEntity,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +23,13 @@ class ActivityAttemptsPage extends StatelessWidget {
       length: 3,
       child: Scaffold(
         backgroundColor: const Color(0xFFF9FAFB),
-
         appBar: AppBar(
           backgroundColor: Colors.white,
           iconTheme: const IconThemeData(color: Colors.black87),
-          title: const Text('Activity Attempts'),
+          title: Text(
+            'Activity Attempts',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           bottom: const TabBar(
             labelColor: Colors.blueAccent,
             unselectedLabelColor: Colors.grey,
@@ -32,15 +40,33 @@ class ActivityAttemptsPage extends StatelessWidget {
               Tab(text: 'Summary'),
             ],
           ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.read<TrackingBloc>().add(
+                LoadTrackingEvent(userId: userEntity.id),
+              );
+            },
+            icon: Icon(Icons.close),
+          ),
         ),
         body: BlocProvider.value(
           value: serviceLocator<TrackingBloc>(),
           child: TabBarView(
             physics: NeverScrollableScrollPhysics(),
             children: [
-              ParaphraseAttemptsPage(aiReadingId: aiReadingId),
-              MainIdeaAttemptsPage(aiReadingId: aiReadingId),
-              SummaryAttemptsPage(aiReadingId: aiReadingId),
+              ParaphraseAttemptsPage(
+                aiReadingId: aiReadingId,
+                userEntity: userEntity,
+              ),
+              MainIdeaAttemptsPage(
+                aiReadingId: aiReadingId,
+                userEntity: userEntity,
+              ),
+              SummaryAttemptsPage(
+                aiReadingId: aiReadingId,
+                userEntity: userEntity,
+              ),
             ],
           ),
         ),

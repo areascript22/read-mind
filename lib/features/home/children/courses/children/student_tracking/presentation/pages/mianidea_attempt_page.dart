@@ -1,13 +1,20 @@
+import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/widgets/main_idea_attempt_tile_t.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../../../../../../../../core/common/entities/user_entity.dart';
 import '../../../../domain/entities/main_idea_attempt_entity.dart';
 import '../bloc/progress_bloc/tracking_bloc.dart';
 
 class MainIdeaAttemptsPage extends StatefulWidget {
   final int aiReadingId;
-  const MainIdeaAttemptsPage({super.key, required this.aiReadingId});
+  final UserEntity userEntity;
+  const MainIdeaAttemptsPage({
+    super.key,
+    required this.aiReadingId,
+    required this.userEntity,
+  });
 
   @override
   State<MainIdeaAttemptsPage> createState() => _MainIdeaAttemptsPageState();
@@ -24,7 +31,10 @@ class _MainIdeaAttemptsPageState extends State<MainIdeaAttemptsPage> {
 
   void _fetchMainIdeas() {
     context.read<TrackingBloc>().add(
-      FetchAllMainIdeasAttempts(aiReadingId: widget.aiReadingId),
+      FetchAllMainIdeasAttempts(
+        aiReadingId: widget.aiReadingId,
+        targetUserId: widget.userEntity.id,
+      ),
     );
   }
 
@@ -64,23 +74,7 @@ class _MainIdeaAttemptsPageState extends State<MainIdeaAttemptsPage> {
               itemCount: mainIdeas.length,
               itemBuilder: (context, index) {
                 final attempt = mainIdeas[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  child: ListTile(
-                    title: Text(
-                      "Accuracy: ${attempt.accuracyScore.toStringAsFixed(2)} | Clarity: ${attempt.clarityScore.toStringAsFixed(2)}",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(attempt.feedback),
-                    trailing: Text(
-                      "${attempt.createdAt.toLocal()}".split(' ')[0],
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                );
+                return MainIdeaAttemptTileTracking(attempt: attempt);
               },
             ),
           );

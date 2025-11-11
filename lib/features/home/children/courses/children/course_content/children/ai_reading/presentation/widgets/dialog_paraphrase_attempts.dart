@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/paraphrase_attempt_entity.dart';
+import '../../../../../../../../../../core/common/cubits/app_user/app_user_cubit.dart';
 import '../cubit/attempts_cubit/attempts_cubit.dart';
 
 Future<void> showParaphraseAttemptsDialog(
@@ -47,6 +48,7 @@ class _ParaphraseAttemptsDialogBodyState
     super.initState();
     context.read<AttemptsCubit>().getAllParaphraseAttempts(
       aiReadingId: widget.aiReadingEntity.aiReadingId,
+      targetUserId: context.read<AppUserCubit>().user?.id ?? -1,
     );
   }
 
@@ -134,6 +136,9 @@ class _ParaphraseAttemptsDialogBodyState
                                 .getAllParaphraseAttempts(
                                   aiReadingId:
                                       widget.aiReadingEntity.aiReadingId,
+                                  targetUserId:
+                                      context.read<AppUserCubit>().user?.id ??
+                                      -1,
                                 ),
                         child: ListView.builder(
                           itemCount: paraphrases.length,

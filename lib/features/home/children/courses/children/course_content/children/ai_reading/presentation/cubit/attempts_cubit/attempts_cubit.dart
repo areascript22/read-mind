@@ -89,10 +89,14 @@ class AttemptsCubit extends Cubit<AttemptsState> {
     );
   }
 
-  void getAllParaphraseAttempts({required int aiReadingId}) async {
+  void getAllParaphraseAttempts({
+    required int aiReadingId,
+    required int targetUserId,
+  }) async {
     emit(AttemptsLoading(attemptOperation: AttemptOperation.paraphraseAll));
     final response = await attemptsRepository.getAllParaphraseAttempts(
       aiReadingId: aiReadingId,
+      targetUserId: targetUserId,
     );
     response.fold(
       (l) => emit(
@@ -105,10 +109,11 @@ class AttemptsCubit extends Cubit<AttemptsState> {
     );
   }
 
-  void getAllMainIdeaAttempts(int aiReadingId) async {
+  void getAllMainIdeaAttempts(int aiReadingId, int targetUserId) async {
     emit(AttemptsLoading(attemptOperation: AttemptOperation.mainIdeaAll));
     final response = await attemptsRepository.getAllMainIdeaAttempts(
       aiReadingId: aiReadingId,
+      targetUserId: targetUserId,
     );
     response.fold(
       (l) => emit(
@@ -121,10 +126,11 @@ class AttemptsCubit extends Cubit<AttemptsState> {
     );
   }
 
-  void getAllSummaryAttempts(int aiReadingId) async {
+  void getAllSummaryAttempts(int aiReadingId, int targetUserId) async {
     emit(AttemptsLoading(attemptOperation: AttemptOperation.summaryAll));
     final response = await attemptsRepository.getAllSummaryAttempts(
       aiReadingId: aiReadingId,
+      targetUserId: targetUserId,
     );
     response.fold(
       (l) => emit(

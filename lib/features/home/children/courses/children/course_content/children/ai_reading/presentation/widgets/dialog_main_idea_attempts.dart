@@ -1,3 +1,4 @@
+import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/main_idea_attempt_entity.dart';
 import 'package:client_app/init_dependencies.dart';
@@ -36,12 +37,15 @@ class _MainIdeaAttemptsDialogBodyState
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
+  late AppUserCubit appUserCubit;
 
   @override
   void initState() {
     super.initState();
+    appUserCubit = context.read<AppUserCubit>();
     context.read<AttemptsCubit>().getAllMainIdeaAttempts(
       widget.aiReadingEntity.aiReadingId,
+      appUserCubit.user?.id ?? -1,
     );
   }
 
@@ -128,6 +132,7 @@ class _MainIdeaAttemptsDialogBodyState
                                 .read<AttemptsCubit>()
                                 .getAllMainIdeaAttempts(
                                   widget.aiReadingEntity.aiReadingId,
+                                  appUserCubit.user?.id ?? -1,
                                 ),
                         child: ListView.builder(
                           itemCount: paraphrases.length,

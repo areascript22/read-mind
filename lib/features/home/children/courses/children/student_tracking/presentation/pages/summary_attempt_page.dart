@@ -1,13 +1,20 @@
+import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/widgets/summary_attempt_tile_t.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../../../../../../../../core/common/entities/user_entity.dart';
 import '../../../../domain/entities/summary_attempt_entity.dart';
 import '../bloc/progress_bloc/tracking_bloc.dart';
 
 class SummaryAttemptsPage extends StatefulWidget {
   final int aiReadingId;
-  const SummaryAttemptsPage({super.key, required this.aiReadingId});
+  final UserEntity userEntity;
+  const SummaryAttemptsPage({
+    super.key,
+    required this.aiReadingId,
+    required this.userEntity,
+  });
 
   @override
   State<SummaryAttemptsPage> createState() => _SummaryAttemptsPageState();
@@ -24,7 +31,10 @@ class _SummaryAttemptsPageState extends State<SummaryAttemptsPage> {
 
   void _fetchSummaries() {
     context.read<TrackingBloc>().add(
-      FetchAllSummaryAttempts(aiReadingId: widget.aiReadingId),
+      FetchAllSummaryAttempts(
+        aiReadingId: widget.aiReadingId,
+        targetUserId: widget.userEntity.id,
+      ),
     );
   }
 
@@ -64,23 +74,7 @@ class _SummaryAttemptsPageState extends State<SummaryAttemptsPage> {
               itemCount: summaries.length,
               itemBuilder: (context, index) {
                 final attempt = summaries[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  child: ListTile(
-                    title: Text(
-                      "Accuracy: ${attempt.accuracyScore.toStringAsFixed(2)} | Coverage: ${attempt.coverageScore.toStringAsFixed(2)}",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(attempt.feedback),
-                    trailing: Text(
-                      "${attempt.createdAt.toLocal()}".split(' ')[0],
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                );
+                return SummaryAttemptTileTracking(attempt: attempt);
               },
             ),
           );

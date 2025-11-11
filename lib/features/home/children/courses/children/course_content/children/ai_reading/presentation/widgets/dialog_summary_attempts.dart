@@ -5,6 +5,7 @@ import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../../../../../../../../../../core/common/cubits/app_user/app_user_cubit.dart';
 import '../../../../domain/entities/ai_reading_entity.dart';
 import '../cubit/attempts_cubit/attempts_cubit.dart';
 
@@ -42,6 +43,7 @@ class _SummaryAttemptsDialogBodyState
     super.initState();
     context.read<AttemptsCubit>().getAllSummaryAttempts(
       widget.aiReadingEntity.aiReadingId,
+      context.read<AppUserCubit>().user?.id ?? -1,
     );
   }
 
@@ -125,6 +127,7 @@ class _SummaryAttemptsDialogBodyState
                                 .read<AttemptsCubit>()
                                 .getAllSummaryAttempts(
                                   widget.aiReadingEntity.aiReadingId,
+                                  context.read<AppUserCubit>().user?.id ?? -1,
                                 ),
                         child: ListView.builder(
                           itemCount: paraphrases.length,

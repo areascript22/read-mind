@@ -55,6 +55,7 @@ class TrackingBloc extends Bloc<TrackingEvent, TrackingState> {
     emit(TrackingLoading(operation: TrackingOperation.allParaphrases));
     final response = await attemptsRepository.getAllParaphraseAttempts(
       aiReadingId: event.aiReadingId,
+      targetUserId: event.targetUserId,
     );
     response.fold(
       (l) => emit(
@@ -74,6 +75,7 @@ class TrackingBloc extends Bloc<TrackingEvent, TrackingState> {
     emit(TrackingLoading(operation: TrackingOperation.allMainIdeas));
     final response = await attemptsRepository.getAllMainIdeaAttempts(
       aiReadingId: event.aiReadingId,
+      targetUserId: event.targetUserId,
     );
     response.fold(
       (l) => emit(
@@ -93,6 +95,7 @@ class TrackingBloc extends Bloc<TrackingEvent, TrackingState> {
     emit(TrackingLoading(operation: TrackingOperation.allSummaries));
     final response = await attemptsRepository.getAllSummaryAttempts(
       aiReadingId: event.aiReadingId,
+      targetUserId: event.targetUserId,
     );
     response.fold(
       (l) => emit(
