@@ -40,7 +40,7 @@ jobs:
 
       # 6️⃣ Compila el .aab del flavor dev
       - name: Build appbundle (dev)
-        run: flutter build appbundle --flavor dev --release --dart-define=FLAVOR=dev --enable-impeller
+        run: flutter build appbundle --flavor dev --release --dart-define=FLAVOR=dev
 
       # 7️⃣ Lista archivos generados
       - name: List built files
