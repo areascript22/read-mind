@@ -29,7 +29,7 @@ Future<bool> showDialogLogout({
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: colorScheme.error.withOpacity(0.1),
+                      color: colorScheme.error.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -56,7 +56,7 @@ Future<bool> showDialogLogout({
                 RichText(
                   text: TextSpan(
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurface.withOpacity(0.8),
+                      color: colorScheme.onSurface.withValues(alpha: 0.8),
                     ),
                     children: [
                       const TextSpan(text: "Hola "),
@@ -77,7 +77,7 @@ Future<bool> showDialogLogout({
               Text(
                 "¿Estás seguro de que deseas cerrar sesión?",
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface.withOpacity(0.8),
+                  color: colorScheme.onSurface.withValues(alpha: 0.8),
                 ),
               ),
 
@@ -86,7 +86,7 @@ Future<bool> showDialogLogout({
               Text(
                 "Tendrás que iniciar sesión nuevamente para acceder a tu cuenta.",
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
 
@@ -100,9 +100,11 @@ Future<bool> showDialogLogout({
                     child: OutlinedButton(
                       onPressed: () => Navigator.of(ctx).pop(false),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: colorScheme.onSurface.withOpacity(0.7),
+                        foregroundColor: colorScheme.onSurface.withValues(
+                          alpha: 0.7,
+                        ),
                         side: BorderSide(
-                          color: colorScheme.outline.withOpacity(0.5),
+                          color: colorScheme.outline.withValues(alpha: 0.5),
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -112,7 +114,7 @@ Future<bool> showDialogLogout({
                       child: Text(
                         "Cancelar",
                         style: TextStyle(
-                          color: colorScheme.onSurface.withOpacity(0.8),
+                          color: colorScheme.onSurface.withValues(alpha: 0.8),
                           fontWeight: FontWeight.w500,
                         ),
                       ),

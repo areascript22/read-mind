@@ -139,7 +139,6 @@ class UserManagerRepositoryImpl implements UserManagerRepository {
       final updatedUser = UserModel.fromJson(data['updatedUser']).toEntity();
       return Right(updatedUser);
     } catch (e) {
-      print("Error updating usre role: ${e}");
       if (e is ServerException) {
         return left(Failure(e.message));
       }

@@ -29,7 +29,7 @@ Future<bool> showDialogRequestRole({
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: colorScheme.primary.withOpacity(0.1),
+                      color: colorScheme.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -55,7 +55,7 @@ Future<bool> showDialogRequestRole({
               Text(
                 "Estás a punto de solicitar el rol de:",
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface.withOpacity(0.8),
+                  color: colorScheme.onSurface.withValues(alpha: 0.8),
                 ),
               ),
 
@@ -69,10 +69,10 @@ Future<bool> showDialogRequestRole({
                   horizontal: 16,
                 ),
                 decoration: BoxDecoration(
-                  color: colorScheme.primary.withOpacity(0.05),
+                  color: colorScheme.primary.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: colorScheme.primary.withOpacity(0.2),
+                    color: colorScheme.primary.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Text(
@@ -90,7 +90,7 @@ Future<bool> showDialogRequestRole({
               Text(
                 "¿Deseas enviar la solicitud?",
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface.withOpacity(0.8),
+                  color: colorScheme.onSurface.withValues(alpha: 0.8),
                 ),
               ),
 
@@ -104,9 +104,11 @@ Future<bool> showDialogRequestRole({
                     child: OutlinedButton(
                       onPressed: () => Navigator.of(ctx).pop(false),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: colorScheme.onSurface.withOpacity(0.7),
+                        foregroundColor: colorScheme.onSurface.withValues(
+                          alpha: 0.7,
+                        ),
                         side: BorderSide(
-                          color: colorScheme.outline.withOpacity(0.5),
+                          color: colorScheme.outline.withValues(alpha: 0.5),
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -116,7 +118,7 @@ Future<bool> showDialogRequestRole({
                       child: Text(
                         "Cancelar",
                         style: TextStyle(
-                          color: colorScheme.onSurface.withOpacity(0.8),
+                          color: colorScheme.onSurface.withValues(alpha: 0.8),
                           fontWeight: FontWeight.w500,
                         ),
                       ),

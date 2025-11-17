@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class CourseTextField extends StatefulWidget {
   final String hintText;
   final TextEditingController controller;
-  final FocusNode focusNode; // FocusNode como parámetro obligatorio
+  final FocusNode focusNode;
 
   const CourseTextField({
     super.key,
     required this.hintText,
     required this.controller,
-    required this.focusNode, // Ahora es requerido
+    required this.focusNode,
   });
 
   @override
@@ -22,16 +22,12 @@ class _CourseTextFieldState extends State<CourseTextField> {
   @override
   void initState() {
     super.initState();
-
-    // Usamos el FocusNode proporcionado externamente
     widget.focusNode.addListener(() {
       setState(() {
         _isFocused = widget.focusNode.hasFocus;
       });
     });
   }
-
-  // NOTA: Ya no necesitamos dispose() porque el FocusNode es manejado externamente
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +37,7 @@ class _CourseTextFieldState extends State<CourseTextField> {
         if (_isFocused) const SizedBox(height: 25),
         TextField(
           controller: widget.controller,
-          focusNode: widget.focusNode, // Usamos el FocusNode proporcionado
+          focusNode: widget.focusNode,
           decoration: InputDecoration(
             label: Text(widget.hintText),
             labelStyle: _isFocused ? const TextStyle(color: Colors.blue) : null,
@@ -63,7 +59,7 @@ class _CourseTextFieldState extends State<CourseTextField> {
             ),
           ),
           onChanged: (value) {
-            setState(() {}); // Actualizar la UI cuando cambia el texto
+            setState(() {});
           },
         ),
       ],

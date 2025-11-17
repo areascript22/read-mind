@@ -39,8 +39,6 @@ class _DevSettingBottomSheetState extends State<DevSettingBottomSheet> {
   }
 
   void _guardarSettings() {
-    final lan = _lanController.text;
-
     Navigator.of(context).pop(); // Close the bottom sheet
   }
 

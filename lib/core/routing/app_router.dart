@@ -1,6 +1,6 @@
-import 'package:client_app/core/common/entities/user_entity.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:client_app/features/auth/presentation/cubit/app_version_cubit/app_version_cubit.dart';
 import 'package:client_app/features/auth/presentation/pages/auth_wrapper.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_up_page.dart';
@@ -43,8 +43,11 @@ class AppRouter {
     routes: [
       ShellRoute(
         builder: (context, state, child) {
-          return BlocProvider.value(
-            value: serviceLocator<AuthBloc>(),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => serviceLocator<AuthBloc>()),
+              BlocProvider(create: (_) => serviceLocator<AppVersionCubit>()),
+            ],
             child: child,
           );
         },

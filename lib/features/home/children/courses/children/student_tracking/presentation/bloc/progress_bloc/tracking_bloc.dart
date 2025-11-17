@@ -3,7 +3,7 @@ import 'package:client_app/features/home/children/courses/domain/entities/main_i
 import 'package:client_app/features/home/children/courses/domain/entities/paraphrase_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/summary_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/repository/attempts_repository.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 import '../../../domian/entity/tracking_entity.dart';
 import '../../../domian/repository/progress_repository.dart';
 part 'tracking_event.dart';

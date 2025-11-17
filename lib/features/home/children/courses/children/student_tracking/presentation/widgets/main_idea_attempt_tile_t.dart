@@ -16,7 +16,7 @@ class MainIdeaAttemptTileTracking extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -150,7 +150,7 @@ class MainIdeaAttemptTileTracking extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
@@ -324,20 +324,21 @@ class MainIdeaAttemptTileTracking extends StatelessWidget {
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: [
-            performanceLevel.color.withOpacity(0.1),
-            performanceLevel.color.withOpacity(0.05),
+            performanceLevel.color.withValues(alpha: 0.1),
+            performanceLevel.color.withValues(alpha: 0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: performanceLevel.color.withOpacity(0.3)),
+        border: Border.all(
+          color: performanceLevel.color.withValues(alpha: 0.3),
+        ),
       ),
       child: Row(
         children: [
-          // Performance icon
           Container(
-            padding: const EdgeInsets.all(6), // Padding reducido
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: performanceLevel.color.withOpacity(0.2),
+              color: performanceLevel.color.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -347,8 +348,6 @@ class MainIdeaAttemptTileTracking extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-
-          // Performance text
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,18 +378,15 @@ class MainIdeaAttemptTileTracking extends StatelessWidget {
 
           // Average score
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 5,
-            ), // Padding reducido
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: performanceLevel.color.withOpacity(0.1),
+              color: performanceLevel.color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
-              '${averageScore.toStringAsFixed(0)}%', // Sin decimales
+              '${averageScore.toStringAsFixed(0)}%',
               style: GoogleFonts.poppins(
-                fontSize: 14, // Texto ligeramente más pequeño
+                fontSize: 14,
                 fontWeight: FontWeight.w800,
                 color: performanceLevel.color,
               ),

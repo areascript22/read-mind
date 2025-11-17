@@ -6,27 +6,6 @@ class ScoreChartWidget extends StatelessWidget {
   final List<ProgressEntity> studentTracking;
   const ScoreChartWidget({super.key, required this.studentTracking});
 
-  List<Map<String, dynamic>> get _mockProgresses1 => [
-    {
-      'title': 'Reading Comprehension',
-      'totalScore': 85,
-      'completed': true,
-      'maxScore': 100,
-    },
-    {
-      'title': 'Vocabulary Practice',
-      'totalScore': 65,
-      'completed': false,
-      'maxScore': 100,
-    },
-    {
-      'title': 'Grammar Test',
-      'totalScore': 92,
-      'completed': true,
-      'maxScore': 100,
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Card(

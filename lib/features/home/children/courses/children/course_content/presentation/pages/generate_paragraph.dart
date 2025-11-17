@@ -241,7 +241,7 @@ class _GenerateParagraphPageState extends State<GenerateParagraphPage> {
                     },
                   ),
                 );
-              }).toList(),
+              }),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: ChoiceChip(

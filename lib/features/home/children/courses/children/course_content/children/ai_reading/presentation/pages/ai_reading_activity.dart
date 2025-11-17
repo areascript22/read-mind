@@ -103,7 +103,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
 
       _flutterTts.setStartHandler(() {});
     } catch (e) {
-      print("TTS init error: $e");
+      debugPrint("TTS init error: $e");
     }
   }
 
@@ -217,7 +217,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     try {
       await _flutterTts.speak(sub);
     } catch (e) {
-      print("TTS speak error: $e");
+      debugPrint("TTS speak error: $e");
     }
   }
 
@@ -432,7 +432,8 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
           style: TextStyle(
             fontSize: fontSize,
             color: isSelected ? Colors.blueAccent : color,
-            backgroundColor: isSelected ? Colors.blue.withOpacity(0.2) : null,
+            backgroundColor:
+                isSelected ? Colors.blue.withValues(alpha: 0.2) : null,
           ),
           recognizer:
               TapGestureRecognizer()
@@ -473,7 +474,9 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
       ],
     );
     if (selected == "translate") {
-      showTranslateBottomSheet(context, word);
+      if (context.mounted) {
+        showTranslateBottomSheet(context, word);
+      }
     }
   }
 

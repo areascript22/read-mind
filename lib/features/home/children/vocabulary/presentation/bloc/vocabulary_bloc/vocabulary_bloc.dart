@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:client_app/features/home/domain/entity/translation_entity.dart';
+import 'package:flutter/material.dart';
 
 import '../../../domain/repository/vocabulary_repository.dart';
 

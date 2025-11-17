@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:client_app/core/common/entities/user_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/course_content_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 part 'students_event.dart';
 part 'students_state.dart';

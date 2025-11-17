@@ -160,14 +160,11 @@ class _AIReadingTileContent extends StatelessWidget {
 
                   if (state is ProgressCreated &&
                       activityId == state.activityId) {
-                    print("sadfasdfssdfasdf");
-                    // Navegar a la actividad cuando se crea el progreso
                     context.push(RouteNames.activityAIReading, extra: activity);
                   }
                 },
               ),
 
-              // Contenido principal del tile
               Row(
                 children: [
                   SvgPicture.asset(
@@ -189,7 +186,6 @@ class _AIReadingTileContent extends StatelessWidget {
               ),
               const SizedBox(height: 6),
 
-              // Description
               Text(
                 description,
                 style: TextStyle(color: Colors.grey[700], fontSize: 14),

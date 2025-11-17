@@ -16,7 +16,7 @@ class MainIdeaTipDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(20.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.amber.shade200.withOpacity(0.5),
+              color: Colors.amber.shade200.withValues(alpha: 0.5),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),

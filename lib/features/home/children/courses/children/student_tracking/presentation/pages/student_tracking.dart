@@ -328,7 +328,7 @@ class _StatCard extends StatelessWidget {
         height: 90,
         margin: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -346,7 +346,7 @@ class _StatCard extends StatelessWidget {
               title,
               style: GoogleFonts.poppins(
                 fontSize: 14,
-                color: color.withOpacity(0.9),
+                color: color.withValues(alpha: 0.9),
               ),
             ),
           ],
