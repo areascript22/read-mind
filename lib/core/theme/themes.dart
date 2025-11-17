@@ -99,13 +99,13 @@ class AppThemes {
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(
-          color: _lightColorScheme.primary.withOpacity(0.12),
+          color: _lightColorScheme.primary.withValues(alpha: 0.12),
         ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(
-          color: _lightColorScheme.primary.withOpacity(0.08),
+          color: _lightColorScheme.primary.withValues(alpha: 0.08),
         ),
       ),
     ),
@@ -122,13 +122,13 @@ class AppThemes {
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: _lightColorScheme.surface,
       selectedItemColor: _lightColorScheme.primary,
-      unselectedItemColor: _lightColorScheme.onSurface.withOpacity(0.6),
+      unselectedItemColor: _lightColorScheme.onSurface.withValues(alpha: 0.6),
       showUnselectedLabels: true,
       elevation: 8,
       type: BottomNavigationBarType.fixed,
     ),
     dividerTheme: DividerThemeData(
-      color: _lightColorScheme.onSurface.withOpacity(0.08),
+      color: _lightColorScheme.onSurface.withValues(alpha: 0.08),
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: _lightColorScheme.primary,
@@ -155,8 +155,8 @@ class AppThemes {
     switchTheme: SwitchThemeData(
       trackColor: MaterialStateProperty.resolveWith((states) {
         if (states.contains(MaterialState.selected))
-          return _lightColorScheme.primary.withOpacity(0.4);
-        return _lightColorScheme.onSurface.withOpacity(0.2);
+          return _lightColorScheme.primary.withValues(alpha: 0.4);
+        return _lightColorScheme.onSurface.withValues(alpha: 0.2);
       }),
       thumbColor: MaterialStateProperty.resolveWith((states) {
         if (states.contains(MaterialState.selected))

@@ -3,7 +3,7 @@ import 'package:client_app/core/common/entities/user_entity.dart';
 import 'package:client_app/features/home/children/users/domain/entity/composed_request_entity.dart';
 import 'package:client_app/features/home/children/users/domain/repositories/user_manager_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 part 'user_manager_event.dart';
 part 'user_manager_state.dart';

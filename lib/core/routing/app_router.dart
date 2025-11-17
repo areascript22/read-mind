@@ -1,4 +1,3 @@
-import 'package:client_app/core/common/entities/user_entity.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:client_app/features/auth/presentation/pages/auth_wrapper.dart';

@@ -16,7 +16,7 @@ class ParaphraseTipDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(20.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.amber.withOpacity(0.3),
+              color: Colors.amber.withValues(alpha: 0.3),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -108,7 +108,7 @@ class ParaphraseTipDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                     elevation: 5,
-                    shadowColor: Colors.amberAccent.withOpacity(0.5),
+                    shadowColor: Colors.amberAccent.withValues(alpha: 0.5),
                   ),
                   child: const Text(
                     "Entendido",
@@ -139,7 +139,7 @@ class _TipItem extends StatelessWidget {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: Colors.amber.withOpacity(0.15),
+            color: Colors.amber.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, color: Colors.amber, size: 18),

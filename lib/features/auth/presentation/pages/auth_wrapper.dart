@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/common/cubits/app_user/app_user_cubit.dart';
-
 class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
 

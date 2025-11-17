@@ -4,7 +4,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_summary_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 part 'ai_reading_event.dart';
 part 'ai_reading_state.dart';

@@ -16,7 +16,7 @@ class SummaryAttemptTileTracking extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -152,9 +152,9 @@ class SummaryAttemptTileTracking extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -356,7 +356,7 @@ class SummaryAttemptTileTracking extends StatelessWidget {
               width: score,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [color, color.withOpacity(0.7)],
+                  colors: [color, color.withValues(alpha: 0.7)],
                 ),
                 borderRadius: BorderRadius.circular(3),
               ),
@@ -385,12 +385,14 @@ class SummaryAttemptTileTracking extends StatelessWidget {
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: [
-            performanceLevel.color.withOpacity(0.1),
-            performanceLevel.color.withOpacity(0.05),
+            performanceLevel.color.withValues(alpha: 0.1),
+            performanceLevel.color.withValues(alpha: 0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: performanceLevel.color.withOpacity(0.3)),
+        border: Border.all(
+          color: performanceLevel.color.withValues(alpha: 0.3),
+        ),
       ),
       child: Row(
         children: [
@@ -398,7 +400,7 @@ class SummaryAttemptTileTracking extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: performanceLevel.color.withOpacity(0.2),
+              color: performanceLevel.color.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -442,7 +444,7 @@ class SummaryAttemptTileTracking extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: performanceLevel.color.withOpacity(0.1),
+              color: performanceLevel.color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(

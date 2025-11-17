@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_repository.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../../../../../../domain/entity/translation_entity.dart';
 

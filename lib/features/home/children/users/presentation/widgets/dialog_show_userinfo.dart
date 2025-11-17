@@ -187,8 +187,8 @@ class _DialogShowUserInfoState extends State<DialogShowUserInfo> {
   List<Widget> _buildDialogActions(bool isLoading) {
     return [
       TextButton(
-        child: const Text("Cerrar"),
         onPressed: isLoading ? null : () => Navigator.pop(context),
+        child: const Text("Cerrar"),
       ),
       if (_canChangeRole)
         ElevatedButton(

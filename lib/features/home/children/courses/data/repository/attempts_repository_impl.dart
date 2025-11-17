@@ -171,7 +171,6 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
     final url = Uri.parse(
       "${AppEnvironment().baseUrl}/attempts/mainIdea/$aiReadingId",
     ).replace(queryParameters: {"targetUserId": targetUserId.toString()});
-    ;
 
     try {
       final token = await authLocalDataSource.getJwt();
@@ -236,7 +235,7 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
           (data['data'] as List)
               .map((e) => ParaphraseAttemptModel.fromJson(e).toEntity())
               .toList();
-      debugPrint('All paraphrases: ${paraphrases}');
+      debugPrint('All paraphrases: $paraphrases');
 
       return Right(paraphrases);
     } catch (e) {
@@ -256,7 +255,6 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
     final url = Uri.parse(
       "${AppEnvironment().baseUrl}/attempts/summary/$aiReadingId",
     ).replace(queryParameters: {"targetUserId": targetUserId.toString()});
-    ;
 
     try {
       final token = await authLocalDataSource.getJwt();

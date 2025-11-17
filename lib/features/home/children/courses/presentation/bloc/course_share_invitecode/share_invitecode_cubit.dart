@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:client_app/features/home/children/courses/presentation/services/share_service.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 part 'share_invitecode_state.dart';
 

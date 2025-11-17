@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:client_app/features/home/children/courses/domain/enums/course_option.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 part 'course_option_state.dart';
 
