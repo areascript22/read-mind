@@ -8,7 +8,10 @@ Future<void> initGlobalConfig() async {
 
 Future<void> _initDotEnvValues() async {
   final currentFlavor = FlavorConfig.current;
-  final filename = currentFlavor == AppFlavors.dev ? '.env.dev' : '.env.prod';
+  final filename =
+      currentFlavor == AppFlavors.dev
+          ? 'assets/env/.env.dev'
+          : 'assets/env/.env.prod';
   await dotenv.load(fileName: filename);
   AppEnvironment().baseUrl = dotenv.env["BASE_URL"] ?? "";
 }
