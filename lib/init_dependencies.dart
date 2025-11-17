@@ -1,4 +1,8 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:client_app/features/auth/data/repositories/app_version_repository_impl.dart';
+import 'package:client_app/features/auth/domain/repositories/app_version_repository.dart';
+import 'package:client_app/features/auth/helper/app_version_helper.dart';
+import 'package:client_app/features/auth/presentation/cubit/app_version_cubit/app_version_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/datasource/local_datasource/local_reading_progress_datasource%20.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_local_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_repository_impl.dart';
@@ -104,6 +108,18 @@ void _initAuth() {
       serviceLocator(),
       serviceLocator(),
       serviceLocator(),
+    ),
+  );
+
+  serviceLocator.registerFactory<AppVersionRepository>(
+    () => AppVersionRepositoryImpl(),
+  );
+  serviceLocator.registerFactory(() => AppVersionHelper());
+
+  serviceLocator.registerLazySingleton(
+    () => AppVersionCubit(
+      appVersionRepository: serviceLocator(),
+      appVersionHelper: serviceLocator(),
     ),
   );
 }
