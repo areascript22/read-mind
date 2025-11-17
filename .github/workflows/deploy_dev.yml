@@ -64,4 +64,4 @@ jobs:
           packageName: com.readmind.dev
           releaseFiles: build/app/outputs/bundle/devRelease/app-dev-release.aab
           track: internal
-          status: completed
+          status: draft
