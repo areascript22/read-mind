@@ -1,16 +1,28 @@
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:client_app/features/auth/presentation/cubit/app_version_cubit/app_version_cubit.dart';
 import 'package:client_app/features/auth/presentation/pages/auth_wrapper.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:client_app/features/auth/presentation/pages/splash_screen.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/bloc/ai_reading_bloc/ai_reading_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/ai_reading_activity.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/main_idea_page.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/paraphrase_page.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/summary_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/paragraph_metadata.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/activity_progress/activity_progress_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/students/students_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/create_ai_reading_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/generate_paragraph.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/update_course_info_page.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/pages/student_tracking.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/student_tracking_info_entity.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/course_option_cubit/course_option_cubit.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/course_share_invitecode/share_invitecode_cubit.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc/courses_bloc.dart';
@@ -21,7 +33,7 @@ import 'package:client_app/init_dependencies.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/home/children/courses/children/course_content/presentation/bloc/course_content_bloc.dart';
+import '../../features/home/children/courses/children/course_content/presentation/bloc/course_content/course_content_bloc.dart';
 import '../../features/home/children/courses/children/course_content/presentation/pages/course_settings.dart';
 import '../../features/home/children/courses/children/course_content/presentation/pages/pages_container.dart';
 
@@ -31,8 +43,11 @@ class AppRouter {
     routes: [
       ShellRoute(
         builder: (context, state, child) {
-          return BlocProvider.value(
-            value: serviceLocator<AuthBloc>(),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => serviceLocator<AuthBloc>()),
+              BlocProvider(create: (_) => serviceLocator<AppVersionCubit>()),
+            ],
             child: child,
           );
         },
@@ -91,9 +106,14 @@ class AppRouter {
           return MultiBlocProvider(
             providers: [
               BlocProvider.value(value: serviceLocator<CourseContentBloc>()),
+              BlocProvider.value(value: serviceLocator<ActivityProgressBloc>()),
               BlocProvider.value(value: serviceLocator<CoursesBloc>()),
               BlocProvider.value(value: serviceLocator<ShareInvitecodeCubit>()),
               BlocProvider.value(value: serviceLocator<CourseCubit>()),
+              BlocProvider.value(value: serviceLocator<StudentsBloc>()),
+              BlocProvider.value(value: serviceLocator<AiReadingBloc>()),
+
+              BlocProvider.value(value: serviceLocator<AttemptsCubit>()),
             ],
             child: child,
           );
@@ -134,8 +154,8 @@ class AppRouter {
           GoRoute(
             path: RouteNames.courseContentCreateAiReading,
             builder: (context, state) {
-              final content = state.extra as String;
-              return CreateAiReadingPage(content: content);
+              final content = state.extra as ParagraphMetadata;
+              return CreateAiReadingPage(paragraphMetadata: content);
             },
           ),
 
@@ -146,7 +166,39 @@ class AppRouter {
               return AiReadingActivity(activityModel: activityModel);
             },
           ),
+
+          GoRoute(
+            path: RouteNames.activityParaphrase,
+            builder: (context, state) {
+              final originalParagraph = state.extra as AIReadingEntity;
+              return ParaphrasePage(aiReadingEntity: originalParagraph);
+            },
+          ),
+
+          GoRoute(
+            path: RouteNames.activitySummary,
+            builder: (context, state) {
+              final originalParagraph = state.extra as AIReadingEntity;
+              return SummaryPage(aiReadingEntity: originalParagraph);
+            },
+          ),
+
+          GoRoute(
+            path: RouteNames.activityMainIdea,
+            builder: (context, state) {
+              final originalParagraph = state.extra as AIReadingEntity;
+              return MainIdeaPage(aiReadingEntity: originalParagraph);
+            },
+          ),
         ],
+      ),
+
+      GoRoute(
+        path: RouteNames.studentTracking,
+        builder: (context, state) {
+          final student = state.extra as StudentTrackingInfoEntity;
+          return StudentTrackingPage(info: student);
+        },
       ),
     ],
   );

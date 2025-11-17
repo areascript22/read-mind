@@ -1,8 +1,6 @@
+import 'package:client_app/core/constants/app_environment.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/environment.dart';
-
-// Public function to show the bottom sheet
 void showDevSettingBS(BuildContext context) {
   showModalBottomSheet(
     context: context,
@@ -29,7 +27,7 @@ class _DevSettingBottomSheetState extends State<DevSettingBottomSheet> {
   @override
   void initState() {
     super.initState();
-    _lanController.text = Environments.testHostLAN;
+    _lanController.text = AppEnvironment().baseUrl;
     // _wifiController.text = Environments.testHostWIFI;
   }
 
@@ -41,13 +39,6 @@ class _DevSettingBottomSheetState extends State<DevSettingBottomSheet> {
   }
 
   void _guardarSettings() {
-    final lan = _lanController.text;
-    //  final wifi = _wifiController.text;
-
-    // Environments.testHostLAN = lan;
-    // Environments.testHostWIFI = wifi;
-    Environments.updateAllUrls(lan);
-
     Navigator.of(context).pop(); // Close the bottom sheet
   }
 

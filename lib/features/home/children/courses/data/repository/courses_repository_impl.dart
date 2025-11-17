@@ -5,7 +5,7 @@ import 'package:client_app/features/home/children/courses/data/models/course/cou
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/repository/courses_repositories.dart';
 import 'package:client_app/shared/datasources/auth_local_datasource.dart';
-import 'package:fpdart/src/either.dart';
+import 'package:fpdart/fpdart.dart';
 
 class CoursesRepositoryImpl implements CoursesRepository {
   final CoursesRemoteDatasource remoteDatasource;

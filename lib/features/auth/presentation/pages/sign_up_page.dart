@@ -10,6 +10,7 @@ import '../../../../core/common/utils/toast_util.dart';
 import '../widgets/auth_password_textfield.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/background1.dart';
+import '../widgets/dialog_email_not_verified.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -159,7 +160,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                 : () {
                                   context.read<AuthBloc>().add(
                                     AuthSignUpEvent(
-                                      email: emailTextController.text.trim().toLowerCase(),
+                                      email:
+                                          emailTextController.text
+                                              .trim()
+                                              .toLowerCase(),
                                       password:
                                           passwordTextController.text.trim(),
                                       name: nameTextController.text.trim(),
@@ -179,7 +183,15 @@ class _SignUpPageState extends State<SignUpPage> {
                         ToastMessageUtil.showToast(state.message, context);
                       }
 
-                      if(state is AuthSuccessState){
+                      if (state is AuthSuccessState) {
+                        if (!state.userEntity.emailVerified) {
+                          context.go(RouteNames.signIn);
+                          showEmailNoVerificadoDialog(
+                            context,
+                            state.userEntity,
+                          );
+                          return;
+                        }
                         context.go(RouteNames.home);
                       }
                     },

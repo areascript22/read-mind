@@ -1,6 +1,13 @@
+import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/bs_translate_word.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/activity_progress/activity_progress_bloc.dart';
+import 'package:client_app/shared/widgets/loader_indicator.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/bs_settings.dart';
 
 class AiReadingActivity extends StatefulWidget {
@@ -13,12 +20,10 @@ class AiReadingActivity extends StatefulWidget {
 }
 
 class _AiReadingActivityState extends State<AiReadingActivity> {
-  // Text / sentences
   String paragraph = "";
   List<String> sentences = [];
   List<int> sentenceStartIndices = [];
 
-  // TTS
   late final FlutterTts _flutterTts;
   bool isPlaying = false;
   bool isSeeking = false;
@@ -26,7 +31,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   int currentCharIndex = 0;
   int currentSentenceIndex = -1;
 
-  // Font size
   double minFontSize = 12;
   double maxFontSize = 30;
   double fontSliderValue = 0.5;
@@ -34,9 +38,11 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   double get fontSize =>
       minFontSize + (fontSliderValue * (maxFontSize - minFontSize));
 
-  // TTS params
-  double ttsRate = 1.0; // default mapping to speeds array (0.5..1.3)
+  double ttsRate = 0.5; // default mapping to speeds array (0.5..1.3)
   double ttsPitch = 1.0;
+
+  String? selectedWord;
+  Offset? tapPosition;
 
   @override
   void initState() {
@@ -53,9 +59,10 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     super.dispose();
   }
 
-  // ---------------------------
-  // TTS initialization / teardown
-  // ---------------------------
+  void _storeTapPosition(TapDownDetails details) {
+    tapPosition = details.globalPosition;
+  }
+
   Future<void> initializeTts() async {
     try {
       await _flutterTts.setLanguage("en-US");
@@ -85,15 +92,18 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
         isPlaying = false;
         _tempCurrentCharIndex = -1;
         setState(() {});
+
+        context.read<ActivityProgressBloc>().add(
+          UpdateProgressEvent(
+            aiReadingId: widget.activityModel.aiReadingId,
+            dataToUpdate: {"readingCompleted": true},
+          ),
+        );
       });
 
-      _flutterTts.setStartHandler(() {
-        // nothing extra for now
-      });
+      _flutterTts.setStartHandler(() {});
     } catch (e) {
-      // ignore init errors on platforms without proper TTS support
-      // ignore: avoid_print
-      print("TTS init error: $e");
+      debugPrint("TTS init error: $e");
     }
   }
 
@@ -108,9 +118,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     } catch (_) {}
   }
 
-  // ---------------------------
-  // Sentence splitting helpers
-  // ---------------------------
   void _prepareSentences() {
     sentences = _splitIntoSentences(paragraph);
     sentenceStartIndices = _computeSentenceStartIndices(paragraph, sentences);
@@ -175,9 +182,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     }
   }
 
-  // ---------------------------
-  // Playback controls
-  // ---------------------------
   void togglePlayPause() async {
     if (isPlaying) {
       try {
@@ -213,20 +217,36 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     try {
       await _flutterTts.speak(sub);
     } catch (e) {
-      // ignore speak errors
-      // ignore: avoid_print
-      print("TTS speak error: $e");
+      debugPrint("TTS speak error: $e");
     }
   }
 
-  // ---------------------------
-  // UI Build
-  // ---------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
+            builder: (context, state) {
+              if (state is ProgressLoading) {
+                return LoaderIndicator(
+                  spinnerSize: 20,
+                  spinnerColor: Colors.white,
+                );
+              }
+              if (state is ProgressCreated &&
+                  state.createdProgress.subactivitiesCompleted.reading) {
+                return Icon(Icons.check);
+              }
+
+              if (state is ProgressUpdated &&
+                  state.updatedProgress.subactivitiesCompleted.reading) {
+                return Icon(Icons.check);
+              }
+
+              return SizedBox.shrink();
+            },
+          ),
           IconButton(
             onPressed: _openSettings,
             icon: const Icon(Icons.settings),
@@ -241,22 +261,54 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
               child: _buildRichText(),
             ),
           ),
-
           _buildPlayerControls(),
+          _buildNextButton(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildNextButton() {
+    return BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
+      builder: (context, state) {
+        if (state is ProgressLoading) {
+          return LoaderIndicator();
+        }
+        if (state is ProgressCreated &&
+            state.createdProgress.subactivitiesCompleted.reading) {
+          return _buildButton(context);
+        }
+
+        if (state is ProgressUpdated &&
+            state.updatedProgress.subactivitiesCompleted.reading) {
+          return _buildButton(context);
+        }
+
+        return SizedBox.shrink();
+      },
+      listener: (context, state) {},
+    );
+  }
+
+  ElevatedButton _buildButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () {
+        context.push(
+          RouteNames.activityParaphrase,
+          extra: widget.activityModel.toAIReadingEntity(),
+        );
+      },
+      icon: const Icon(Icons.arrow_forward),
+      label: const Text('Continuar'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green,
+        minimumSize: const Size(double.infinity, 45),
       ),
     );
   }
 
   Widget _buildPlayerControls() {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(15),
-          topRight: Radius.circular(15),
-        ),
-      ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -288,6 +340,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
               ),
             ],
           ),
+          const SizedBox(height: 12),
         ],
       ),
     );
@@ -342,14 +395,21 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
       );
     }
 
+    final words = paragraph.split(' ');
     final List<TextSpan> spans = [];
-    for (int i = 0; i < paragraph.length; i++) {
-      final char = paragraph[i];
-      final isRead = i <= currentCharIndex - 1 && currentCharIndex > 0;
+
+    int currentIndex = 0;
+
+    for (final word in words) {
+      final wordStart = paragraph.indexOf(word, currentIndex);
+      final wordEnd = wordStart + word.length;
+      currentIndex = wordEnd;
+
+      final isRead = wordEnd <= currentCharIndex;
       final inCurrentSentence =
           (currentSentenceIndex >= 0 &&
-              i >= sentenceStartIndices[currentSentenceIndex] &&
-              i <
+              wordStart >= sentenceStartIndices[currentSentenceIndex] &&
+              wordStart <
                   (currentSentenceIndex + 1 < sentenceStartIndices.length
                       ? sentenceStartIndices[currentSentenceIndex + 1]
                       : paragraph.length));
@@ -363,18 +423,61 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
         color = Colors.black;
       }
 
-      spans.add(TextSpan(text: char, style: TextStyle(color: color)));
+      // Apply visual highlight if user tapped the word
+      final isSelected = word == selectedWord;
+
+      spans.add(
+        TextSpan(
+          text: '$word ',
+          style: TextStyle(
+            fontSize: fontSize,
+            color: isSelected ? Colors.blueAccent : color,
+            backgroundColor:
+                isSelected ? Colors.blue.withValues(alpha: 0.2) : null,
+          ),
+          recognizer:
+              TapGestureRecognizer()
+                ..onTapDown = _storeTapPosition
+                ..onTap = () {
+                  setState(() {
+                    selectedWord = word;
+                  });
+                  _showTranslateOption(context, word);
+                },
+        ),
+      );
     }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: RichText(
-        text: TextSpan(
-          style: TextStyle(fontSize: fontSize, height: 1.8),
-          children: spans,
-        ),
+        text: TextSpan(style: const TextStyle(height: 1.8), children: spans),
       ),
     );
+  }
+
+  void _showTranslateOption(BuildContext context, String word) async {
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final position = tapPosition ?? Offset.zero;
+
+    final selected = await showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        position.dx,
+        position.dy,
+        overlay.size.width - position.dx,
+        overlay.size.height - position.dy,
+      ),
+      items: [
+        const PopupMenuItem(value: 'translate', child: Text('Translate')),
+        const PopupMenuItem(value: 'save', child: Text('save')),
+      ],
+    );
+    if (selected == "translate") {
+      if (context.mounted) {
+        showTranslateBottomSheet(context, word);
+      }
+    }
   }
 
   Future<void> _openSettings() async {
@@ -384,7 +487,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
       initialRate: ttsRate,
       initialPitch: ttsPitch,
       onApply: (double newFontSlider, double newRate, double newPitch) async {
-        // Apply incoming settings to parent
         setState(() {
           fontSliderValue = newFontSlider;
           ttsRate = newRate;

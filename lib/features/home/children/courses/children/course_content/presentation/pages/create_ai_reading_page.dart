@@ -1,16 +1,17 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/common/widget/custom_button.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/paragraph_metadata.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/course_content_bloc.dart';
+import '../bloc/course_content/course_content_bloc.dart';
 import '../cubit/course_cubit.dart';
 
 class CreateAiReadingPage extends StatefulWidget {
-  final String content;
-  const CreateAiReadingPage({super.key, required this.content});
+  final ParagraphMetadata paragraphMetadata;
+  const CreateAiReadingPage({super.key, required this.paragraphMetadata});
 
   @override
   State<CreateAiReadingPage> createState() => _CreateAiReadingPageState();
@@ -71,8 +72,11 @@ class _CreateAiReadingPageState extends State<CreateAiReadingPage> {
         course?.id.toString() ?? '',
         title,
         description,
-        widget.content,
+        widget.paragraphMetadata.content,
         _dueDate!.toIso8601String(),
+        widget.paragraphMetadata.length,
+        widget.paragraphMetadata.complexity,
+        widget.paragraphMetadata.style,
       ),
     );
     SystemChannels.textInput.invokeMethod('TextInput.hide');
@@ -175,7 +179,7 @@ class _CreateAiReadingPageState extends State<CreateAiReadingPage> {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
-                  widget.content,
+                  widget.paragraphMetadata.content,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),

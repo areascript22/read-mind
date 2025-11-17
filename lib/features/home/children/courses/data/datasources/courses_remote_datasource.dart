@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:client_app/core/constants/app_environment.dart';
 import 'package:client_app/core/error/server_exception.dart';
 import 'package:client_app/features/home/children/courses/data/models/course/course_model.dart';
 import 'package:http/http.dart' as http;
-import '../../../../../../core/constants/environment.dart';
 
 abstract interface class CoursesRemoteDatasource {
   Future<List<CourseModel>> getAllCourses(String token);
@@ -43,7 +43,7 @@ abstract interface class CoursesRemoteDatasource {
 class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
   @override
   Future<List<CourseModel>> getAllCourses(String token) async {
-    final url = Uri.parse(Environments.coursesUrl);
+    final url = Uri.parse('${AppEnvironment().baseUrl}/courses');
     try {
       final response = await http.get(
         url,
@@ -70,7 +70,7 @@ class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
     required String title,
     required String description,
   }) async {
-    final url = Uri.parse(Environments.coursesUrl);
+    final url = Uri.parse('${AppEnvironment().baseUrl}/courses');
     try {
       final response = await http.post(
         url,
@@ -93,7 +93,7 @@ class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
 
   @override
   Future<List<CourseModel>> getAllEnrolledCourses(String token) async {
-    final url = Uri.parse("${Environments.baseUrl}/courseStudent");
+    final url = Uri.parse("${AppEnvironment().baseUrl}/courseStudent");
     try {
       final response = await http.get(
         url,
@@ -121,7 +121,7 @@ class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
     required String token,
     required int id,
   }) async {
-    final url = Uri.parse("${Environments.coursesUrl}/$id");
+    final url = Uri.parse("${AppEnvironment().baseUrl}/courses/$id");
     try {
       final response = await http.delete(
         url,
@@ -146,7 +146,7 @@ class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
     required String title,
     required String description,
   }) async {
-    final url = Uri.parse("${Environments.coursesUrl}/$courseId");
+    final url = Uri.parse("${AppEnvironment().baseUrl}/courses/$courseId");
     try {
       final response = await http.put(
         url,
@@ -170,7 +170,9 @@ class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
     required String token,
     required int courseId,
   }) async {
-    final url = Uri.parse("${Environments.coursesUrl}/$courseId/invite-code");
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/courses/$courseId/invite-code",
+    );
     try {
       final response = await http.patch(
         url,
@@ -195,7 +197,7 @@ class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
     required String token,
     required String inviteCode,
   }) async {
-    final url = Uri.parse("${Environments.courseStudentUrl}/enroll");
+    final url = Uri.parse("${AppEnvironment().baseUrl}/courseStudent/enroll");
     try {
       final response = await http.post(
         url,
@@ -220,7 +222,7 @@ class CoursesRemoteDatasourceImpl implements CoursesRemoteDatasource {
     required String courseId,
   }) async {
     final url = Uri.parse(
-      "${Environments.courseStudentUrl}/$courseId/unenroll",
+      "${AppEnvironment().baseUrl}/courseStudent/$courseId/unenroll",
     );
     try {
       final response = await http.post(

@@ -1,10 +1,9 @@
 import 'dart:convert';
+import 'package:client_app/core/constants/app_environment.dart';
 import 'package:client_app/features/auth/data/models/user_model/user_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
-import '../../../../../../../../core/constants/environment.dart';
 import '../../../../../../../../core/error/server_exception.dart';
 
 abstract interface class CourseContentRemoteDataSource {
@@ -16,6 +15,9 @@ abstract interface class CourseContentRemoteDataSource {
   Future<String> generateParagraph({
     required String token,
     required String topic,
+    required String length,
+    required String complexity,
+    required String style,
   });
 
   Future<ActivityModel> createAIReading({
@@ -25,12 +27,17 @@ abstract interface class CourseContentRemoteDataSource {
     required String description,
     required String content,
     required String dueDate,
+    required String length,
+    required String complexity,
+    required String style,
   });
 
   Future<List<ActivityModel>> getAllActivities({
     required String token,
     required String courseId,
   });
+
+  Future<UserModel> getUser({required String token, required int id});
 }
 
 class CourseContentRemoteDataSourceImpl
@@ -41,7 +48,7 @@ class CourseContentRemoteDataSourceImpl
     required String courseId,
   }) async {
     final url = Uri.parse(
-      "${Environments.courseStudentUrl}/$courseId/students",
+      "${AppEnvironment().baseUrl}/courseStudent/$courseId/students",
     );
     try {
       final response = await http.get(
@@ -70,15 +77,24 @@ class CourseContentRemoteDataSourceImpl
   Future<String> generateParagraph({
     required String token,
     required String topic,
+    required String length,
+    required String complexity,
+    required String style,
   }) async {
     try {
       await Future.delayed(Duration(seconds: 3));
-      final url = Uri.parse("${Environments.baseUrl}/ai/paragraph");
+      final url = Uri.parse("${AppEnvironment().baseUrl}/ai/paragraph");
 
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json", "x-token": token},
-        body: jsonEncode({"topic": topic, "environment": "prod"}),
+        body: jsonEncode({
+          "topic": topic,
+          "length": length,
+          "complexity": complexity,
+          "style": style,
+          "environment": "prod",
+        }),
       );
       final data = jsonDecode(response.body);
       if (response.statusCode != 200) {
@@ -102,11 +118,14 @@ class CourseContentRemoteDataSourceImpl
     required String description,
     required String content,
     required String dueDate,
+    required String length,
+    required String complexity,
+    required String style,
   }) async {
     try {
       await Future.delayed(Duration(seconds: 3));
       final url = Uri.parse(
-        "${Environments.baseUrl}/courseActivity/$courseId/aiReading",
+        "${AppEnvironment().baseUrl}/courseActivity/$courseId/aiReading",
       );
 
       final response = await http.post(
@@ -117,6 +136,9 @@ class CourseContentRemoteDataSourceImpl
           "description": description,
           "content": content,
           "dueDate": dueDate,
+          "length": length,
+          "complexity": complexity,
+          "style": style,
         }),
       );
       final data = jsonDecode(response.body);
@@ -124,7 +146,7 @@ class CourseContentRemoteDataSourceImpl
         throw ServerException(data['message']);
       }
 
-      return ActivityModel.fromJson(data['aiReading']);
+      return ActivityModel.fromJson(data['data']);
     } catch (e) {
       debugPrint("Error saving ai reading: $e");
       throw ServerException(
@@ -140,7 +162,7 @@ class CourseContentRemoteDataSourceImpl
   }) async {
     try {
       final url = Uri.parse(
-        "${Environments.baseUrl}/courseActivity/$courseId/getAllAiReadings",
+        "${AppEnvironment().baseUrl}/courseActivity/$courseId/getAllAiReadings",
       );
 
       final response = await http.get(
@@ -157,6 +179,29 @@ class CourseContentRemoteDataSourceImpl
           .toList();
     } catch (e) {
       debugPrint("Error getting all activities: $e");
+      throw ServerException(
+        e is ServerException ? e.message : "Servicio no disponible",
+      );
+    }
+  }
+
+  @override
+  Future<UserModel> getUser({required String token, required int id}) async {
+    try {
+      final url = Uri.parse("${AppEnvironment().baseUrl}/user/$id");
+
+      final response = await http.get(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode != 200) {
+        throw ServerException(data['message'] ?? 'Servicio no disponible');
+      }
+
+      return UserModel.fromJson(data['data']);
+    } catch (e) {
+      debugPrint("Error getting user info for id: $id, error: $e");
       throw ServerException(
         e is ServerException ? e.message : "Servicio no disponible",
       );

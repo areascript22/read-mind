@@ -40,7 +40,7 @@ jobs:
 
       # 6️⃣ Compila el .aab del flavor dev
       - name: Build appbundle (dev)
-        run: flutter build appbundle --flavor dev --release
+        run: flutter build appbundle --flavor dev --release --dart-define=FLAVOR=dev --enable-impeller
 
       # 7️⃣ Lista archivos generados
       - name: List built files
@@ -58,4 +58,4 @@ jobs:
           packageName: com.readmind.dev
           releaseFiles: build/app/outputs/bundle/devRelease/app-dev-release.aab
           track: internal
-          status: draft
+          status: completed

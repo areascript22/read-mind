@@ -1,7 +1,3 @@
-// ---------------------------
-// The showGeneralDialog + ReadingAIBS widget (Design adapted)
-// ---------------------------
-
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/playback_button.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +55,7 @@ class ReadingAIBS extends StatefulWidget {
 }
 
 class _ReadingAIBSState extends State<ReadingAIBS> {
-  final List<double> speeds = [0.5, 0.75, 1.0, 1.3];
+  final List<double> speeds = [0.25, 0.5, 0.75, 1.0];
   late double selectedSpeed;
   late double localFontSlider;
   late double localPitch;
@@ -108,7 +104,7 @@ class _ReadingAIBSState extends State<ReadingAIBS> {
                           selectedSpeed,
                           localPitch,
                         );
-                        if (mounted) Navigator.pop(context);
+                        if (context.mounted) Navigator.pop(context);
                       },
                       child: const Text("Guardar"),
                     ),
@@ -154,9 +150,7 @@ class _ReadingAIBSState extends State<ReadingAIBS> {
                         );
                       }).toList(),
                 ),
-
                 const SizedBox(height: 12),
-                // Optional pitch control (hidden minimal UI)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

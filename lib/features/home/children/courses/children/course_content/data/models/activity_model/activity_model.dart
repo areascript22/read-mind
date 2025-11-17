@@ -12,7 +12,11 @@ abstract class ActivityModel with _$ActivityModel {
     required String title,
     required String description,
     required DateTime dueDate,
+    required int aiReadingId,
     required String content,
+    required String length, // New field
+    required String complexity, // New field
+    required String style, // New field
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = AIReadingModel;
@@ -27,7 +31,11 @@ extension ActivityModelX on ActivityModel {
     title: title,
     description: description,
     dueDate: dueDate,
+    aiReadingId: aiReadingId,
     content: content,
+    length: length, // Map to Entity
+    complexity: complexity, // Map to Entity
+    style: style, // Map to Entity
     createdAt: createdAt,
     updatedAt: updatedAt,
   );

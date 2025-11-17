@@ -3,6 +3,7 @@ import 'package:client_app/core/common/widget/app_version.dart';
 import 'package:client_app/core/common/widget/custom_button.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:client_app/features/auth/presentation/widgets/dialog_email_not_verified.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -160,31 +161,38 @@ class _SignInPageState extends State<SignInPage> {
                           ToastMessageUtil.showToast(state.message, context);
                         }
 
-                        if(state is AuthSuccessState){
+                        if (state is AuthSuccessState) {
+                          if (!state.userEntity.emailVerified) {
+                            showEmailNoVerificadoDialog(
+                              context,
+                              state.userEntity,
+                            );
+                            return;
+                          }
                           context.go(RouteNames.home);
                         }
-
                       },
                       builder: (context, state) {
                         return CustomButton(
                           onTap:
                               state is AuthLoadingState
                                   ? () {}
-
                                   : () {
                                     if (formKey.currentState?.validate() ??
                                         false) {
-                                     if(mounted){
-                                       context.read<AuthBloc>().add(
-                                         AuthSignInEvent(
-                                           email:
-                                           emailTextController.text.trim().toLowerCase(),
-                                           password:
-                                           passwordTextController.text
-                                               .trim(),
-                                         ),
-                                       );
-                                     }
+                                      if (mounted) {
+                                        context.read<AuthBloc>().add(
+                                          AuthSignInEvent(
+                                            email:
+                                                emailTextController.text
+                                                    .trim()
+                                                    .toLowerCase(),
+                                            password:
+                                                passwordTextController.text
+                                                    .trim(),
+                                          ),
+                                        );
+                                      }
                                     }
                                   },
                           child:
@@ -205,12 +213,7 @@ class _SignInPageState extends State<SignInPage> {
                 ),
 
                 //Bottom part
-                Column(
-                  children: [
-                    Divider(),
-                    AppVersion(),
-                  ],
-                ),
+                Column(children: [Divider(), AppVersion()]),
               ],
             ),
           ),

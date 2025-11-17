@@ -27,8 +27,12 @@ extension AIReadingModelX on AIReadingModel {
     title: title,
     description: description,
     dueDate: dueDate,
+    aiReadingId: 0,
     content: content,
     createdAt: createdAt,
     updatedAt: updatedAt,
+    length: '',
+    complexity: '',
+    style: '',
   );
 }

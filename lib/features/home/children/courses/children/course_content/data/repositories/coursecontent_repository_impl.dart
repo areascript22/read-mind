@@ -44,6 +44,9 @@ class CourseContentRepositoryImpl implements CourseContentRepository {
     required String description,
     required String content,
     required String dueDate,
+    required String length,
+    required String complexity,
+    required String style,
   }) async {
     try {
       final token = await authLocalDataSource.getJwt();
@@ -57,6 +60,9 @@ class CourseContentRepositoryImpl implements CourseContentRepository {
         description: description,
         content: content,
         dueDate: dueDate,
+        length: length,
+        complexity: complexity,
+        style: style,
       );
       return Right(response.toAIReadingEntity());
     } on ServerException catch (e) {
@@ -67,6 +73,9 @@ class CourseContentRepositoryImpl implements CourseContentRepository {
   @override
   Future<Either<Failure, String>> generateParagraph({
     required String topic,
+    required String length,
+    required String complexity,
+    required String style,
   }) async {
     try {
       final token = await authLocalDataSource.getJwt();
@@ -76,6 +85,9 @@ class CourseContentRepositoryImpl implements CourseContentRepository {
       final response = await courseContentRemoteDataSource.generateParagraph(
         token: token,
         topic: topic,
+        length: length,
+        complexity: complexity,
+        style: style,
       );
       return Right(response);
     } on ServerException catch (e) {
@@ -97,6 +109,23 @@ class CourseContentRepositoryImpl implements CourseContentRepository {
         courseId: courseId,
       );
       return Right(response);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> getUser({required int id}) async {
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesion de nuevo"));
+      }
+      final response = await courseContentRemoteDataSource.getUser(
+        token: token,
+        id: id,
+      );
+      return Right(response.toEntity());
     } on ServerException catch (e) {
       return left(Failure(e.message));
     }
