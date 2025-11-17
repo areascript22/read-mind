@@ -62,7 +62,6 @@ class AppThemes {
     onError: Colors.black,
   );
 
-  // Light ThemeData
   static final ThemeData lightTheme = ThemeData.from(
     colorScheme: _lightColorScheme,
     useMaterial3: true,
@@ -203,13 +202,13 @@ class AppThemes {
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(
-          color: _darkColorScheme.onSurface.withOpacity(0.12),
+          color: _darkColorScheme.onSurface.withValues(alpha: 0.12),
         ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(
-          color: _darkColorScheme.onSurface.withOpacity(0.08),
+          color: _darkColorScheme.onSurface.withValues(alpha: 0.08),
         ),
       ),
     ),
@@ -226,13 +225,13 @@ class AppThemes {
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: _darkColorScheme.surface,
       selectedItemColor: _darkColorScheme.primary,
-      unselectedItemColor: _darkColorScheme.onSurface.withOpacity(0.6),
+      unselectedItemColor: _darkColorScheme.onSurface.withValues(alpha: 0.6),
       showUnselectedLabels: true,
       elevation: 8,
       type: BottomNavigationBarType.fixed,
     ),
     dividerTheme: DividerThemeData(
-      color: _darkColorScheme.onSurface.withOpacity(0.12),
+      color: _darkColorScheme.onSurface.withValues(alpha: 0.12),
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: _darkColorScheme.surface,

@@ -3,7 +3,7 @@ import 'package:client_app/features/home/children/courses/domain/repository/atte
 import 'package:client_app/features/home/children/courses/domain/entities/main_idea_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/paraphrase_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/summary_attempt_entity.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 part 'attempts_state.dart';
 

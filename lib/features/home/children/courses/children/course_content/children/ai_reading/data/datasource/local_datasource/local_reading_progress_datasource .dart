@@ -10,9 +10,6 @@ class LocalReadingProgressDataSource {
   static const String _mainIdeaKey = 'activity_completed_mainIdea';
   static const String _summaryKey = 'activity_completed_summary';
 
-  // ───────────────────────────────
-  // AI READING
-  // ───────────────────────────────
   Future<bool> setAiReadingCompleted(bool completed, int activityId) async {
     return await sharedPreferences.setBool(
       '_aiReadingKey_$activityId',
@@ -28,9 +25,6 @@ class LocalReadingProgressDataSource {
     return await sharedPreferences.remove(_aiReadingKey);
   }
 
-  // ───────────────────────────────
-  // PARAPHRASE
-  // ───────────────────────────────
   Future<bool> setParaphraseCompleted(bool completed, int activityId) async {
     return await sharedPreferences.setBool(_paraphraseKey, completed);
   }
@@ -43,9 +37,6 @@ class LocalReadingProgressDataSource {
     return await sharedPreferences.remove(_paraphraseKey);
   }
 
-  // ───────────────────────────────
-  // MAIN IDEA
-  // ───────────────────────────────
   Future<bool> setMainIdeaCompleted(bool completed, int activityId) async {
     return await sharedPreferences.setBool(_mainIdeaKey, completed);
   }
@@ -58,9 +49,6 @@ class LocalReadingProgressDataSource {
     return await sharedPreferences.remove(_mainIdeaKey);
   }
 
-  // ───────────────────────────────
-  // SUMMARY
-  // ───────────────────────────────
   Future<bool> setSummaryCompleted(bool completed, int activityId) async {
     return await sharedPreferences.setBool(_summaryKey, completed);
   }

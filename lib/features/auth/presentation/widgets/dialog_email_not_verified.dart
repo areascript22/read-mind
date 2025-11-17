@@ -63,7 +63,9 @@ class EmailNoVerificadoDialog extends StatelessWidget {
                     vertical: 10,
                   ),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceVariant.withOpacity(0.4),
+                    color: theme.colorScheme.surfaceVariant.withValues(
+                      alpha: 0.4,
+                    ),
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: theme.dividerColor),
                   ),

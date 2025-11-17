@@ -27,11 +27,9 @@ class SummaryAttemptTileTracking extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header with scores and date
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Score badges
                 Flexible(
                   child: Row(
                     children: [
@@ -164,7 +162,7 @@ class SummaryAttemptTileTracking extends StatelessWidget {
           const SizedBox(width: 3),
           Flexible(
             child: Text(
-              '${score.toStringAsFixed(0)}',
+              score.toStringAsFixed(0),
               style: GoogleFonts.poppins(
                 fontSize: 9,
                 fontWeight: FontWeight.w700,

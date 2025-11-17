@@ -154,7 +154,7 @@ class ParaphraseAttemptTileTracking extends StatelessWidget {
           Icon(icon, size: 12, color: color),
           const SizedBox(width: 4),
           Text(
-            '${score.toStringAsFixed(1)}',
+            score.toStringAsFixed(1),
             style: GoogleFonts.poppins(
               fontSize: 10,
               fontWeight: FontWeight.w700,
