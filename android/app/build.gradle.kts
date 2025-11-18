@@ -3,6 +3,9 @@ import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
+    // START: FlutterFire Configuration
+    id("com.google.gms.google-services")
+    // END: FlutterFire Configuration
     id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
 }
@@ -21,23 +24,24 @@ android {
     ndkVersion = "27.0.12077973"
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        // ⭐ NUEVO ⭐ — requerido por flutter_local_notifications
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true   // <-- IMPORTANTE
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()   // actualizado para empatar
     }
 
     defaultConfig {
         applicationId = "com.readmind"
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
-    // 🔹 Primero definimos las firmas
     signingConfigs {
         create("release") {
             keyAlias = keystoreProperties["keyAlias"] as String
@@ -47,7 +51,6 @@ android {
         }
     }
 
-    // 🔹 Luego definimos los flavors
     flavorDimensions += "env"
 
     productFlavors {
@@ -74,7 +77,6 @@ android {
             isShrinkResources = false
         }
         getByName("debug") {
-            // opcionalmente puedes firmar también el debug con el mismo keystore
             signingConfig = signingConfigs.getByName("release")
         }
     }
@@ -82,4 +84,9 @@ android {
 
 flutter {
     source = "../.."
+}
+
+// ⭐ NUEVO ⭐ — dependencia obligatoria para desugaring
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }
