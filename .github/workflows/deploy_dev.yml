@@ -44,6 +44,12 @@ jobs:
           mkdir -p assets/env
           echo "${{ secrets.ENV_DEV_BASE64 }}" | base64 --decode > assets/env/.env.dev
 
+      # 🟢 6.1️⃣ Decodifica google-services.json (dev)
+      - name: Decode google-services.json (dev)
+        run: |
+          mkdir -p android/app/src/dev
+          echo "${{ secrets.GOOGLE_SERVICES_DEV_BASE64 }}" | base64 --decode > android/app/src/dev/google-services.json
+
       # 7️⃣ Compila el .aab del flavor dev
       - name: Build appbundle (dev)
         run: flutter build appbundle --flavor dev --release --dart-define=FLAVOR=dev
