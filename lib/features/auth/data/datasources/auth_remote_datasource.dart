@@ -81,10 +81,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDatasource {
   @override
   Future<AuthResponse> getCurrentUser({required String jwt}) async {
     try {
-      final response = await http.get(
-        Uri.parse('${AppEnvironment().baseUrl}/auth/renew'),
-        headers: {'Content-Type': 'application/json', 'x-token': jwt},
-      );
+      final response = await http
+          .get(
+            Uri.parse('${AppEnvironment().baseUrl}/auth/renew'),
+            headers: {'Content-Type': 'application/json', 'x-token': jwt},
+          )
+          .timeout(Duration(seconds: 5));
       final data = jsonDecode(response.body);
       if (response.statusCode != 200) {
         throw ServerException(data['message']);

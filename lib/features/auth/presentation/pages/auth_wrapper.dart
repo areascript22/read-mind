@@ -1,3 +1,4 @@
+import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:client_app/features/auth/presentation/cubit/app_version_cubit/app_version_cubit.dart';
@@ -35,6 +36,10 @@ class _AuthWrapperState extends State<AuthWrapper> {
                 } else {
                   context.read<AuthBloc>().add(AuthIsUserLoggedIn());
                 }
+              }
+              if (state is AppVersionError) {
+                ToastMessageUtil.showToast(state.message, context);
+                context.read<AuthBloc>().add(AuthIsUserLoggedIn());
               }
             },
           ),
