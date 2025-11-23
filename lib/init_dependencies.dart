@@ -1,8 +1,13 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
-import 'package:client_app/features/auth/data/repositories/app_version_repository_impl.dart';
-import 'package:client_app/features/auth/domain/repositories/app_version_repository.dart';
+import 'package:client_app/core/common/features/preferences/data/repository/preferences_repository_impl.dart';
+import 'package:client_app/core/common/features/preferences/domian/repository/preferences_repository.dart';
+import 'package:client_app/core/common/features/preferences/presentation/cubit/preferences_cubit/preferences_cubit.dart';
+import 'package:client_app/core/services/firebase_service.dart';
+import 'package:client_app/features/auth/data/repositories/initial_values_repository_impl.dart';
+import 'package:client_app/features/auth/domain/repositories/initial_values_repository.dart';
 import 'package:client_app/features/auth/helper/app_version_helper.dart';
 import 'package:client_app/features/auth/presentation/cubit/app_version_cubit/app_version_cubit.dart';
+import 'package:client_app/features/auth/presentation/cubit/notifications_cubit/notifications_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/datasource/local_datasource/local_reading_progress_datasource%20.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_local_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_repository_impl.dart';
@@ -70,6 +75,7 @@ final serviceLocator = GetIt.instance;
 Future<void> initDependencies() async {
   await _initSharedPreferences();
   _initAuth();
+  _initUserPreferences();
   _initCourses();
   _initCourseContent();
   _initUserManger();
@@ -87,6 +93,15 @@ Future<void> initDependencies() async {
 Future<void> _initSharedPreferences() async {
   final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
   serviceLocator.registerLazySingleton(() => sharedPrefs);
+}
+
+void _initUserPreferences() {
+  serviceLocator.registerFactory<PreferencesRepository>(
+    () => PreferencesRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+  serviceLocator.registerLazySingleton(
+    () => PreferencesCubit(preferencesRepository: serviceLocator()),
+  );
 }
 
 void _initAuth() {
@@ -111,8 +126,8 @@ void _initAuth() {
     ),
   );
 
-  serviceLocator.registerFactory<AppVersionRepository>(
-    () => AppVersionRepositoryImpl(),
+  serviceLocator.registerFactory<InitialValuesRepository>(
+    () => InitialValuesRepositoryImpl(authLocalDataSource: serviceLocator()),
   );
   serviceLocator.registerFactory(() => AppVersionHelper());
 
@@ -120,6 +135,13 @@ void _initAuth() {
     () => AppVersionCubit(
       appVersionRepository: serviceLocator(),
       appVersionHelper: serviceLocator(),
+    ),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => NotificationsCubit(
+      initialValuesRepository: serviceLocator(),
+      firebaseNotifications: FirebaseNotifications(),
     ),
   );
 }

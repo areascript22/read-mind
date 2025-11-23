@@ -9,6 +9,7 @@ import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:client_app/shared/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -56,17 +57,13 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
           child: GestureDetector(onTap: () {}, child: UserAvatar()),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: Row(
-              children: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.add)),
-                Text("0", style: TextStyle(fontSize: 17)),
-                IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
-                Text("0", style: TextStyle(fontSize: 17)),
-              ],
+          GestureDetector(
+            child: SvgPicture.asset(
+              "assets/images/svg/bell.svg",
+              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
             ),
           ),
+          SizedBox(width: 10),
         ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1), // height of the line
@@ -79,7 +76,7 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
 
       body: Column(
         children: [
-          _buildVocabulary(),
+          //_buildVocabulary(),
           DailyStreakWidget(currentStreak: 1, attendance: [true, true, true]),
           RolCourseOptions(),
           Expanded(

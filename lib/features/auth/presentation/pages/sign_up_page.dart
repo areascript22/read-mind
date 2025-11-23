@@ -185,11 +185,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                       if (state is AuthSuccessState) {
                         if (!state.userEntity.emailVerified) {
-                          context.go(RouteNames.signIn);
-                          showEmailNoVerificadoDialog(
-                            context,
-                            state.userEntity,
-                          );
+                          context.go(RouteNames.authWrapper);
                           return;
                         }
                         context.go(RouteNames.home);

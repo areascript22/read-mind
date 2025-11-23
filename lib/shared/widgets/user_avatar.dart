@@ -57,11 +57,10 @@ class UserAvatar extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodySmall,
                 overflow: TextOverflow.ellipsis,
               ),
-              // 👇 Aquí mostramos el rol del usuario
               Text(
-                user.role.name, // <-- ajusta según cómo definas el RoleEntity
+                user.role.name,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Colors.blueGrey,
+                  color: Colors.white,
                   fontWeight: FontWeight.w500,
                 ),
                 overflow: TextOverflow.ellipsis,

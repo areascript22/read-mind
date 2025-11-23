@@ -4,6 +4,7 @@ import 'package:client_app/core/routing/app_router.dart';
 import 'package:client_app/core/services/firebase_service.dart';
 import 'package:client_app/core/theme/themes.dart';
 import 'package:client_app/init_dependencies.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,7 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initGlobalConfig();
   await initDependencies();
-  await FirebaseNotifications.initialize();
+  await Firebase.initializeApp();
   runApp(
     MultiBlocProvider(
       providers: [
