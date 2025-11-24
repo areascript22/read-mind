@@ -76,8 +76,6 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
 
       body: Column(
         children: [
-          //_buildVocabulary(),
-          DailyStreakWidget(currentStreak: 1, attendance: [true, true, true]),
           RolCourseOptions(),
           Expanded(
             child: BlocConsumer<CoursesBloc, CoursesState>(
