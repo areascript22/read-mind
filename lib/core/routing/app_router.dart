@@ -47,10 +47,10 @@ class AppRouter {
         builder: (context, state, child) {
           return MultiBlocProvider(
             providers: [
-              BlocProvider(create: (_) => serviceLocator<AuthBloc>()),
-              BlocProvider(create: (_) => serviceLocator<AppVersionCubit>()),
-              BlocProvider(create: (_) => serviceLocator<PreferencesCubit>()),
-              BlocProvider(create: (_) => serviceLocator<NotificationsCubit>()),
+              BlocProvider.value(value: serviceLocator<AuthBloc>()),
+              BlocProvider.value(value: serviceLocator<AppVersionCubit>()),
+              BlocProvider.value(value: serviceLocator<PreferencesCubit>()),
+              BlocProvider.value(value: serviceLocator<NotificationsCubit>()),
             ],
             child: child,
           );
@@ -92,6 +92,7 @@ class AppRouter {
             path: RouteNames.home,
             builder: (context, state) => HomePage(),
           ),
+
           GoRoute(
             path: RouteNames.createCourse,
             builder: (context, state) => CreateCoursePage(),

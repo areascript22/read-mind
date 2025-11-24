@@ -11,6 +11,10 @@ import 'package:client_app/features/auth/presentation/cubit/notifications_cubit/
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/datasource/local_datasource/local_reading_progress_datasource%20.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_local_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/data/repository/notifications_history_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/domain/repository/notifications_history_repository.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/presentation/bloc/notifications_bloc/notifications_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/service/socket_service.dart';
 import 'package:client_app/features/home/children/courses/data/repository/attempts_repository_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_local_repository.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_repository.dart';
@@ -75,6 +79,7 @@ final serviceLocator = GetIt.instance;
 Future<void> initDependencies() async {
   await _initSharedPreferences();
   _initAuth();
+  _initNotificationsHistory();
   _initUserPreferences();
   _initCourses();
   _initCourseContent();
@@ -143,6 +148,20 @@ void _initAuth() {
       initialValuesRepository: serviceLocator(),
       firebaseNotifications: FirebaseNotifications(),
     ),
+  );
+}
+
+void _initNotificationsHistory() {
+  serviceLocator.registerFactory(() => SocketService());
+
+  serviceLocator.registerFactory<NotificationsHistoryRepository>(
+    () => NotificationsHistoryRepositoryImpl(
+      authLocalDataSource: serviceLocator(),
+      socketService: serviceLocator(),
+    ),
+  );
+  serviceLocator.registerLazySingleton(
+    () => NotificationsBloc(notificationsHistoryRepository: serviceLocator()),
   );
 }
 
