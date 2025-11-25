@@ -1,7 +1,9 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:client_app/core/routing/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../bloc/notifications_bloc/notifications_bloc.dart';
 
 class NotificationBell extends StatefulWidget {
@@ -31,8 +33,8 @@ class _NotificationBellState extends State<NotificationBell> {
       builder: (context, state) {
         int unreadCount = 0;
 
-        if (state is UserNotifyUnreadCountLoaded) {
-          unreadCount = state.count;
+        if (state.unreadCount != 0) {
+          unreadCount = state.unreadCount;
         }
 
         return badges.Badge(
@@ -54,7 +56,15 @@ class _NotificationBellState extends State<NotificationBell> {
           ),
           child: IconButton(
             icon: Icon(Icons.notifications, size: 28),
-            onPressed: () {},
+            onPressed:
+                () =>
+                    context.push(RouteNames.notificationHistory).then((value) {
+                      if (context.mounted) {
+                        context.read<NotificationsBloc>().add(
+                          NotificationGetUnreadCount(),
+                        );
+                      }
+                    }),
           ),
         );
       },

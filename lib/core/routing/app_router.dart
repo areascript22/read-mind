@@ -22,6 +22,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/create_ai_reading_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/generate_paragraph.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/update_course_info_page.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/presentation/pages/notification_history.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/pages/student_tracking.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/student_tracking_info_entity.dart';
@@ -91,6 +92,11 @@ class AppRouter {
           GoRoute(
             path: RouteNames.home,
             builder: (context, state) => HomePage(),
+          ),
+
+          GoRoute(
+            path: RouteNames.notificationHistory,
+            builder: (context, state) => NotificationHistoryPage(),
           ),
 
           GoRoute(

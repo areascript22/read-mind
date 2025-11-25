@@ -1,44 +1,86 @@
 part of 'notifications_bloc.dart';
 
 @immutable
-sealed class NotificationsState {}
+class NotificationsState {
+  final List<NotificationEntity> notifications;
+  final bool notificationsLoaded;
+  final int unreadCount;
+  final bool markedAllAsRead;
+  final NotificationEntity? markedAsRead;
 
-final class NotificationsInitial extends NotificationsState {}
+  final bool isLoadingList;
+  final bool isMarkingAsRead;
+  final bool isMarkingAllAsRead;
+  final bool isLoadingCount;
 
-final class UserNotificationsLoading extends NotificationsState {
-  final UserNotifyActions notifyActions;
+  final String? errorMessageGetAll;
+  final String? errorMessageUnreadCount;
+  final String? errorMessageMarkAsRead;
+  final String? errorMessageMarkAllAsRead;
 
-  UserNotificationsLoading({required this.notifyActions});
+  const NotificationsState({
+    this.markedAsRead,
+    this.markedAllAsRead = false,
+    this.notifications = const [],
+    this.unreadCount = 0,
+    this.isLoadingList = false,
+    this.isMarkingAsRead = false,
+    this.isMarkingAllAsRead = false,
+    this.isLoadingCount = false,
+    this.errorMessageGetAll,
+    this.notificationsLoaded = false,
+    this.errorMessageUnreadCount,
+    this.errorMessageMarkAllAsRead,
+    this.errorMessageMarkAsRead,
+  });
+
+  factory NotificationsState.initial() {
+    return const NotificationsState(
+      isLoadingList: false,
+      isMarkingAsRead: false,
+      isMarkingAllAsRead: false,
+      isLoadingCount: false,
+      notifications: [],
+      errorMessageGetAll: null,
+      errorMessageMarkAllAsRead: null,
+      errorMessageMarkAsRead: null,
+      errorMessageUnreadCount: null,
+      markedAsRead: null,
+      markedAllAsRead: false,
+      unreadCount: 0,
+      notificationsLoaded: false,
+    );
+  }
+
+  NotificationsState copyWith({
+    List<NotificationEntity>? notifications,
+    int? unreadCount,
+    bool? isLoadingList,
+    bool? isMarkingAsRead,
+    bool? isMarkingAllAsRead,
+    bool? isLoadingCount,
+    String? errorMessageGetAll,
+    String? errorMessageMarkAsRead,
+    String? errorMessageMarkAllAsRead,
+    String? errorMessageUnreadCount,
+    NotificationEntity? markedAsRead,
+    bool? markedAllAsRead,
+    bool? notificationsLoaded,
+  }) {
+    return NotificationsState(
+      notifications: notifications ?? this.notifications,
+      unreadCount: unreadCount ?? this.unreadCount,
+      isLoadingList: isLoadingList ?? this.isLoadingList,
+      isMarkingAsRead: isMarkingAsRead ?? this.isMarkingAsRead,
+      isMarkingAllAsRead: isMarkingAllAsRead ?? this.isMarkingAllAsRead,
+      isLoadingCount: isLoadingCount ?? this.isLoadingCount,
+      errorMessageGetAll: errorMessageGetAll,
+      markedAsRead: markedAsRead,
+      markedAllAsRead: markedAllAsRead ?? this.markedAllAsRead,
+      notificationsLoaded: notificationsLoaded ?? this.notificationsLoaded,
+      errorMessageMarkAllAsRead: errorMessageMarkAllAsRead,
+      errorMessageMarkAsRead: errorMessageMarkAsRead,
+      errorMessageUnreadCount: errorMessageUnreadCount,
+    );
+  }
 }
-
-final class UserNotificationsError extends NotificationsState {
-  final String message;
-  final UserNotifyActions notifyActions;
-
-  UserNotificationsError({required this.notifyActions, required this.message});
-}
-
-final class UserNotificationsAllLoaded extends NotificationsState {
-  final List<NotificationEntity> notificationsEntity;
-  UserNotificationsAllLoaded({required this.notificationsEntity});
-}
-
-final class UserNotificationsMarkedAsRead extends NotificationsState {
-  final NotificationEntity notificationEntity;
-
-  UserNotificationsMarkedAsRead({required this.notificationEntity});
-}
-
-final class UserNotifyAllMarkedAsRead extends NotificationsState {
-  final String message;
-
-  UserNotifyAllMarkedAsRead({required this.message});
-}
-
-final class UserNotifyUnreadCountLoaded extends NotificationsState {
-  final int count;
-
-  UserNotifyUnreadCountLoaded({required this.count});
-}
-
-enum UserNotifyActions { getAll, markAsRead, markAllAsRead, getUnreadCount }

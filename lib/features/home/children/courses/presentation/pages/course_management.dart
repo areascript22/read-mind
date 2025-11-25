@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
 import '../bloc/course_option_cubit/course_option_cubit.dart';
 import '../widgets/course_tile.dart';
 
