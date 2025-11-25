@@ -11,7 +11,7 @@ part 'notifications_state.dart';
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   final NotificationsHistoryRepository notificationsHistoryRepository;
-  StreamSubscription? _socketSubscription;
+
   NotificationsBloc({required this.notificationsHistoryRepository})
     : super(NotificationsInitial()) {
     on<NotificationGetAll>(_getAllNotifications);
@@ -26,7 +26,6 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     NotificationCloseConnection event,
     Emitter<NotificationsState> emit,
   ) {
-    _socketSubscription?.cancel();
     notificationsHistoryRepository.disconnectSocket();
   }
 

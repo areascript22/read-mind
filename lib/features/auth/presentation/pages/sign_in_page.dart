@@ -161,11 +161,12 @@ class _SignInPageState extends State<SignInPage> {
                         }
 
                         if (state is AuthSuccessState) {
-                          if (!state.userEntity.emailVerified) {
-                            context.go(RouteNames.authWrapper);
-                            return;
-                          }
-                          context.go(RouteNames.home);
+                          // if (!state.userEntity.emailVerified) {
+                          //   context.go(RouteNames.authWrapper);
+                          //   return;
+                          // }
+                          // context.go(RouteNames.home);
+                          context.go(RouteNames.authWrapper);
                         }
                       },
                       builder: (context, state) {
