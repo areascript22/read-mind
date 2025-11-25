@@ -3,7 +3,6 @@ import 'package:client_app/core/common/widget/app_version.dart';
 import 'package:client_app/core/common/widget/custom_button.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:client_app/features/auth/presentation/widgets/dialog_email_not_verified.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -162,14 +161,12 @@ class _SignInPageState extends State<SignInPage> {
                         }
 
                         if (state is AuthSuccessState) {
-                          if (!state.userEntity.emailVerified) {
-                            showEmailNoVerificadoDialog(
-                              context,
-                              state.userEntity,
-                            );
-                            return;
-                          }
-                          context.go(RouteNames.home);
+                          // if (!state.userEntity.emailVerified) {
+                          //   context.go(RouteNames.authWrapper);
+                          //   return;
+                          // }
+                          // context.go(RouteNames.home);
+                          context.go(RouteNames.authWrapper);
                         }
                       },
                       builder: (context, state) {

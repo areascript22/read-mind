@@ -2,6 +2,7 @@ class RouteNames {
   static const splashScreen = '/splashScreen';
   static const authWrapper = '/authWrapper';
   static const home = '/home';
+  static const notificationHistory = '/notificationHistory';
   static const signUp = '/signUp';
   static const signIn = '/signIn';
 

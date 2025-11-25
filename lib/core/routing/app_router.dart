@@ -1,6 +1,8 @@
+import 'package:client_app/core/common/features/preferences/presentation/cubit/preferences_cubit/preferences_cubit.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:client_app/features/auth/presentation/cubit/app_version_cubit/app_version_cubit.dart';
+import 'package:client_app/features/auth/presentation/cubit/notifications_cubit/notifications_cubit.dart';
 import 'package:client_app/features/auth/presentation/pages/auth_wrapper.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_up_page.dart';
@@ -20,6 +22,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/create_ai_reading_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/generate_paragraph.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/pages/update_course_info_page.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/presentation/pages/notification_history.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/pages/student_tracking.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/student_tracking_info_entity.dart';
@@ -45,8 +48,10 @@ class AppRouter {
         builder: (context, state, child) {
           return MultiBlocProvider(
             providers: [
-              BlocProvider(create: (_) => serviceLocator<AuthBloc>()),
-              BlocProvider(create: (_) => serviceLocator<AppVersionCubit>()),
+              BlocProvider.value(value: serviceLocator<AuthBloc>()),
+              BlocProvider.value(value: serviceLocator<AppVersionCubit>()),
+              BlocProvider.value(value: serviceLocator<PreferencesCubit>()),
+              BlocProvider.value(value: serviceLocator<NotificationsCubit>()),
             ],
             child: child,
           );
@@ -88,6 +93,12 @@ class AppRouter {
             path: RouteNames.home,
             builder: (context, state) => HomePage(),
           ),
+
+          GoRoute(
+            path: RouteNames.notificationHistory,
+            builder: (context, state) => NotificationHistoryPage(),
+          ),
+
           GoRoute(
             path: RouteNames.createCourse,
             builder: (context, state) => CreateCoursePage(),
