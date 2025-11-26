@@ -5,12 +5,10 @@ import 'package:client_app/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../../core/common/utils/toast_util.dart';
 import '../widgets/auth_password_textfield.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/background1.dart';
-import '../widgets/dialog_email_not_verified.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -185,11 +183,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
                       if (state is AuthSuccessState) {
                         context.go(RouteNames.authWrapper);
-                        // if (!state.userEntity.emailVerified) {
-                        //   context.go(RouteNames.authWrapper);
-                        //   return;
-                        // }
-                        // context.go(RouteNames.home);
                       }
                     },
                   ),

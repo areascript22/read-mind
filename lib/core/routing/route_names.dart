@@ -5,6 +5,7 @@ class RouteNames {
   static const notificationHistory = '/notificationHistory';
   static const signUp = '/signUp';
   static const signIn = '/signIn';
+  static const recoverPassword = '/recoverPassword';
 
   static const createCourse = '/createCourse';
   static const enrollCourse = '/enrollCourse';
