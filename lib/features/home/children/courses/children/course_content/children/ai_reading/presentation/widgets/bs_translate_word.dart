@@ -7,8 +7,13 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 class BottomSheetTranslateBody extends StatefulWidget {
   final String word;
+  final int readingId;
 
-  const BottomSheetTranslateBody({super.key, required this.word});
+  const BottomSheetTranslateBody({
+    super.key,
+    required this.word,
+    required this.readingId,
+  });
 
   @override
   State<BottomSheetTranslateBody> createState() =>
@@ -24,7 +29,10 @@ class _BottomSheetTranslateBodyState extends State<BottomSheetTranslateBody> {
     _initializeTts();
 
     // Trigger translation when the bottom sheet opens
-    context.read<TranslationCubit>().translateWord(widget.word);
+    context.read<TranslationCubit>().translateWord(
+      widget.word,
+      widget.readingId,
+    );
   }
 
   @override
@@ -250,7 +258,11 @@ class _BottomSheetTranslateBodyState extends State<BottomSheetTranslateBody> {
   }
 }
 
-void showTranslateBottomSheet(BuildContext context, String word) {
+void showTranslateBottomSheet(
+  BuildContext context,
+  String word,
+  int readingId,
+) {
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
@@ -258,7 +270,7 @@ void showTranslateBottomSheet(BuildContext context, String word) {
     builder: (context) {
       return BlocProvider.value(
         value: serviceLocator<TranslationCubit>(),
-        child: BottomSheetTranslateBody(word: word),
+        child: BottomSheetTranslateBody(word: word, readingId: readingId),
       );
     },
   );

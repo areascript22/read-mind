@@ -13,10 +13,13 @@ class TranslationCubit extends Cubit<TranslationState> {
     : super(TranslationInitial());
 
   /// Calls the translateWord method from the repository and handles states
-  Future<void> translateWord(String text) async {
+  Future<void> translateWord(String text, int readingid) async {
     emit(TranslationLoading());
 
-    final result = await aiReadingRepository.translateWord(text: text);
+    final result = await aiReadingRepository.translateWord(
+      text: text,
+      readingId: readingid,
+    );
 
     result.fold(
       (failure) => emit(TranslationFailure(failure.message)),
