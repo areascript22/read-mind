@@ -475,7 +475,11 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     );
     if (selected == "translate") {
       if (context.mounted) {
-        showTranslateBottomSheet(context, word);
+        showTranslateBottomSheet(
+          context,
+          word,
+          widget.activityModel.aiReadingId,
+        );
       }
     }
   }

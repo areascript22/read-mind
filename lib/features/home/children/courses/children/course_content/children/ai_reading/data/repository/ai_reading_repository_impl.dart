@@ -145,6 +145,7 @@ class AiReadingRepositoryImpl implements AiReadingRepository {
   @override
   Future<Either<Failure, TranslationEntity>> translateWord({
     required String text,
+    required int readingId,
   }) async {
     final url = Uri.parse("${AppEnvironment().baseUrl}/translate");
 
@@ -157,7 +158,7 @@ class AiReadingRepositoryImpl implements AiReadingRepository {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json", "x-token": token},
-        body: jsonEncode({'text': text}),
+        body: jsonEncode({'text': text, "readingId": readingId}),
       );
 
       final data = jsonDecode(response.body);
