@@ -128,6 +128,7 @@ void _initAuth() {
       serviceLocator(),
       serviceLocator(),
       serviceLocator(),
+      authRepository: serviceLocator(),
     ),
   );
 

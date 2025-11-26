@@ -4,6 +4,7 @@ import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:client_app/features/auth/presentation/cubit/app_version_cubit/app_version_cubit.dart';
 import 'package:client_app/features/auth/presentation/cubit/notifications_cubit/notifications_cubit.dart';
 import 'package:client_app/features/auth/presentation/pages/auth_wrapper.dart';
+import 'package:client_app/features/auth/presentation/pages/recover_password_page.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:client_app/features/auth/presentation/pages/splash_screen.dart';
@@ -68,6 +69,10 @@ class AppRouter {
           GoRoute(
             path: RouteNames.signIn,
             builder: (context, state) => SignInPage(),
+          ),
+          GoRoute(
+            path: RouteNames.recoverPassword,
+            builder: (context, state) => RecoverPasswordPage(),
           ),
           GoRoute(
             path: RouteNames.signUp,
