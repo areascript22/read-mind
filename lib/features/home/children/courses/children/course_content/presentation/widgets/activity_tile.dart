@@ -1,15 +1,16 @@
-import 'package:client_app/core/common/utils/date_util.dart';
-import 'package:client_app/core/common/utils/toast_util.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/activity_progress/activity_progress_bloc.dart';
-import 'package:client_app/init_dependencies.dart';
-import 'package:client_app/shared/widgets/loader_indicator.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-
+import '../../../../../../../../core/common/utils/date_util.dart';
+import '../../../../../../../../core/common/utils/toast_util.dart';
 import '../../../../../../../../core/routing/route_names.dart';
+import '../../../../../../../../init_dependencies.dart';
+import '../../../../../../../../shared/widgets/loader_indicator.dart';
+import '../../children/flash_cards/presentation/widget/flash_card_tile.dart';
 import '../../data/models/activity_model/activity_model.dart';
+import '../bloc/activity_progress/activity_progress_bloc.dart';
 
 class ActivityTile extends StatelessWidget {
   final ActivityModel activity;
@@ -44,6 +45,31 @@ class ActivityTile extends StatelessWidget {
           style: style,
         );
       },
+
+      flashCard: (
+        id,
+        title,
+        description,
+        dueDate,
+        hasScoring,
+        maxScore,
+        createdAt,
+        updatedAt,
+        flashCardActivityId,
+        maxCards,
+        cardOrder,
+      ) {
+        return _buildFlashCardTile(
+          context,
+          id: flashCardActivityId,
+          title: title,
+          description: description,
+          dueDate: dueDate,
+          maxCards: maxCards,
+          cardOrder: cardOrder,
+          hasScoring: hasScoring,
+        );
+      },
     );
   }
 
@@ -74,20 +100,32 @@ class ActivityTile extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoChip(IconData icon, String label, Color color) {
-    return Chip(
-      avatar: Icon(icon, size: 16, color: Colors.white),
-      label: Text(
-        label,
-        style: const TextStyle(color: Colors.white, fontSize: 12),
+  Widget _buildFlashCardTile(
+    BuildContext context, {
+    required int id,
+    required String title,
+    required String description,
+    required DateTime dueDate,
+    required int maxCards,
+    required String cardOrder,
+    required bool hasScoring,
+  }) {
+    return BlocProvider.value(
+      value: serviceLocator<FlashCardBloc>(),
+      child: FlashCardTileContent(
+        activityId: id,
+        title: title,
+        description: description,
+        dueDate: dueDate,
+        maxCards: maxCards,
+        cardOrder: cardOrder,
+        hasScoring: hasScoring,
+        activity: activity,
       ),
-      backgroundColor: color,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
     );
   }
 }
 
-// Widget interno que contiene la lógica del BlocConsumer
 class _AIReadingTileContent extends StatelessWidget {
   final int activityId;
   final String title;
@@ -128,10 +166,8 @@ class _AIReadingTileContent extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // BlocConsumer específico para este tile
               BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
                 builder: (context, state) {
-                  // Solo este tile mostrará el loader cuando esté en loading
                   if (state is ProgressLoading &&
                       state.operation == ProgressActOperation.create &&
                       activityId == state.activityId) {
@@ -192,7 +228,6 @@ class _AIReadingTileContent extends StatelessWidget {
               ),
               const SizedBox(height: 10),
 
-              // Metadata Chips
               Wrap(
                 spacing: 8,
                 runSpacing: 6,
@@ -208,7 +243,6 @@ class _AIReadingTileContent extends StatelessWidget {
               ),
               const SizedBox(height: 10),
 
-              // Due date
               Row(
                 children: [
                   const Icon(

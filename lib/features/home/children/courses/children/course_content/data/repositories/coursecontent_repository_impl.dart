@@ -64,7 +64,7 @@ class CourseContentRepositoryImpl implements CourseContentRepository {
         complexity: complexity,
         style: style,
       );
-      return Right(response.toAIReadingEntity());
+      return Right(response.toAIReadingEntity()!);
     } on ServerException catch (e) {
       return left(Failure(e.message));
     }

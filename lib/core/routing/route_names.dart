@@ -24,4 +24,5 @@ class RouteNames {
   static const activitySummary = '/activitySummary';
 
   static const studentTracking = '/studentTracking';
+  static const activityFlashCard = '/activityFlashCard';
 }

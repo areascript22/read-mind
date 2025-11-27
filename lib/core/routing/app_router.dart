@@ -14,6 +14,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/main_idea_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/paraphrase_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/summary_page.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/page/flash_card_activity_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/paragraph_metadata.dart';
@@ -32,6 +33,7 @@ import 'package:client_app/features/home/children/courses/presentation/bloc/cour
 import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc/courses_bloc.dart';
 import 'package:client_app/features/home/children/courses/presentation/pages/create_course.dart';
 import 'package:client_app/features/home/children/courses/presentation/pages/enroll_course.dart';
+import 'package:client_app/features/home/domain/entity/translation_entity.dart';
 import 'package:client_app/features/home/presentation/pages/home_page.dart';
 import 'package:client_app/init_dependencies.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -207,6 +209,14 @@ class AppRouter {
             },
           ),
         ],
+      ),
+
+      GoRoute(
+        path: RouteNames.activityFlashCard,
+        builder: (context, state) {
+          final translations = state.extra as List<TranslationEntity>;
+          return FlashCardsActivityPage(translations: translations);
+        },
       ),
 
       GoRoute(

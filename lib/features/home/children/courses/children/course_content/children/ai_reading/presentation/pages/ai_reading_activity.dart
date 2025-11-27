@@ -47,7 +47,14 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   @override
   void initState() {
     super.initState();
-    paragraph = (widget.activityModel.content).trim();
+
+    paragraph =
+        (widget.activityModel.maybeMap(
+                  aIReading: (m) => m.content,
+                  orElse: () => null,
+                ) ??
+                "")
+            .trim();
     _flutterTts = FlutterTts();
     _prepareSentences();
     initializeTts();
@@ -93,12 +100,19 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
         _tempCurrentCharIndex = -1;
         setState(() {});
 
-        context.read<ActivityProgressBloc>().add(
-          UpdateProgressEvent(
-            aiReadingId: widget.activityModel.aiReadingId,
-            dataToUpdate: {"readingCompleted": true},
-          ),
+        final readingId = widget.activityModel.maybeMap(
+          aIReading: (m) => m.aiReadingId,
+          orElse: () => null,
         );
+
+        if (readingId != null) {
+          context.read<ActivityProgressBloc>().add(
+            UpdateProgressEvent(
+              aiReadingId: readingId,
+              dataToUpdate: {"readingCompleted": true},
+            ),
+          );
+        }
       });
 
       _flutterTts.setStartHandler(() {});
@@ -474,12 +488,13 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
       ],
     );
     if (selected == "translate") {
-      if (context.mounted) {
-        showTranslateBottomSheet(
-          context,
-          word,
-          widget.activityModel.aiReadingId,
-        );
+      final readingId = widget.activityModel.maybeMap(
+        aIReading: (m) => m.aiReadingId,
+        orElse: () => null,
+      );
+
+      if (context.mounted && readingId != null) {
+        showTranslateBottomSheet(context, word, readingId);
       }
     }
   }
