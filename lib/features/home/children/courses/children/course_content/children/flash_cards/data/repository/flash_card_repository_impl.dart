@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:client_app/core/error/failure.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/data/model/flashcard_session/flashcard_session.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/flashcard_session_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/repository/flash_card_repository.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/flash_card_entity.dart';
 import 'package:client_app/features/home/data/model/translation_model/translation_model.dart';
 import 'package:client_app/features/home/domain/entity/translation_entity.dart';
 import 'package:client_app/shared/datasources/auth_local_datasource.dart';
@@ -53,6 +53,80 @@ class FlashCardRepositoryImpl implements FlashCardRepository {
         return left(Failure(e.message));
       }
       return left(Failure("No se pudo obtener los cards"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, FlashcardSessionEntity>> createFlashCardSession({
+    required int activityId,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/courseActivity/$activityId/flashcard/session",
+    );
+
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesión de nuevo"));
+      }
+
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 201) {
+        throw ServerException(data['message'] ?? "Error al crear sesión");
+      }
+
+      final session = FlashcardSession.fromJson(data['data']['newSession']);
+      return Right(session.toEntity());
+    } catch (e) {
+      debugPrint("Error al crear sesion: $e");
+      if (e is ServerException) {
+        debugPrint("Error al crear sesion: ${e.message}");
+        return left(Failure(e.message));
+      }
+      return left(Failure("No se pudo cargar esta actividad"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, FlashcardSessionEntity>> completeFlashCardSession({
+    required int sessionId,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/courseActivity/flashcard/$sessionId/complete",
+    );
+
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesión de nuevo"));
+      }
+
+      final response = await http.put(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw ServerException(data['message'] ?? "Error al completar sesión");
+      }
+
+      final session = FlashcardSession.fromJson(data['data']['updatedSession']);
+      return Right(session.toEntity());
+    } catch (e) {
+      debugPrint("Error al completar sesion: $e");
+      if (e is ServerException) {
+        debugPrint("Error al completar sesion: ${e.message}");
+        return left(Failure(e.message));
+      }
+      return left(Failure("No se pudo guardar esta sesión"));
     }
   }
 }
