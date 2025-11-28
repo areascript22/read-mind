@@ -1,3 +1,4 @@
+import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/widget/dialog_enough_translations.dart';
@@ -11,6 +12,7 @@ import '../../../../data/models/activity_model/activity_model.dart';
 
 class FlashCardTileContent extends StatelessWidget {
   final int activityId;
+  final int flashCardActivityId;
   final String title;
   final String description;
   final DateTime dueDate;
@@ -22,6 +24,7 @@ class FlashCardTileContent extends StatelessWidget {
   const FlashCardTileContent({
     super.key,
     required this.activityId,
+    required this.flashCardActivityId,
     required this.title,
     required this.description,
     required this.dueDate,
@@ -39,7 +42,7 @@ class FlashCardTileContent extends StatelessWidget {
           FlashCardLoadAll(
             limit: maxCards,
             order: cardOrder,
-            currentFlashCardActivity: activityId,
+            currentFlashCardActivity: flashCardActivityId,
           ),
         );
       },
@@ -54,20 +57,49 @@ class FlashCardTileContent extends StatelessWidget {
             children: [
               BlocConsumer<FlashCardBloc, FlashCardState>(
                 builder: (context, state) {
-                  if (state.isGettingAllCards &&
-                      activityId == state.currentFlashCardActivity) {
+                  final isItOurs =
+                      flashCardActivityId == state.currentFlashCardActivity;
+                  if (state.isGettingAllCards && isItOurs) {
                     return LoaderIndicator(spinnerSize: 20);
                   }
 
                   return SizedBox(height: 20, width: 20);
                 },
                 listener: (context, state) {
-                  if (state.isCardsLoaded &&
-                      activityId == state.currentFlashCardActivity) {
+                  final cardsReady =
+                      state.isCardsLoaded &&
+                      state.flashCardAction == FlashCardAction.loadAll;
+                  final isOurActivity =
+                      flashCardActivityId == state.currentFlashCardActivity;
+
+                  if (cardsReady && isOurActivity) {
                     if (state.cards.length < maxCards) {
                       showNotEnoughTranslations(context, maxCards);
                       return;
                     }
+
+                    context.read<FlashCardBloc>().add(
+                      FlashCardCreateInitialSession(activityId: activityId),
+                    );
+                  }
+
+                  final initialSessionError =
+                      state.errorInitialSession.isNotEmpty &&
+                      state.flashCardAction == FlashCardAction.initSession &&
+                      isOurActivity &&
+                      !state.isCreatingInitialSession;
+
+                  if (initialSessionError) {
+                    ToastMessageUtil.showToast(
+                      state.errorInitialSession ?? '',
+                      context,
+                    );
+                  }
+
+                  if (state.currentFlashcardSession.id != 0 &&
+                      state.flashCardAction == FlashCardAction.initSession &&
+                      isOurActivity &&
+                      !state.isCreatingInitialSession) {
                     context.push(
                       RouteNames.activityFlashCard,
                       extra: state.cards,

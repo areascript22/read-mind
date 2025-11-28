@@ -61,7 +61,8 @@ class ActivityTile extends StatelessWidget {
       ) {
         return _buildFlashCardTile(
           context,
-          id: flashCardActivityId,
+          activityId: id,
+          flashCardActivityId: flashCardActivityId,
           title: title,
           description: description,
           dueDate: dueDate,
@@ -102,7 +103,8 @@ class ActivityTile extends StatelessWidget {
 
   Widget _buildFlashCardTile(
     BuildContext context, {
-    required int id,
+    required int activityId,
+    required int flashCardActivityId,
     required String title,
     required String description,
     required DateTime dueDate,
@@ -113,7 +115,8 @@ class ActivityTile extends StatelessWidget {
     return BlocProvider.value(
       value: serviceLocator<FlashCardBloc>(),
       child: FlashCardTileContent(
-        activityId: id,
+        activityId: activityId,
+        flashCardActivityId: flashCardActivityId,
         title: title,
         description: description,
         dueDate: dueDate,

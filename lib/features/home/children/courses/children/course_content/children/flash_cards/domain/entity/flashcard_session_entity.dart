@@ -22,4 +22,20 @@ class FlashcardSessionEntity {
     required this.incorrectAnswers,
     this.confidenceScore,
   });
+
+  /// Constructor factory para obtener una sesión vacía (default)
+  factory FlashcardSessionEntity.empty() {
+    return FlashcardSessionEntity(
+      id: 0,
+      flashCardActivityId: 0,
+      studentId: 0,
+      startedAt: DateTime.fromMillisecondsSinceEpoch(0),
+      completedAt: null,
+      totalTimeSec: 0,
+      cardsCompleted: 0,
+      correctAnswers: 0,
+      incorrectAnswers: 0,
+      confidenceScore: null,
+    );
+  }
 }

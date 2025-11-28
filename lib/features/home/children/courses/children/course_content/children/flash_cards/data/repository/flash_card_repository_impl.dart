@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:client_app/core/error/failure.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/data/model/flashcard_attempt/flashcard_attempt.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/data/model/flashcard_session/flashcard_session.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/flashcard_attempt.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/flashcard_session_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/repository/flash_card_repository.dart';
 import 'package:client_app/features/home/data/model/translation_model/translation_model.dart';
@@ -127,6 +129,53 @@ class FlashCardRepositoryImpl implements FlashCardRepository {
         return left(Failure(e.message));
       }
       return left(Failure("No se pudo guardar esta sesión"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, FlashcardAttemptEntity>> createFlashCardAttempt({
+    required int sessionId,
+    required int userTranslationId,
+    required String userAnswer,
+    required int timeSpentSec,
+    required bool isCorrect,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/courseActivity/flashcard/$sessionId/attempt",
+    );
+
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesión de nuevo"));
+      }
+
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+        body: jsonEncode({
+          "userTranslationId": userTranslationId,
+          "userAnswer": userTranslationId,
+          "timeSpentSec": timeSpentSec,
+          "isCorrect": isCorrect,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 201) {
+        throw ServerException(data['message'] ?? "Error al guardar el intento");
+      }
+
+      final attempt = FlashcardAttempt.fromJson(data['data']['attempt']);
+      return Right(attempt.toEntity());
+    } catch (e) {
+      debugPrint("Error al crear el intento: $e");
+      if (e is ServerException) {
+        debugPrint("Error al crear el intento: ${e.message}");
+        return left(Failure(e.message));
+      }
+      return left(Failure("No se pudo guardar este intento"));
     }
   }
 }

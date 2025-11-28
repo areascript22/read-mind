@@ -69,10 +69,9 @@ class _FlashCardsActivityPageState extends State<FlashCardsActivityPage> {
       children: [
         Text(
           'FlashCards',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.onBackground,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Row(
@@ -80,7 +79,8 @@ class _FlashCardsActivityPageState extends State<FlashCardsActivityPage> {
             Expanded(
               child: LinearProgressIndicator(
                 value: totalCount > 0 ? completedCount / totalCount : 0,
-                backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                backgroundColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
                 color: Theme.of(context).colorScheme.primary,
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -148,12 +148,12 @@ class _FlashCardsActivityPageState extends State<FlashCardsActivityPage> {
             color: colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: colorScheme.outline.withOpacity(0.2),
+              color: colorScheme.outline.withValues(alpha: 0.2),
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: colorScheme.shadow.withOpacity(0.05),
+                color: colorScheme.shadow.withValues(alpha: 0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -168,7 +168,7 @@ class _FlashCardsActivityPageState extends State<FlashCardsActivityPage> {
                 border: InputBorder.none,
                 hintText: 'Escribe la traducción al español...',
                 hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface.withOpacity(0.4),
+                  color: colorScheme.onSurface.withValues(alpha: 0.4),
                 ),
                 suffixIcon:
                     isAnswered

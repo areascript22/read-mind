@@ -1,15 +1,25 @@
 import 'package:bloc/bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/flashcard_session_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/repository/flash_card_repository.dart';
 import 'package:client_app/features/home/domain/entity/translation_entity.dart';
 import 'package:flutter/material.dart';
+import '../../../domain/entity/flashcard_attempt.dart';
 part 'flash_card_event.dart';
 part 'flash_card_state.dart';
 
 class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
   final FlashCardRepository flashCardRepository;
   FlashCardBloc({required this.flashCardRepository})
-    : super(const FlashCardState()) {
+    : super(
+        FlashCardState(
+          currentFlashcardSession: FlashcardSessionEntity.empty(),
+          currentFlashcardAttempt: FlashcardAttemptEntity.empty(),
+        ),
+      ) {
     on<FlashCardLoadAll>(_onLoadAllCards);
+    on<FlashCardCreateInitialSession>(_createInitialSession);
+    on<FlashCardCompleteSession>(_completeSession);
+    on<FlashCardCreateAttempt>(_createAttempt);
   }
 
   void _onLoadAllCards(
@@ -19,9 +29,10 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
     emit(
       state.copyWith(
         isGettingAllCards: true,
-        currentFlashCardActivity: null,
-        errorMessage: null,
+        currentFlashCardActivity: event.currentFlashCardActivity,
+        errorMessage: '',
         isCardsLoaded: false,
+        flashCardAction: FlashCardAction.loadAll,
       ),
     );
     final response = await flashCardRepository.loadFlashCards(
@@ -33,7 +44,8 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
         state.copyWith(
           isGettingAllCards: false,
           errorMessage: l.message,
-          currentFlashCardActivity: null,
+          currentFlashCardActivity: 0,
+          isCardsLoaded: false,
         ),
       ),
       (r) => emit(
@@ -42,7 +54,109 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
           cards: r,
           isCardsLoaded: true,
           currentFlashCardActivity: event.currentFlashCardActivity,
-          errorMessage: null,
+          errorMessage: '',
+        ),
+      ),
+    );
+  }
+
+  void _createInitialSession(
+    FlashCardCreateInitialSession event,
+    Emitter<FlashCardState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        isCreatingInitialSession: true,
+        currentFlashcardSession: FlashcardSessionEntity.empty(),
+        errorInitialSession: '',
+        flashCardAction: FlashCardAction.initSession,
+      ),
+    );
+    final response = await flashCardRepository.createFlashCardSession(
+      activityId: event.activityId,
+    );
+    response.fold(
+      (l) => emit(
+        state.copyWith(
+          isCreatingInitialSession: false,
+          errorInitialSession: l.message,
+          currentFlashcardSession: FlashcardSessionEntity.empty(),
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          isCreatingInitialSession: false,
+          errorInitialSession: '',
+          currentFlashcardSession: r,
+        ),
+      ),
+    );
+  }
+
+  void _completeSession(
+    FlashCardCompleteSession event,
+    Emitter<FlashCardState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        isCompletingSession: true,
+        errorCompleteSession: null,
+        flashCardAction: FlashCardAction.completeSession,
+      ),
+    );
+    final response = await flashCardRepository.completeFlashCardSession(
+      sessionId: event.sessionId,
+    );
+    response.fold(
+      (l) => emit(
+        state.copyWith(
+          isCompletingSession: false,
+          errorCompleteSession: l.message,
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          errorCompleteSession: null,
+          isCompletingSession: false,
+          currentFlashcardSession: r,
+        ),
+      ),
+    );
+  }
+
+  void _createAttempt(
+    FlashCardCreateAttempt event,
+    Emitter<FlashCardState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        isSavingCardAttempt: true,
+        errorSaveCardAttempt: null,
+        currentFlashcardAttempt: null,
+        flashCardAction: FlashCardAction.createAttempt,
+      ),
+    );
+    final response = await flashCardRepository.createFlashCardAttempt(
+      sessionId: event.sessionId,
+      userTranslationId: event.userTranslationId,
+      userAnswer: event.userAnswer,
+      timeSpentSec: event.timeSpentSec,
+      isCorrect: event.isCorrect,
+    );
+
+    response.fold(
+      (l) => emit(
+        state.copyWith(
+          isSavingCardAttempt: false,
+          errorSaveCardAttempt: l.message,
+          currentFlashcardAttempt: null,
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          isSavingCardAttempt: false,
+          errorSaveCardAttempt: null,
+          currentFlashcardAttempt: r,
         ),
       ),
     );
