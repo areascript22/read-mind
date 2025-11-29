@@ -11,6 +11,9 @@ import 'package:client_app/features/auth/presentation/cubit/notifications_cubit/
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/datasource/local_datasource/local_reading_progress_datasource%20.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_local_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/data/repository/flash_card_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/repository/flash_card_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/notifications/data/repository/notifications_history_repository_impl.dart';
 import 'package:client_app/features/home/children/courses/children/notifications/domain/repository/notifications_history_repository.dart';
 import 'package:client_app/features/home/children/courses/children/notifications/presentation/bloc/notifications_bloc/notifications_bloc.dart';
@@ -89,6 +92,7 @@ Future<void> initDependencies() async {
   _initVocabulary();
   _initActivityProgress();
   _initActivityAttempts();
+  _initFlashCards();
 
   serviceLocator.registerLazySingleton(
     () => AppUserCubit(authLocalDataSource: serviceLocator()),
@@ -340,5 +344,14 @@ void _initActivityProgress() {
 
   serviceLocator.registerLazySingleton(
     () => ActivityProgressBloc(activityProgressRepository: serviceLocator()),
+  );
+}
+
+void _initFlashCards() {
+  serviceLocator.registerFactory<FlashCardRepository>(
+    () => FlashCardRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+  serviceLocator.registerLazySingleton(
+    () => FlashCardBloc(flashCardRepository: serviceLocator()),
   );
 }

@@ -1,32 +1,39 @@
 import 'package:flutter/material.dart';
 
-class CustomButton extends StatefulWidget {
+class CustomOutlinedButton extends StatefulWidget {
   final void Function()? onTap;
   final Widget child;
   final Widget? icon;
-  final Color? color;
+  final Color? borderColor;
   final double borderRadius;
+  final double borderWidth;
   final EdgeInsetsGeometry padding;
 
-  const CustomButton({
+  const CustomOutlinedButton({
     super.key,
     required this.onTap,
     required this.child,
     this.icon,
-    this.color,
+    this.borderColor,
     this.borderRadius = 12.0,
+    this.borderWidth = 1.5,
     this.padding = const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
   });
 
   @override
-  State<CustomButton> createState() => _CustomButtonState();
+  State<CustomOutlinedButton> createState() => _CustomOutlinedButtonState();
 }
 
-class _CustomButtonState extends State<CustomButton> {
+class _CustomOutlinedButtonState extends State<CustomOutlinedButton> {
   bool _isPressed = false;
 
   @override
   Widget build(BuildContext context) {
+    final Color effectiveBorderColor =
+        widget.onTap == null
+            ? Colors.grey
+            : (widget.borderColor ?? Theme.of(context).primaryColor);
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _isPressed = true),
       onTapUp: (_) => setState(() => _isPressed = false),
@@ -41,22 +48,16 @@ class _CustomButtonState extends State<CustomButton> {
           ),
           padding: widget.padding,
           decoration: BoxDecoration(
-            color:
-                widget.onTap == null
-                    ? Colors.grey[400]
-                    : (widget.color ?? Theme.of(context).primaryColor),
+            color: Colors.transparent,
+            border: Border.all(
+              color: effectiveBorderColor,
+              width: widget.borderWidth,
+            ),
             borderRadius: BorderRadius.circular(widget.borderRadius),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                offset: Offset(0, 4),
-                blurRadius: 6,
-              ),
-            ],
           ),
           child: DefaultTextStyle(
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: effectiveBorderColor,
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
@@ -71,7 +72,10 @@ class _CustomButtonState extends State<CustomButton> {
                       mainAxisSize:
                           MainAxisSize.min, // 👈 Solo el espacio necesario
                       children: [
-                        widget.icon!,
+                        IconTheme(
+                          data: IconThemeData(color: effectiveBorderColor),
+                          child: widget.icon!,
+                        ),
                         const SizedBox(width: 8),
                         Flexible(
                           // 👈 Texto flexible que se ajusta
