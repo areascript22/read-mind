@@ -167,7 +167,8 @@ class AppRouter {
           GoRoute(
             path: RouteNames.courseContentGenerateParagraph,
             builder: (context, state) {
-              return GenerateParagraphPage();
+              final int courseId = state.extra as int;
+              return GenerateParagraphPage(courseid: courseId);
             },
           ),
 

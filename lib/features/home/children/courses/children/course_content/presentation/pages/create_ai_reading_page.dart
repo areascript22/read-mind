@@ -119,6 +119,11 @@ class _CreateAiReadingPageState extends State<CreateAiReadingPage> {
                 ToastMessageUtil.showToast('Actividad creada', context);
                 Navigator.pop(context);
                 Navigator.pop(context);
+                context.read<CourseContentBloc>().add(
+                  EventGetAllActivities(
+                    widget.paragraphMetadata.courseId.toString(),
+                  ),
+                );
               }
             },
           ),

@@ -80,7 +80,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
           courseOwner || userBloc.isAdmin || userBloc.isSuperUser
               ? FloatingActionButton(
                 onPressed: () {
-                  showBottomSheetCreateResource(context);
+                  showBottomSheetCreateResource(context, widget.course.id);
                 },
                 child: const Icon(Icons.add),
               )
