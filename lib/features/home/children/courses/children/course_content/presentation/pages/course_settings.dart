@@ -2,6 +2,7 @@ import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/common/enums/user_roles.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/widgets/dialog_remove_course.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/widgets/dialog_unenroll_course.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/course_share_invitecode/share_invitecode_cubit.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc/courses_bloc.dart';
@@ -24,11 +25,19 @@ class CourseSettings extends StatefulWidget {
 
 class _CourseSettingsState extends State<CourseSettings> {
   late CourseEntity courseEntity;
+  late AppUserCubit appUserCubit;
+  bool isCourseOwner = false;
 
   @override
   void initState() {
     super.initState();
     courseEntity = widget.courseEntity;
+    _initValues();
+  }
+
+  void _initValues() {
+    appUserCubit = context.read<AppUserCubit>();
+    isCourseOwner = widget.courseEntity.teacherId == appUserCubit.user?.id;
   }
 
   @override
@@ -63,33 +72,7 @@ class _CourseSettingsState extends State<CourseSettings> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    BlocConsumer<CoursesBloc, CoursesState>(
-                      builder: (context, state) {
-                        final showLoader =
-                            state is CourseLoading &&
-                            state.courseAction == CourseAction.updateCode;
-                        return IconButton(
-                          icon:
-                              showLoader
-                                  ? LoaderIndicator()
-                                  : Icon(Icons.refresh_outlined),
-                          onPressed: () {
-                            context.read<CoursesBloc>().add(
-                              CoursesUpdateInviteCodeEvent(
-                                courseId: widget.courseEntity.id,
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      listener: (context, state) {
-                        if (state is CourseUpdatedState) {
-                          setState(() {
-                            courseEntity = state.courseEntity;
-                          });
-                        }
-                      },
-                    ),
+                    _buildRefreshButton(),
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
@@ -166,68 +149,107 @@ class _CourseSettingsState extends State<CourseSettings> {
                 ),
 
                 SizedBox(height: 20),
-                BlocConsumer<CoursesBloc, CoursesState>(
-                  builder: (context, state) {
-                    final isLoading =
-                        state is CourseLoading &&
-                        state.courseAction == CourseAction.unEnroll;
-                    return SettingsTile(
-                      icon:
-                          isLoading
-                              ? LoaderIndicator()
-                              : Icon(Icons.logout, color: Colors.white),
-                      title: "Abandonar curso",
-                      onTap:
-                          isLoading
-                              ? () {}
-                              : () {
-                                context.read<CoursesBloc>().add(
-                                  CoursesUnEnrollEvent(
-                                    courseId: widget.courseEntity.id,
-                                  ),
-                                );
-                              },
-                    );
-                  },
-                  listener: (context, state) {
-                    if (state is CourseFailure &&
-                        state.courseAction == CourseAction.unEnroll) {
-                      ToastMessageUtil.showToast(state.message, context);
-                    }
-
-                    if (state is CourseUnEnrolledState) {
-                      ToastMessageUtil.showToast(state.message, context);
-                      context.read<CoursesBloc>().add(
-                        CoursesGetAllEnrolledEvent(),
-                      );
-                      context.go(RouteNames.home);
-                    }
-                  },
-                ),
+                _buildLeaveCourseOption(),
                 SizedBox(height: 20),
               ],
             ),
           ),
           //
-          _buildAuthorizedOptions(context),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: _buildAuthorizedOptions(context),
+          ),
         ],
       ),
     );
   }
 
+  Widget _buildLeaveCourseOption() {
+    final isStudent = appUserCubit.isStudent;
+    return !isStudent
+        ? SizedBox()
+        : BlocConsumer<CoursesBloc, CoursesState>(
+          builder: (context, state) {
+            final isLoading =
+                state is CourseLoading &&
+                state.courseAction == CourseAction.unEnroll;
+            return SettingsTile(
+              icon: isLoading ? LoaderIndicator() : Icon(Icons.logout),
+              title: "Abandonar curso",
+              onTap:
+                  isLoading
+                      ? () {}
+                      : () async {
+                        final result = await showDialogLeaveCourse(
+                          context: context,
+                        );
+                        if (!context.mounted) {
+                          return;
+                        }
+
+                        if (result) {
+                          context.read<CoursesBloc>().add(
+                            CoursesUnEnrollEvent(
+                              courseId: widget.courseEntity.id,
+                            ),
+                          );
+                        }
+                      },
+            );
+          },
+          listener: (context, state) {
+            if (state is CourseFailure &&
+                state.courseAction == CourseAction.unEnroll) {
+              ToastMessageUtil.showToast(state.message, context);
+            }
+
+            if (state is CourseUnEnrolledState) {
+              ToastMessageUtil.showToast(state.message, context);
+              context.read<CoursesBloc>().add(CoursesGetAllEnrolledEvent());
+              context.go(RouteNames.home);
+            }
+          },
+        );
+  }
+
+  Widget _buildRefreshButton() {
+    final build =
+        isCourseOwner || appUserCubit.isAdmin || appUserCubit.isSuperUser;
+    return !build
+        ? SizedBox()
+        : BlocConsumer<CoursesBloc, CoursesState>(
+          builder: (context, state) {
+            final showLoader =
+                state is CourseLoading &&
+                state.courseAction == CourseAction.updateCode;
+            return IconButton(
+              icon:
+                  showLoader ? LoaderIndicator() : Icon(Icons.refresh_outlined),
+              onPressed: () {
+                context.read<CoursesBloc>().add(
+                  CoursesUpdateInviteCodeEvent(
+                    courseId: widget.courseEntity.id,
+                  ),
+                );
+              },
+            );
+          },
+          listener: (context, state) {
+            if (state is CourseUpdatedState) {
+              setState(() {
+                courseEntity = state.courseEntity;
+              });
+            }
+          },
+        );
+  }
+
   Widget _buildAuthorizedOptions(BuildContext context) {
-    final user = context.read<AppUserCubit>().user;
-    if (user == null) {
-      return SizedBox.shrink();
-    }
-    final hasPermissions = [
-      UserRoles.admin.name,
-      UserRoles.superUser.name,
-    ].contains(user.role.name);
+    final courseOwner = courseEntity.teacherId == appUserCubit.user?.id;
+    final showOptions =
+        appUserCubit.isAdmin || appUserCubit.isSuperUser || courseOwner;
 
-    final courseOwner = courseEntity.teacherId == user.id;
-
-    if (!hasPermissions || !courseOwner) {
+    if (!showOptions) {
       return SizedBox.shrink();
     }
 
@@ -243,7 +265,7 @@ class _CourseSettingsState extends State<CourseSettings> {
               ),
         ),
 
-        SizedBox(height: 20),
+        SizedBox(height: 5),
         BlocConsumer<CoursesBloc, CoursesState>(
           builder: (context, state) {
             final showLoader =
