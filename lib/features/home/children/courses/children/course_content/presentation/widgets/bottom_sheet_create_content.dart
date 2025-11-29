@@ -74,6 +74,10 @@ class BottomSheetCreateResource extends StatelessWidget {
               svgPath: "assets/images/svg/flashcards.svg",
               onTap: () {
                 Navigator.pop(context);
+                context.push(
+                  RouteNames.courseContentCreateFlashCards,
+                  extra: courseId,
+                );
               },
             ),
           ],
