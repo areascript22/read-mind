@@ -1,5 +1,6 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/param_flashcard_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/widget/dialog_enough_translations.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
@@ -102,7 +103,10 @@ class FlashCardTileContent extends StatelessWidget {
                       !state.isCreatingInitialSession) {
                     context.push(
                       RouteNames.activityFlashCard,
-                      extra: state.cards,
+                      extra: ParamFlashCardEntity(
+                        translations: state.cards,
+                        activityId: activityId,
+                      ),
                     );
                   }
                 },

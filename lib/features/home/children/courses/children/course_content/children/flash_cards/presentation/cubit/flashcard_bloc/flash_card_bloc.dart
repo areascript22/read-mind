@@ -18,6 +18,7 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
       ) {
     on<FlashCardLoadAll>(_onLoadAllCards);
     on<FlashCardCreateInitialSession>(_createInitialSession);
+    on<FlashCardReCreateInitialSession>(_reCreateInitialSession);
     on<FlashCardCompleteSession>(_completeSession);
     on<FlashCardCreateAttempt>(_createAttempt);
   }
@@ -70,6 +71,7 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
         currentFlashcardSession: FlashcardSessionEntity.empty(),
         errorInitialSession: '',
         flashCardAction: FlashCardAction.initSession,
+        isInitialSessionCreated: false,
       ),
     );
     final response = await flashCardRepository.createFlashCardSession(
@@ -81,6 +83,7 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
           isCreatingInitialSession: false,
           errorInitialSession: l.message,
           currentFlashcardSession: FlashcardSessionEntity.empty(),
+          isInitialSessionCreated: false,
         ),
       ),
       (r) => emit(
@@ -88,6 +91,43 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
           isCreatingInitialSession: false,
           errorInitialSession: '',
           currentFlashcardSession: r,
+          isInitialSessionCreated: true,
+        ),
+      ),
+    );
+  }
+
+  void _reCreateInitialSession(
+    FlashCardReCreateInitialSession event,
+    Emitter<FlashCardState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        isCreatingInitialSession: true,
+        currentFlashcardSession: FlashcardSessionEntity.empty(),
+        errorInitialSession: '',
+        flashCardAction: FlashCardAction.reInitSession,
+        isInitialSessionCreated: false,
+      ),
+    );
+    final response = await flashCardRepository.createFlashCardSession(
+      activityId: event.activityId,
+    );
+    response.fold(
+      (l) => emit(
+        state.copyWith(
+          isCreatingInitialSession: false,
+          errorInitialSession: l.message,
+          currentFlashcardSession: FlashcardSessionEntity.empty(),
+          isInitialSessionCreated: false,
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          isCreatingInitialSession: false,
+          errorInitialSession: '',
+          currentFlashcardSession: r,
+          isInitialSessionCreated: true,
         ),
       ),
     );
@@ -100,8 +140,9 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
     emit(
       state.copyWith(
         isCompletingSession: true,
-        errorCompleteSession: null,
+        errorCompleteSession: '',
         flashCardAction: FlashCardAction.completeSession,
+        isSessionCompleted: false,
       ),
     );
     final response = await flashCardRepository.completeFlashCardSession(
@@ -112,13 +153,15 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
         state.copyWith(
           isCompletingSession: false,
           errorCompleteSession: l.message,
+          isSessionCompleted: false,
         ),
       ),
       (r) => emit(
         state.copyWith(
-          errorCompleteSession: null,
+          errorCompleteSession: '',
           isCompletingSession: false,
           currentFlashcardSession: r,
+          isSessionCompleted: true,
         ),
       ),
     );
@@ -131,8 +174,8 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
     emit(
       state.copyWith(
         isSavingCardAttempt: true,
-        errorSaveCardAttempt: null,
-        currentFlashcardAttempt: null,
+        errorSaveCardAttempt: '',
+        currentFlashcardAttempt: FlashcardAttemptEntity.empty(),
         flashCardAction: FlashCardAction.createAttempt,
       ),
     );
@@ -149,13 +192,13 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
         state.copyWith(
           isSavingCardAttempt: false,
           errorSaveCardAttempt: l.message,
-          currentFlashcardAttempt: null,
+          currentFlashcardAttempt: FlashcardAttemptEntity.empty(),
         ),
       ),
       (r) => emit(
         state.copyWith(
           isSavingCardAttempt: false,
-          errorSaveCardAttempt: null,
+          errorSaveCardAttempt: '',
           currentFlashcardAttempt: r,
         ),
       ),

@@ -155,7 +155,7 @@ class FlashCardRepositoryImpl implements FlashCardRepository {
         headers: {"Content-Type": "application/json", "x-token": token},
         body: jsonEncode({
           "userTranslationId": userTranslationId,
-          "userAnswer": userTranslationId,
+          "userAnswer": userAnswer,
           "timeSpentSec": timeSpentSec,
           "isCorrect": isCorrect,
         }),

@@ -3,10 +3,13 @@ part of 'flash_card_bloc.dart';
 @immutable
 class FlashCardState {
   final FlashCardAction flashCardAction;
+
   final bool isGettingAllCards;
   final bool isCreatingInitialSession;
   final bool isCompletingSession;
   final bool isSavingCardAttempt;
+  final bool isSessionCompleted;
+  final bool isInitialSessionCreated;
 
   final FlashcardSessionEntity currentFlashcardSession;
   final List<TranslationEntity> cards;
@@ -36,6 +39,8 @@ class FlashCardState {
     this.isSavingCardAttempt = false,
     required this.currentFlashcardAttempt,
     this.flashCardAction = FlashCardAction.none,
+    this.isSessionCompleted = false,
+    this.isInitialSessionCreated = false,
   });
 
   FlashCardState copyWith({
@@ -53,6 +58,8 @@ class FlashCardState {
     bool? isSavingCardAttempt,
     FlashcardAttemptEntity? currentFlashcardAttempt,
     FlashCardAction? flashCardAction,
+    bool? isSessionCompleted,
+    bool? isInitialSessionCreated,
   }) {
     return FlashCardState(
       isGettingAllCards: isGettingAllCards ?? this.isGettingAllCards,
@@ -73,6 +80,9 @@ class FlashCardState {
       currentFlashcardAttempt:
           currentFlashcardAttempt ?? this.currentFlashcardAttempt,
       flashCardAction: flashCardAction ?? this.flashCardAction,
+      isSessionCompleted: isSessionCompleted ?? this.isSessionCompleted,
+      isInitialSessionCreated:
+          isInitialSessionCreated ?? this.isInitialSessionCreated,
     );
   }
 }
@@ -81,6 +91,7 @@ enum FlashCardAction {
   none,
   loadAll,
   initSession,
+  reInitSession,
   completeSession,
   createAttempt,
 }

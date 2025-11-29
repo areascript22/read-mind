@@ -21,6 +21,12 @@ final class FlashCardCreateInitialSession extends FlashCardEvent {
   FlashCardCreateInitialSession({required this.activityId});
 }
 
+final class FlashCardReCreateInitialSession extends FlashCardEvent {
+  final int activityId;
+
+  FlashCardReCreateInitialSession({required this.activityId});
+}
+
 final class FlashCardCompleteSession extends FlashCardEvent {
   final int sessionId;
 

@@ -1,3 +1,4 @@
+import 'package:client_app/core/common/utils/date_util.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../../domain/entity/translation_entity.dart';
 
@@ -6,6 +7,7 @@ class FlashCard extends StatefulWidget {
   final bool isAnswered;
   final String userAnswer;
   final bool isCorrect;
+  final int? timeSpent; // ← NUEVO PARÁMETRO
 
   const FlashCard({
     super.key,
@@ -13,6 +15,7 @@ class FlashCard extends StatefulWidget {
     required this.isAnswered,
     required this.userAnswer,
     required this.isCorrect,
+    this.timeSpent, // ← NUEVO PARÁMETRO OPCIONAL
   });
 
   @override
@@ -41,11 +44,11 @@ class _FlashCardState extends State<FlashCard> {
                       widget.isCorrect
                           ? [
                             Colors.green.shade50,
-                            Colors.green.shade100.withOpacity(0.3),
+                            Colors.green.shade100.withOpacity(0.7),
                           ]
                           : [
                             Colors.orange.shade50,
-                            Colors.orange.shade100.withOpacity(0.3),
+                            Colors.orange.shade100.withOpacity(0.7),
                           ],
                 )
                 : LinearGradient(
@@ -122,6 +125,44 @@ class _FlashCardState extends State<FlashCard> {
                 ),
               ),
             ),
+          // NUEVO: Badge de tiempo en la esquina superior izquierda
+          if (widget.isAnswered && widget.timeSpent != null)
+            Positioned(
+              top: 16,
+              left: 16,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blueGrey.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.timer_rounded, color: Colors.white, size: 14),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${widget.timeSpent}s',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.all(32),
             child: SingleChildScrollView(
@@ -169,7 +210,7 @@ class _FlashCardState extends State<FlashCard> {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.7),
+                      color: Colors.white.withOpacity(0.7),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: colorScheme.primary.withOpacity(0.1),
@@ -203,7 +244,9 @@ class _FlashCardState extends State<FlashCard> {
                       const SizedBox(width: 12),
                       _buildMetadataChip(
                         icon: Icons.calendar_today_rounded,
-                        label: _formatDate(widget.translation.createdAt),
+                        label: DateUtil.formatDateWithDays(
+                          widget.translation.createdAt,
+                        ),
                         colorScheme: colorScheme,
                         theme: theme,
                       ),
@@ -218,6 +261,7 @@ class _FlashCardState extends State<FlashCard> {
                       widget.translation,
                       widget.userAnswer,
                       widget.isCorrect,
+                      widget.timeSpent, // ← NUEVO: pasar tiempo al feedback
                       theme,
                       colorScheme,
                     )
@@ -297,16 +341,17 @@ class _FlashCardState extends State<FlashCard> {
     TranslationEntity translation,
     String userAnswer,
     bool isCorrect,
+    int? timeSpent, // ← NUEVO PARÁMETRO
     ThemeData theme,
     ColorScheme colorScheme,
   ) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.9),
+        color: Colors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: (isCorrect ? Colors.green : Colors.orange).withOpacity(0.3),
+          color: (isCorrect ? Colors.green : Colors.orange).withOpacity(0.6),
           width: 2,
         ),
         boxShadow: [
@@ -371,6 +416,57 @@ class _FlashCardState extends State<FlashCard> {
               ),
             ],
           ),
+
+          // NUEVO: Información de tiempo en el feedback
+          if (timeSpent != null) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.blueGrey.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Colors.blueGrey.withOpacity(0.2),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.timer_rounded, color: Colors.blueGrey, size: 16),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Tiempo: ${timeSpent}s',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.blueGrey,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Indicador de rendimiento basado en el tiempo
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: _getTimePerformanceColor(timeSpent),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      _getTimePerformanceText(timeSpent),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 9,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
           if (!isCorrect) ...[
             const SizedBox(height: 16),
             Container(
@@ -406,14 +502,15 @@ class _FlashCardState extends State<FlashCard> {
     );
   }
 
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date);
+  Color _getTimePerformanceColor(int timeSpent) {
+    if (timeSpent <= 5) return Colors.green;
+    if (timeSpent <= 10) return Colors.orange;
+    return Colors.red;
+  }
 
-    if (difference.inDays == 0) return 'Hoy';
-    if (difference.inDays == 1) return 'Ayer';
-    if (difference.inDays < 7) return '${difference.inDays}d';
-    if (difference.inDays < 30) return '${(difference.inDays / 7).floor()}sem';
-    return '${(difference.inDays / 30).floor()}m';
+  String _getTimePerformanceText(int timeSpent) {
+    if (timeSpent <= 5) return 'RÁPIDO';
+    if (timeSpent <= 10) return 'NORMAL';
+    return 'LENTO';
   }
 }
