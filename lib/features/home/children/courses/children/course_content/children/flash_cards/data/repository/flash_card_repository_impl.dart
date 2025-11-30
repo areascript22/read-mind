@@ -5,6 +5,8 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/flashcard_attempt.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/flashcard_session_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/repository/flash_card_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/flash_card_entity.dart';
 import 'package:client_app/features/home/data/model/translation_model/translation_model.dart';
 import 'package:client_app/features/home/domain/entity/translation_entity.dart';
 import 'package:client_app/shared/datasources/auth_local_datasource.dart';
@@ -176,6 +178,60 @@ class FlashCardRepositoryImpl implements FlashCardRepository {
         return left(Failure(e.message));
       }
       return left(Failure("No se pudo guardar este intento"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, FlashCardEntity>> createFlashCardActivity({
+    required int courseId,
+    required String title,
+    required String description,
+    required String dueDate,
+    required bool hasScoring,
+    required int maxScore,
+    required int maxCards,
+    required String cardOrder,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/courseActivity/$courseId/flashcards",
+    );
+
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesión de nuevo"));
+      }
+
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+        body: jsonEncode({
+          "title": title,
+          "description": description,
+          "dueDate": dueDate,
+          "hasScoring": hasScoring,
+          "maxScore": maxScore,
+          "maxCards": maxCards,
+          "cardOrder": cardOrder,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+      print('data: ${data}');
+
+      if (response.statusCode != 201) {
+        throw ServerException(data['message'] ?? "Error al crear actividad");
+      }
+
+      final flashCard = ActivityModel.fromJson(data['data']);
+      return Right(flashCard.toFlashCardEntity()!);
+    } catch (e) {
+      debugPrint("Error al crear actividad: $e");
+      if (e is ServerException) {
+        debugPrint("Error al crear actividad: ${e.message}");
+        return left(Failure(e.message));
+      }
+      return left(Failure("No se pudo crear la actividad"));
     }
   }
 }

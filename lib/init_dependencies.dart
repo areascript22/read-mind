@@ -351,6 +351,7 @@ void _initFlashCards() {
   serviceLocator.registerFactory<FlashCardRepository>(
     () => FlashCardRepositoryImpl(authLocalDataSource: serviceLocator()),
   );
+
   serviceLocator.registerLazySingleton(
     () => FlashCardBloc(flashCardRepository: serviceLocator()),
   );

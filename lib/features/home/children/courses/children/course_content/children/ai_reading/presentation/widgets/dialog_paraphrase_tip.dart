@@ -5,154 +5,60 @@ class ParaphraseTipDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-      elevation: 10,
-      backgroundColor: Colors.transparent,
-      child: Container(
-        padding: const EdgeInsets.all(0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.amber.withValues(alpha: 0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: Colors.white,
+      title: const Text(
+        '🔄 Consejos de Paráfrasis',
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+      ),
+      content: const SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🔶 Header with amber gradient
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20.0),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.amber,
-                    Color(0xFFFFC107), // Amber accent
-                  ],
-                ),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.0),
-                  topRight: Radius.circular(20.0),
-                ),
-              ),
-              child: Column(
-                children: const [
-                  Icon(Icons.lightbulb_outline, color: Colors.white, size: 40),
-                  SizedBox(height: 10),
-                  Text(
-                    "Consejos para parafrasear",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      height: 1.2,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
+            Text(
+              '✨ ¿Qué es parafrasear?',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-
-            // 🟡 Content
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: const [
-                  _TipItem(
-                    icon: Icons.visibility,
-                    text: "Lee el párrafo con atención",
-                  ),
-                  SizedBox(height: 12),
-                  _TipItem(
-                    icon: Icons.swap_horiz,
-                    text:
-                        "Usa sinónimos y cambia la estructura de las oraciones",
-                  ),
-                  SizedBox(height: 12),
-                  _TipItem(
-                    icon: Icons.import_export,
-                    text: "Mantén el significado original",
-                  ),
-                  SizedBox(height: 12),
-                  _TipItem(
-                    icon: Icons.content_copy,
-                    text: "Evita copiar frases textuales",
-                  ),
-                  SizedBox(height: 12),
-                  _TipItem(
-                    icon: Icons.brush,
-                    text: "Utiliza tu propio estilo y vocabulario",
-                  ),
-                ],
-              ),
+            SizedBox(height: 8),
+            Text(
+              'Parafrasear es expresar las mismas ideas de un texto usando palabras diferentes, manteniendo el significado original pero con tu propio estilo.',
             ),
-
-            // 🟠 Button
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0, left: 20, right: 20),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    elevation: 5,
-                    shadowColor: Colors.amberAccent.withValues(alpha: 0.5),
-                  ),
-                  child: const Text(
-                    "Entendido",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
+            SizedBox(height: 16),
+            Text(
+              '💡 Cómo parafrasear correctamente:',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            SizedBox(height: 8),
+            Text('• Lee el texto original con atención y comprensión.'),
+            Text('• Usa sinónimos y cambia la estructura de las oraciones.'),
+            Text('• Mantén el significado y mensaje original del texto.'),
+            Text('• Evita copiar frases textuales del original.'),
+            Text('• Utiliza tu propio estilo y vocabulario personal.'),
+            Text('• Verifica que no hayas cambiado la idea principal.'),
+            SizedBox(height: 16),
+            Text(
+              '📘 Ejemplo:',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            SizedBox(height: 8),
+            Text(
+              '"Texto original: El cambio climático está afectando gravemente a los ecosistemas marinos y la biodiversidad oceánica."',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+            SizedBox(height: 8),
+            Text(
+              '"Paráfrasis: La diversidad biológica de los océanos y sus ecosistemas se ven seriamente impactados por las alteraciones del clima."',
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _TipItem extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const _TipItem({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: Colors.amber.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: Colors.amber, size: 18),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 14,
-              height: 1.4,
-              color: Colors.black87,
-            ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text(
+            '¡Entendido!',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
       ],

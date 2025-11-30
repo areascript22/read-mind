@@ -1,7 +1,9 @@
+import 'package:client_app/features/home/domain/entity/translation_entity.dart';
 import 'package:client_app/init_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../bloc/vocabulary_bloc/vocabulary_bloc.dart';
 
@@ -74,6 +76,11 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
     }
   }
 
+  void _onRefresh() async {
+    _loadTranslations();
+    _refreshController.refreshCompleted();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,74 +94,246 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
   }
 
   Widget _buildBody(VocabularyState state) {
+    // Siempre usar SmartRefresher para permitir refresh en cualquier estado
+    return SmartRefresher(
+      controller: _refreshController,
+      enablePullDown: true,
+      onRefresh: _onRefresh,
+      child: _buildContent(state),
+    );
+  }
+
+  Widget _buildContent(VocabularyState state) {
     if (state is VocabularyLoading) {
       return const Center(child: CircularProgressIndicator());
     } else if (state is VocabularyLoaded) {
       return _buildList(state.translations);
     } else if (state is VocabularyEmpty) {
-      return const Center(child: Text('No translations yet'));
+      return _buildEmptyState();
     } else if (state is VocabularyError) {
-      return Center(child: Text('Error: ${state.message}'));
+      return _buildErrorState(state.message);
     } else {
       return const SizedBox.shrink();
     }
   }
 
   Widget _buildList(List translations) {
-    return SmartRefresher(
-      controller: _refreshController,
-      enablePullDown: true,
-      onRefresh: () async {
-        _loadTranslations();
-        _refreshController.refreshCompleted();
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: translations.length,
+      itemBuilder: (context, index) {
+        final translation = translations[index];
+        return _buildTranslationTile(translation);
       },
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: translations.length,
-        itemBuilder: (context, index) {
-          final translation = translations[index];
-          return _buildTranslationTile(translation);
-        },
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.8,
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.translate_rounded, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
+            Text(
+              'No translations yet',
+              style: TextStyle(fontSize: 18, color: Colors.grey),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Pull down to refresh',
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildTranslationTile(dynamic translation) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildErrorState(String message) {
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.8,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    translation.sourceText,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+            const Icon(
+              Icons.error_outline_rounded,
+              size: 64,
+              color: Colors.red,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Error: $message',
+              style: const TextStyle(fontSize: 16, color: Colors.red),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Pull down to try again',
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTranslationTile(TranslationEntity t) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ---------- HEADER ----------
+            Row(
+              children: [
+                // Badge pequeño
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: cs.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    "${t.sourceLang.toUpperCase()} → ${t.targetLang.toUpperCase()}",
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: cs.primary,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    translation.translated,
-                    style: const TextStyle(fontSize: 16, color: Colors.black54),
+                ),
+                const Spacer(),
+                Text(
+                  "#${t.id}",
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: cs.onSurfaceVariant.withOpacity(0.5),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Used: ${translation.timesUsed} times',
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                ],
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            // ---------- ORIGINAL ----------
+            Text(
+              "Original",
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: cs.onSurfaceVariant,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            IconButton(
-              onPressed: () => _speak(translation.sourceText),
-              icon: const Icon(Icons.volume_up),
-              color: Colors.blue,
+            const SizedBox(height: 4),
+
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: cs.surfaceVariant.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      t.sourceText,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: cs.onSurface,
+                        height: 1.35,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+
+                // Botón redondo mini
+                InkWell(
+                  onTap: () => _speak(t.sourceText),
+                  borderRadius: BorderRadius.circular(40),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: cs.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.volume_up, size: 20, color: cs.onPrimary),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 14),
+
+            // ---------- TRADUCCIÓN ----------
+            Text(
+              "Traducción",
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: cs.onSurfaceVariant,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 4),
+
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: cs.primary.withOpacity(0.06),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: cs.primary.withOpacity(0.1)),
+              ),
+              child: Text(
+                t.translated,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: cs.onSurface,
+                  height: 1.35,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // ---------- FOOTER ----------
+            Row(
+              children: [
+                Icon(
+                  Icons.repeat_rounded,
+                  size: 18,
+                  color: cs.primary.withOpacity(0.8),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  "${t.timesUsed} usos",
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: cs.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  DateFormat("dd/MM/yy").format(t.createdAt),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: cs.onSurfaceVariant.withOpacity(0.5),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

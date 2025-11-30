@@ -4,7 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class BottomSheetCreateResource extends StatelessWidget {
-  const BottomSheetCreateResource({super.key});
+  final int courseId;
+  const BottomSheetCreateResource({super.key, required this.courseId});
 
   @override
   Widget build(BuildContext context) {
@@ -56,10 +57,29 @@ class BottomSheetCreateResource extends StatelessWidget {
               svgPath: "assets/images/svg/reading.svg",
               onTap: () {
                 Navigator.pop(context);
-                context.push(RouteNames.courseContentGenerateParagraph);
+                context.push(
+                  RouteNames.courseContentGenerateParagraph,
+                  extra: courseId,
+                );
               },
             ),
             const SizedBox(height: 8),
+
+            _buildOptionTile(
+              context,
+              icon: Icons.menu_book_outlined,
+              title: "Flash cards",
+              subtitle: "Practica el vocabulario",
+              iconColor: Colors.blue,
+              svgPath: "assets/images/svg/flashcards.svg",
+              onTap: () {
+                Navigator.pop(context);
+                context.push(
+                  RouteNames.courseContentCreateFlashCards,
+                  extra: courseId,
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -116,13 +136,13 @@ class BottomSheetCreateResource extends StatelessWidget {
   }
 }
 
-void showBottomSheetCreateResource(BuildContext context) {
+void showBottomSheetCreateResource(BuildContext context, int courseId) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (context) {
-      return const BottomSheetCreateResource();
+      return BottomSheetCreateResource(courseId: courseId);
     },
   );
 }

@@ -16,6 +16,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/summary_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/param_flashcard_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/page/create_flash_card_activity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/page/flash_card_activity_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
@@ -167,7 +168,8 @@ class AppRouter {
           GoRoute(
             path: RouteNames.courseContentGenerateParagraph,
             builder: (context, state) {
-              return GenerateParagraphPage();
+              final int courseId = state.extra as int;
+              return GenerateParagraphPage(courseid: courseId);
             },
           ),
 
@@ -176,6 +178,14 @@ class AppRouter {
             builder: (context, state) {
               final content = state.extra as ParagraphMetadata;
               return CreateAiReadingPage(paragraphMetadata: content);
+            },
+          ),
+
+          GoRoute(
+            path: RouteNames.courseContentCreateFlashCards,
+            builder: (context, state) {
+              final courseId = state.extra as int;
+              return CreateFlashCardsPage(courseId: courseId);
             },
           ),
 

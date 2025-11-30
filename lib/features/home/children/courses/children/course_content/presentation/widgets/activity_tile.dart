@@ -248,17 +248,19 @@ class _AIReadingTileContent extends StatelessWidget {
 
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.calendar_today,
                     size: 14,
-                    color: Colors.redAccent,
+                    color: _getDueDateColor(
+                      dueDate,
+                    ), // También puedes hacer este color dinámico
                   ),
                   const SizedBox(width: 4),
                   Text(
                     "Fecha límite: ${DateUtil.formatDate(dueDate.toString())}",
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: Colors.redAccent,
+                      color: _getDueDateColor(dueDate),
                     ),
                   ),
                 ],
@@ -268,6 +270,20 @@ class _AIReadingTileContent extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _getDueDateColor(DateTime dueDate) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final due = DateTime(dueDate.year, dueDate.month, dueDate.day);
+
+    if (due.isBefore(today)) {
+      return Colors.red; // Fecha vencida
+    } else if (due.isAtSameMomentAs(today)) {
+      return Colors.orangeAccent; // Fecha es hoy
+    } else {
+      return Colors.green; // Fecha futura
+    }
   }
 
   Widget _buildInfoChip(IconData icon, String label, Color color) {

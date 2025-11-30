@@ -139,6 +139,8 @@ class CourseContentRemoteDataSourceImpl
           "length": length,
           "complexity": complexity,
           "style": style,
+          "hasScoring": true,
+          "maxScore": 100,
         }),
       );
       final data = jsonDecode(response.body);

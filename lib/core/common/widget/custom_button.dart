@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomButton extends StatefulWidget {
+class CustomButton extends StatelessWidget {
   final void Function()? onTap;
   final Widget child;
   final Widget? icon;
@@ -19,67 +19,43 @@ class CustomButton extends StatefulWidget {
   });
 
   @override
-  State<CustomButton> createState() => _CustomButtonState();
-}
-
-class _CustomButtonState extends State<CustomButton> {
-  bool _isPressed = false;
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) => setState(() => _isPressed = false),
-      onTapCancel: () => setState(() => _isPressed = false),
-      onTap: widget.onTap,
-      child: AnimatedScale(
-        scale: _isPressed ? 0.97 : 1.0,
-        duration: const Duration(milliseconds: 100),
-        child: Container(
-          constraints: const BoxConstraints(
-            minWidth: double.infinity, // 👈 Ocupa todo el ancho disponible
-          ),
-          padding: widget.padding,
-          decoration: BoxDecoration(
-            color:
-                widget.onTap == null
-                    ? Colors.grey[400]
-                    : (widget.color ?? Theme.of(context).primaryColor),
-            borderRadius: BorderRadius.circular(widget.borderRadius),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                offset: Offset(0, 4),
-                blurRadius: 6,
-              ),
-            ],
-          ),
-          child: DefaultTextStyle(
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+      onTap: onTap,
+      child: Container(
+        padding: padding,
+        decoration: BoxDecoration(
+          color:
+              onTap == null
+                  ? Colors.grey[400]
+                  : (color ?? Theme.of(context).primaryColor),
+          borderRadius: BorderRadius.circular(borderRadius),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(0, 4),
+              blurRadius: 6,
             ),
-            child:
-                widget.icon == null
-                    ? Center(
-                      child: widget.child,
-                    ) // 👈 Centrado simple sin icono
-                    : Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.center, // 👈 Centrado del contenido
-                      mainAxisSize:
-                          MainAxisSize.min, // 👈 Solo el espacio necesario
-                      children: [
-                        widget.icon!,
-                        const SizedBox(width: 8),
-                        Flexible(
-                          // 👈 Texto flexible que se ajusta
-                          child: widget.child,
-                        ),
-                      ],
-                    ),
+          ],
+        ),
+        child: DefaultTextStyle(
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
           ),
+          child:
+              icon == null
+                  ? Center(child: child)
+                  : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      icon!,
+                      const SizedBox(width: 8),
+                      Flexible(child: child),
+                    ],
+                  ),
         ),
       ),
     );

@@ -31,6 +31,7 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
   }
 
   void _submitParaphrase(BuildContext context) {
+    FocusScope.of(context).unfocus();
     if (_controller.text.trim().isEmpty) {
       ToastMessageUtil.showToast("Escribe algo para continuar", context);
       return;
@@ -81,7 +82,7 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Paraphrase Activity"),
+            title: const Text("Actividad de paráfrasis"),
             centerTitle: true,
             leading: IconButton(
               onPressed: () => Navigator.pop(context),
@@ -265,7 +266,7 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                                             ),
                                           )
                                           : const Text(
-                                            "Submit Paraphrase",
+                                            "Evaluar paráfrasis",
                                             style: TextStyle(fontSize: 16),
                                           ),
                                 ),
