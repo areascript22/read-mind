@@ -29,6 +29,7 @@ class _SummaryPageState extends State<SummaryPage> {
   }
 
   void _submitSummary(BuildContext context) {
+    FocusScope.of(context).unfocus();
     if (_controller.text.trim().isEmpty) {
       ToastMessageUtil.showToast("Escribe algo para continuar", context);
       return;
@@ -78,7 +79,7 @@ class _SummaryPageState extends State<SummaryPage> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Summary activity"),
+            title: const Text("Actividad de resumen"),
             centerTitle: true,
             leading: IconButton(
               onPressed: () => Navigator.pop(context),

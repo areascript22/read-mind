@@ -31,6 +31,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
   }
 
   void _submitMainIdea(BuildContext context) {
+    FocusScope.of(context).unfocus();
     if (_controller.text.trim().isEmpty) {
       ToastMessageUtil.showToast("Escribe algo para continuar", context);
       return;
@@ -80,7 +81,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Main Idea Avtivity"),
+            title: const Text("Actividad de idea principal"),
             centerTitle: true,
             leading: IconButton(
               onPressed: () => context.pop(),

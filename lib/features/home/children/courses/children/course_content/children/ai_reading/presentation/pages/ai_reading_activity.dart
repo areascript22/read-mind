@@ -484,7 +484,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
       ),
       items: [
         const PopupMenuItem(value: 'translate', child: Text('Translate')),
-        const PopupMenuItem(value: 'save', child: Text('save')),
+        // const PopupMenuItem(value: 'save', child: Text('save')),
       ],
     );
     if (selected == "translate") {

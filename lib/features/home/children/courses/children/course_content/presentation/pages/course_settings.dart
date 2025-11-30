@@ -1,5 +1,4 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
-import 'package:client_app/core/common/enums/user_roles.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/widgets/dialog_remove_course.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/widgets/dialog_unenroll_course.dart';
@@ -256,7 +255,7 @@ class _CourseSettingsState extends State<CourseSettings> {
     return Column(
       children: [
         SettingsTile(
-          icon: Icon(Icons.edit, color: Colors.white),
+          icon: Icon(Icons.edit),
           title: "Actualizar datos del curso",
           onTap:
               () => context.push(
@@ -272,10 +271,7 @@ class _CourseSettingsState extends State<CourseSettings> {
                 state is CourseLoading &&
                 state.courseAction == CourseAction.delete;
             return SettingsTile(
-              icon:
-                  showLoader
-                      ? LoaderIndicator()
-                      : Icon(Icons.delete, color: Colors.white),
+              icon: showLoader ? LoaderIndicator() : Icon(Icons.delete),
               title: "Eliminar curso",
               onTap: () {
                 showRemoveDialog(

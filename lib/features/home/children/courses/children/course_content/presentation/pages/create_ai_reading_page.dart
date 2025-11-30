@@ -41,7 +41,7 @@ class _CreateAiReadingPageState extends State<CreateAiReadingPage> {
     }
   }
 
-  void _saveAiReading(String courseId) {
+  void _saveAiReading() {
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
 
@@ -103,10 +103,13 @@ class _CreateAiReadingPageState extends State<CreateAiReadingPage> {
                   state is CourseContentLoading &&
                   state.actions == CCActions.createAiReading;
               return CustomButton(
-                onTap: isLoading ? () {} : () => _saveAiReading(''),
+                onTap: isLoading ? () {} : () => _saveAiReading(),
                 child:
                     isLoading
-                        ? LoaderIndicator(spinnerSize: 20)
+                        ? LoaderIndicator(
+                          spinnerSize: 20,
+                          spinnerColor: Colors.blueAccent,
+                        )
                         : const Text("Guardar"),
               );
             },
