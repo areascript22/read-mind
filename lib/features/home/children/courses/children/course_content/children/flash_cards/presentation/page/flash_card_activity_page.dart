@@ -81,73 +81,76 @@ class _FlashCardsActivityPageState extends State<FlashCardsActivityPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: IconButton(
-              onPressed: () async {
-                _completeSessionByClosingPage = true;
-                final currentSessionId =
-                    context
-                        .read<FlashCardBloc>()
-                        .state
-                        .currentFlashcardSession
-                        .id;
-                final result = await showExitFlashCardDialog(
-                  context: context,
-                  sessionId: currentSessionId,
-                );
-                if (result == null || result == false) {
-                  _completeSessionByClosingPage = false;
-                  return;
-                }
-                if (result == true && context.mounted) {
-                  Navigator.pop(context);
-                }
-              },
-              icon: Icon(Icons.close_rounded, size: 28, color: Colors.white),
-              splashRadius: 20,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: IconButton(
+                onPressed: () async {
+                  _completeSessionByClosingPage = true;
+                  final currentSessionId =
+                      context
+                          .read<FlashCardBloc>()
+                          .state
+                          .currentFlashcardSession
+                          .id;
+                  final result = await showExitFlashCardDialog(
+                    context: context,
+                    sessionId: currentSessionId,
+                  );
+                  if (result == null || result == false) {
+                    _completeSessionByClosingPage = false;
+                    return;
+                  }
+                  if (result == true && context.mounted) {
+                    Navigator.pop(context);
+                  }
+                },
+                icon: Icon(Icons.close_rounded, size: 28, color: Colors.white),
+                splashRadius: 20,
+              ),
             ),
-          ),
-        ],
-        leading: BlocConsumer<FlashCardBloc, FlashCardState>(
-          builder: (context, state) {
-            if (state.isCompletingSession) {
-              return LoaderIndicator(spinnerColor: Colors.blueAccent);
-            }
-            return SizedBox();
-          },
-          listener: (context, state) async {
-            print("Testing purposes");
-            if (state.flashCardAction == FlashCardAction.completeSession &&
-                state.isSessionCompleted &&
-                !_completeSessionByClosingPage) {
-              await _finishSession(context);
-              print("Finish session");
-            }
-            if (state.flashCardAction == FlashCardAction.reInitSession &&
-                state.isInitialSessionCreated) {
-              print("Initial sesion created again");
-              _restartCardSwiper();
-            }
-          },
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildProgressIndicator(),
-            const SizedBox(height: 32),
-            Expanded(child: _buildCardSwiper()),
-            const SizedBox(height: 24),
-            _buildTranslationInput(),
-            const SizedBox(height: 32),
           ],
+          leading: BlocConsumer<FlashCardBloc, FlashCardState>(
+            builder: (context, state) {
+              if (state.isCompletingSession) {
+                return LoaderIndicator(spinnerColor: Colors.blueAccent);
+              }
+              return SizedBox();
+            },
+            listener: (context, state) async {
+              print("Testing purposes");
+              if (state.flashCardAction == FlashCardAction.completeSession &&
+                  state.isSessionCompleted &&
+                  !_completeSessionByClosingPage) {
+                await _finishSession(context);
+                print("Finish session");
+              }
+              if (state.flashCardAction == FlashCardAction.reInitSession &&
+                  state.isInitialSessionCreated) {
+                print("Initial sesion created again");
+                _restartCardSwiper();
+              }
+            },
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildProgressIndicator(),
+              const SizedBox(height: 32),
+              Expanded(child: _buildCardSwiper()),
+              const SizedBox(height: 24),
+              _buildTranslationInput(),
+              const SizedBox(height: 32),
+            ],
+          ),
         ),
       ),
     );

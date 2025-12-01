@@ -1,5 +1,6 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_attempts.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_tip.dart';
@@ -24,10 +25,17 @@ class ParaphrasePage extends StatefulWidget {
 class _ParaphrasePageState extends State<ParaphrasePage> {
   final TextEditingController _controller = TextEditingController();
   bool _isExpanded = false;
+  late TimerAttemptCubit timerAttemptCubit;
 
   @override
   void initState() {
     super.initState();
+    _initValues();
+  }
+
+  void _initValues() {
+    timerAttemptCubit = context.read<TimerAttemptCubit>();
+    timerAttemptCubit.setStartTime(DateTime.now());
   }
 
   void _submitParaphrase(BuildContext context) {
@@ -36,6 +44,7 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
       ToastMessageUtil.showToast("Escribe algo para continuar", context);
       return;
     }
+    timerAttemptCubit.setCompleteTime(DateTime.now());
     context.read<AiReadingBloc>().add(
       EvaluateParaphraseEvent(
         paragraph: widget.aiReadingEntity.content,
@@ -65,13 +74,14 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
               dataToUpdate: {"paraphraseCompleted": true},
             ),
           );
-
+          final totalSeconds = timerAttemptCubit.totalTimeSec;
           context.read<AttemptsCubit>().createParaphraseAttempt(
             aiReadingId: widget.aiReadingEntity.aiReadingId,
             similarityScore: state.feedbackEntity.similarityScore,
             fluencyScore: state.feedbackEntity.fluencyScore,
             originalityScore: state.feedbackEntity.originalityScore,
             feedback: state.feedbackEntity.feedback,
+            timeSpentSec: totalSeconds,
           );
         }
       },
@@ -122,7 +132,12 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                 listener: (context, state) {
                   if (state is AttemptsError &&
                       state.attemptOperation == AttemptOperation.paraphrase) {
+                    timerAttemptCubit.setStartTime(DateTime.now());
                     ToastMessageUtil.showToast(state.message, context);
+                  }
+
+                  if (state is AttemptParaphraseCreated) {
+                    timerAttemptCubit.setStartTime(DateTime.now());
                   }
                 },
               ),
