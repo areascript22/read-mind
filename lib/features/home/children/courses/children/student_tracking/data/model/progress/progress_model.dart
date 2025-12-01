@@ -41,8 +41,8 @@ abstract class SubactivitiesCompletedModel with _$SubactivitiesCompletedModel {
 }
 
 extension ProgressModelExtension on ProgressModel {
-  ProgressEntity toEntity() {
-    return ProgressEntity(
+  ReadingProgressEntity toEntity() {
+    return ReadingProgressEntity(
       progressId: progressId,
       activityId: activityId,
       aiReadingId: aiReadingId,

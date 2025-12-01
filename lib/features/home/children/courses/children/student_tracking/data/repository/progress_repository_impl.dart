@@ -19,8 +19,11 @@ class ProgressRepositoryImpl implements ProgressRepository {
   @override
   Future<Either<Failure, TrackingEntity>> getStudentTrackData({
     required int userId,
+    required int courseId,
   }) async {
-    final url = Uri.parse("${AppEnvironment().baseUrl}/progress/$userId");
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/progress/$userId/$courseId",
+    );
 
     try {
       final token = await authLocalDataSource.getJwt();
@@ -42,7 +45,7 @@ class ProgressRepositoryImpl implements ProgressRepository {
       }
 
       final progresses =
-          (data['data']['progresses'] as List)
+          (data['data']['readingProgresses'] as List)
               .map((e) => ProgressModel.fromJson(e).toEntity())
               .toList();
       final statistics =

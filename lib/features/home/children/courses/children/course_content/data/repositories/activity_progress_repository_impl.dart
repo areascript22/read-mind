@@ -18,7 +18,7 @@ class ActivityProgressRepositoryImpl implements ActivityProgressRepository {
   ActivityProgressRepositoryImpl({required this.authLocalDataSource});
 
   @override
-  Future<Either<Failure, ProgressEntity>> createInitialActivityProgress({
+  Future<Either<Failure, ReadingProgressEntity>> createInitialActivityProgress({
     required int aiReadingId,
   }) async {
     final url = Uri.parse("${AppEnvironment().baseUrl}/progress/$aiReadingId");
@@ -53,7 +53,7 @@ class ActivityProgressRepositoryImpl implements ActivityProgressRepository {
   }
 
   @override
-  Future<Either<Failure, ProgressEntity>> updateActivityProgress({
+  Future<Either<Failure, ReadingProgressEntity>> updateActivityProgress({
     required int aiReadingId,
     required Map dataToUpdate,
   }) async {

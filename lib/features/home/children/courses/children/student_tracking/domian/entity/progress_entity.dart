@@ -1,4 +1,4 @@
-class ProgressEntity {
+class ReadingProgressEntity {
   final int progressId;
   final int activityId;
   final int aiReadingId;
@@ -15,7 +15,7 @@ class ProgressEntity {
   final SubactivitiesCompletedEntity subactivitiesCompleted;
   final int subactivitiesCompletionRate;
 
-  ProgressEntity({
+  ReadingProgressEntity({
     required this.progressId,
     required this.activityId,
     required this.aiReadingId,

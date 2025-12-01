@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../../../../../init_dependencies.dart';
 import '../bloc/progress_bloc/tracking_bloc.dart';
 import '../widgets/activity_tracking_tile.dart';
+import '../widgets/trackinig_student_header.dart';
 
 class StudentTrackingPage extends StatelessWidget {
   final StudentTrackingInfoEntity info;
@@ -36,7 +37,10 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
   void initState() {
     super.initState();
     context.read<TrackingBloc>().add(
-      LoadTrackingEvent(userId: widget.info.user.id),
+      LoadTrackingEvent(
+        userId: widget.info.user.id,
+        courseId: widget.info.course.id,
+      ),
     );
   }
 
@@ -62,10 +66,9 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _StudentHeader(
+            StudentHeader(
               student: widget.info.user,
               course: widget.info.course,
-              progress: 100,
             ),
 
             const SizedBox(height: 24),
@@ -115,7 +118,10 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
                           ElevatedButton(
                             onPressed: () {
                               context.read<TrackingBloc>().add(
-                                LoadTrackingEvent(userId: widget.info.user.id),
+                                LoadTrackingEvent(
+                                  userId: widget.info.user.id,
+                                  courseId: widget.info.course.id,
+                                ),
                               );
                             },
                             child: const Text('Retry'),
@@ -140,15 +146,6 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
 
                       const SizedBox(height: 32),
 
-                      SizedBox(
-                        height: 370,
-                        child: ScoreChartWidget(
-                          studentTracking: trackingData.progresses,
-                        ),
-                      ),
-
-                      const SizedBox(height: 32),
-
                       Text(
                         "Activity Details",
                         style: GoogleFonts.poppins(
@@ -163,6 +160,7 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
                         (progress) => ActivityTrackingTile(
                           activity: progress,
                           userEntity: widget.info.user,
+                          courseEntity: widget.info.course,
                         ),
                       ),
                     ],
@@ -201,85 +199,6 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _StudentHeader extends StatelessWidget {
-  final UserEntity student;
-  final CourseEntity course;
-  final double progress;
-  const _StudentHeader({
-    required this.student,
-    required this.course,
-    required this.progress,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [BoxShadow(blurRadius: 6, color: Colors.black12)],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 36,
-            backgroundImage: NetworkImage(
-              'https://avatars.githubusercontent.com/u/9919?s=200&v=4',
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  student.name,
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  student.email,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  course.name,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                LinearProgressIndicator(
-                  value: progress,
-                  minHeight: 8,
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.green,
-                  backgroundColor: Colors.grey[200],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "${(progress * 100).toStringAsFixed(1)}% completed",
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

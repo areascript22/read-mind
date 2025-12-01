@@ -31,6 +31,7 @@ class TrackingBloc extends Bloc<TrackingEvent, TrackingState> {
 
     final result = await progressRepository.getStudentTrackData(
       userId: event.userId,
+      courseId: event.courseId,
     );
 
     result.fold(

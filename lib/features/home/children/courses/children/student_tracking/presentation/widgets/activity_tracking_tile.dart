@@ -1,5 +1,6 @@
 import 'package:client_app/core/common/entities/user_entity.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/bloc/progress_bloc/tracking_bloc.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/init_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,13 +9,15 @@ import '../../domian/entity/progress_entity.dart';
 import '../pages/activity_attempt.dart';
 
 class ActivityTrackingTile extends StatelessWidget {
-  final ProgressEntity activity;
+  final ReadingProgressEntity activity;
   final UserEntity userEntity;
+  final CourseEntity courseEntity;
 
   const ActivityTrackingTile({
     super.key,
     required this.activity,
     required this.userEntity,
+    required this.courseEntity,
   });
 
   @override
@@ -36,6 +39,7 @@ class ActivityTrackingTile extends StatelessWidget {
                   child: ActivityAttemptsPage(
                     aiReadingId: activity.aiReadingId,
                     userEntity: userEntity,
+                    courseId: courseEntity.id,
                   ),
                 ),
           ),
@@ -56,35 +60,6 @@ class ActivityTrackingTile extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            if (activity.subactivitiesCompletionRate > 0)
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(16),
-                      bottomRight: Radius.circular(16),
-                    ),
-                  ),
-                  child: FractionallySizedBox(
-                    alignment: Alignment.centerLeft,
-                    widthFactor: activity.subactivitiesCompletionRate / 100,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: _getProgressGradient(completed, score),
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(16),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -175,15 +150,15 @@ class ActivityTrackingTile extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          if (activity.hasScoring && completed)
-                            Text(
-                              '$score%',
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: _getScoreColor(score),
-                              ),
+
+                          Text(
+                            'Puntaje: $score',
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: _getScoreColor(score),
                             ),
+                          ),
                         ],
                       ),
                     ],

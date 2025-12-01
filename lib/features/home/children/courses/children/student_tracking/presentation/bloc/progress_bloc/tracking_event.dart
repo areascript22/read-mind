@@ -5,8 +5,9 @@ sealed class TrackingEvent {}
 
 class LoadTrackingEvent extends TrackingEvent {
   final int userId;
+  final int courseId;
 
-  LoadTrackingEvent({required this.userId});
+  LoadTrackingEvent({required this.userId, required this.courseId});
 }
 
 final class FetchAllParaphrasesAttempts extends TrackingEvent {
