@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/reading_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/repository/attempts_repository.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/main_idea_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/paraphrase_attempt_entity.dart';
@@ -92,6 +93,28 @@ class AttemptsCubit extends Cubit<AttemptsState> {
         ),
       ),
       (r) => emit(AttemptSummaryCreated(summaryAttemptEntity: r)),
+    );
+  }
+
+  void createReadingAttempt({
+    required int aiReadingId,
+    required int playCount,
+    required int timeSpentSec,
+  }) async {
+    emit(AttemptsLoading(attemptOperation: AttemptOperation.arReading));
+    final response = await attemptsRepository.createReadingAttempt(
+      aiReadingId: aiReadingId,
+      playCount: playCount,
+      timeSpentSec: timeSpentSec,
+    );
+    response.fold(
+      (l) => emit(
+        AttemptsError(
+          attemptOperation: AttemptOperation.arReading,
+          message: l.message,
+        ),
+      ),
+      (r) => emit(AttemptReadingCreated(readingAttemptEntity: r)),
     );
   }
 

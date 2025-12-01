@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:client_app/core/error/failure.dart';
+import 'package:client_app/features/home/children/courses/data/models/reading_attempt/reading_attempt.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/reading_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/repository/attempts_repository.dart';
 import 'package:client_app/features/home/children/courses/data/models/main_idea_attempt/main_idea_attempt.dart';
 import 'package:client_app/features/home/children/courses/data/models/paraphrase_attempt/paraphrase_attempt.dart';
@@ -291,6 +293,50 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
         return left(Failure(e.message));
       }
       return left(Failure("No se pudo cargar los datos"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ReadingAttemptEntity>> createReadingAttempt({
+    required int aiReadingId,
+    required int playCount,
+    required int timeSpentSec,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/courseActivity/aiReading/attempt",
+    );
+
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesión de nuevo"));
+      }
+
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+        body: jsonEncode({
+          "aiReadingId": aiReadingId,
+          "playCount": playCount,
+          "timeSpentSec": timeSpentSec,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 201) {
+        throw ServerException(data['message'] ?? "Error al crear el intento");
+      }
+
+      final readingAttempt = ReadingAttempt.fromJson(data['data']);
+
+      return Right(readingAttempt.toEntity());
+    } catch (e) {
+      debugPrint("Error creating reading attempt $e");
+      if (e is ServerException) {
+        return left(Failure(e.message));
+      }
+      return left(Failure("No se pudo guardar el intento"));
     }
   }
 }

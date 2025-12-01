@@ -1,6 +1,7 @@
 import 'package:client_app/core/error/failure.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/main_idea_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/paraphrase_attempt_entity.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/reading_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/summary_attempt_entity.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -29,6 +30,12 @@ abstract interface class AttemptsRepository {
     required int coverageScore,
     required int clarityScore,
     required String feedback,
+    required int timeSpentSec,
+  });
+
+  Future<Either<Failure, ReadingAttemptEntity>> createReadingAttempt({
+    required int aiReadingId,
+    required int playCount,
     required int timeSpentSec,
   });
 

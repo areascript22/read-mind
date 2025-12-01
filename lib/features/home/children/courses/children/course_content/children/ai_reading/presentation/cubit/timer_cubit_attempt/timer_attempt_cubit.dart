@@ -20,11 +20,17 @@ class TimerAttemptCubit extends Cubit<TimerAttemptState> {
     emit(state.copyWith(completeTime: value));
   }
 
+  void setPlayCount(int value) {
+    emit(state.copyWith(playCount: value));
+  }
+
   // --- Getters (opcionales) ---
   DateTime get startTime => state.startTime;
   DateTime get completeTime => state.completeTime;
   int get totalTimeSec =>
       state.completeTime.difference(state.startTime).inSeconds;
+
+  int get playCount => state.playCount;
 
   // Reset (si lo necesitas)
   void reset() {
