@@ -2,8 +2,10 @@ class RouteNames {
   static const splashScreen = '/splashScreen';
   static const authWrapper = '/authWrapper';
   static const home = '/home';
+  static const notificationHistory = '/notificationHistory';
   static const signUp = '/signUp';
   static const signIn = '/signIn';
+  static const recoverPassword = '/recoverPassword';
 
   static const createCourse = '/createCourse';
   static const enrollCourse = '/enrollCourse';
@@ -15,6 +17,7 @@ class RouteNames {
   static const courseContentGenerateParagraph =
       '/courseContentGenerateParagraph';
   static const courseContentCreateAiReading = '/courseContentCreateAiReading';
+  static const courseContentCreateFlashCards = '/courseContentCreateFlashCards';
 
   static const activityAIReading = '/activityAIReading';
   static const activityParaphrase = '/activityParaphrase';
@@ -22,4 +25,5 @@ class RouteNames {
   static const activitySummary = '/activitySummary';
 
   static const studentTracking = '/studentTracking';
+  static const activityFlashCard = '/activityFlashCard';
 }

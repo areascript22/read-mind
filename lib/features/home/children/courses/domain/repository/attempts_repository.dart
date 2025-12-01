@@ -11,6 +11,7 @@ abstract interface class AttemptsRepository {
     required int fluencyScore,
     required int originalityScore,
     required String feedback,
+    required int timeSpentSec,
   });
 
   Future<Either<Failure, MainIdeaAttemptEntity>> createMainIdeaAttempt({
@@ -19,6 +20,7 @@ abstract interface class AttemptsRepository {
     required int clarityScore,
     required int concisenessScore,
     required String feedback,
+    required int timeSpentSec,
   });
 
   Future<Either<Failure, SummaryAttemptEntity>> createSummaryAttempt({
@@ -27,6 +29,7 @@ abstract interface class AttemptsRepository {
     required int coverageScore,
     required int clarityScore,
     required String feedback,
+    required int timeSpentSec,
   });
 
   Future<Either<Failure, List<ParaphraseAttemptEntity>>>

@@ -1,52 +1,90 @@
+import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'dart:developer';
+import 'package:fpdart/fpdart.dart';
+
+import '../error/failure.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  log("🔔 Notificación en background: ${message.messageId}");
+  log("🔔 Background notification: ${message.messageId}");
 }
 
 class FirebaseNotifications {
-  static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
-  static Future<void> initialize() async {
+  Future<Either<Failure, FirebaseApp>> initializeFirebase() async {
     try {
-      // Inicializar Firebase
-      await Firebase.initializeApp();
-
-      // Registrar background handler
-      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-
-      // Solicitar permisos (solo Android 13+ lo necesita)
-      await _requestPermissions();
-
-      // Obtener token FCM
-      final token = await _messaging.getToken();
-      log("🔥 TOKEN FCM: $token");
-
-      // Aquí envías el token al backend Node.js
-      // await sendTokenToBackend(token);
-
-      // Listener cuando la app está en foreground
-      FirebaseMessaging.onMessage.listen((message) {
-        log("📩 Notificación recibida en FOREGROUND:");
-        log("Título: ${message.notification?.title}");
-        log("Cuerpo: ${message.notification?.body}");
-      });
-
-      // Listener cuando abren la app desde una notificación
-      FirebaseMessaging.onMessageOpenedApp.listen((message) {
-        log("📲 App abierta desde notificación: ${message.messageId}");
-      });
+      final firebaseApp = await Firebase.initializeApp();
+      return right(firebaseApp);
     } catch (e) {
-      print("Error initializing notifications: ${e}");
+      return left(Failure("Error initializing Firebase: $e"));
     }
   }
 
-  /// Solicita permisos en Android 13+ (Tiramisu)
-  static Future<void> _requestPermissions() async {
-    final settings = await _messaging.requestPermission();
-    log("🔐 Permisos de notificaciones: ${settings.authorizationStatus}");
+  Future<Either<Failure, Unit>> setupBackgroundHandler() async {
+    try {
+      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+      return right(unit);
+    } catch (e) {
+      return left(Failure("Failed to set background handler: $e"));
+    }
+  }
+
+  Future<Either<Failure, NotificationSettings>> requestPermissions() async {
+    try {
+      print("Requesting permissions");
+      final result = await _messaging.requestPermission();
+      print("Permission just granted: ${result.authorizationStatus}");
+      return right(result);
+    } catch (e) {
+      return left(Failure("Failed to set background handler: $e"));
+    }
+  }
+
+  Future<Either<Failure, NotificationSettings>> permissionsStatus() async {
+    try {
+      final result = await _messaging.getNotificationSettings();
+      return right(result);
+    } catch (e) {
+      return left(Failure("Failed to set background handler: $e"));
+    }
+  }
+
+  Future<Either<Failure, String>> getToken() async {
+    try {
+      final token = await _messaging.getToken();
+      if (token == null) {
+        return left(Failure("Token is null"));
+      }
+      log("🔥 FCM TOKEN: $token");
+      return right(token);
+    } catch (e) {
+      return left(Failure("Failed to get FCM token: $e"));
+    }
+  }
+
+  Future<Either<Failure, Unit>> setupOnMessageListener() async {
+    try {
+      FirebaseMessaging.onMessage.listen((message) {
+        log("📩 Foreground notification received:");
+        log("Título: ${message.notification?.title}");
+        log("Cuerpo: ${message.notification?.body}");
+      });
+      return right(unit);
+    } catch (e) {
+      return left(Failure("Failed to set foreground listener: $e"));
+    }
+  }
+
+  Future<Either<Failure, Unit>> setupOnMessageOpenedListener() async {
+    try {
+      FirebaseMessaging.onMessageOpenedApp.listen((message) {
+        log("📲 App opened from notification: ${message.messageId}");
+      });
+      return right(unit);
+    } catch (e) {
+      return left(Failure("Failed to set opened-app listener: $e"));
+    }
   }
 }

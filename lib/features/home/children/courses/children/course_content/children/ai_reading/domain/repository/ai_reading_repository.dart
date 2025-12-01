@@ -26,5 +26,6 @@ abstract interface class AiReadingRepository {
 
   Future<Either<Failure, TranslationEntity>> translateWord({
     required String text,
+    required int readingId,
   });
 }

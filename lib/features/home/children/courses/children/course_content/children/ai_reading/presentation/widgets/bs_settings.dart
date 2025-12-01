@@ -76,98 +76,106 @@ class _ReadingAIBSState extends State<ReadingAIBS> {
         child: Material(
           color: Colors.transparent,
           child: Container(
-            height: MediaQuery.of(context).size.height * 0.40,
+            // Cambiar a un alto dinámico o usar constraints máximos
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.60,
+            ),
             width: double.infinity,
             padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Top row: close + title
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context); // close without saving
-                      },
-                      icon: const Icon(Icons.close),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        // Save / apply
-                        await widget.onApply(
-                          localFontSlider,
-                          selectedSpeed,
-                          localPitch,
-                        );
-                        if (context.mounted) Navigator.pop(context);
-                      },
-                      child: const Text("Guardar"),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 8),
-                const Text("Tamaño de letra", style: TextStyle(fontSize: 18)),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.abc),
-                    Expanded(
-                      child: Slider(
-                        onChanged:
-                            (value) => setState(() => localFontSlider = value),
-                        value: localFontSlider.clamp(0.0, 1.0),
+            child: SingleChildScrollView(
+              // ← SOLUCIÓN PRINCIPAL
+              child: Column(
+                mainAxisSize: MainAxisSize.min, // ← IMPORTANTE
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Top row: close + title
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.close),
                       ),
-                    ),
-                    Icon(
-                      Icons.abc,
-                      size: (12 + localFontSlider * (70 - 12)).toDouble(),
-                    ),
-                  ],
-                ),
+                      TextButton(
+                        onPressed: () async {
+                          await widget.onApply(
+                            localFontSlider,
+                            selectedSpeed,
+                            localPitch,
+                          );
+                          if (context.mounted) Navigator.pop(context);
+                        },
+                        child: const Text("Guardar"),
+                      ),
+                    ],
+                  ),
 
-                const SizedBox(height: 16),
-                const Text("Velocidad", style: TextStyle(fontSize: 18)),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children:
-                      speeds.map((speed) {
-                        final bool isSelected = speed == selectedSpeed;
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                          child: PlayBackbutton(
+                  const SizedBox(height: 8),
+                  const Text("Tamaño de letra", style: TextStyle(fontSize: 18)),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.abc),
+                      Expanded(
+                        child: Slider(
+                          onChanged:
+                              (value) =>
+                                  setState(() => localFontSlider = value),
+                          value: localFontSlider.clamp(0.0, 1.0),
+                        ),
+                      ),
+                      Icon(
+                        Icons.abc,
+                        size: (12 + localFontSlider * (70 - 12)).toDouble(),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+                  const Text("Velocidad", style: TextStyle(fontSize: 18)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    // ← Cambiar Row por Wrap para mejor responsividad
+                    alignment: WrapAlignment.center,
+                    spacing: 12,
+                    runSpacing: 8,
+                    children:
+                        speeds.map((speed) {
+                          final bool isSelected = speed == selectedSpeed;
+                          return PlayBackbutton(
                             isSelected: isSelected,
                             onTap: () => setState(() => selectedSpeed = speed),
                             speed: speed.toString(),
-                          ),
-                        );
-                      }).toList(),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Pitch", style: TextStyle(fontSize: 14)),
-                    SizedBox(
-                      width: 160,
-                      child: Slider(
-                        min: 0.5,
-                        max: 2.0,
-                        value: localPitch,
-                        onChanged: (v) => setState(() => localPitch = v),
+                          );
+                        }).toList(),
+                  ),
+
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Pitch", style: TextStyle(fontSize: 14)),
+                      SizedBox(
+                        width: 160,
+                        child: Slider(
+                          min: 0.5,
+                          max: 2.0,
+                          value: localPitch,
+                          onChanged: (v) => setState(() => localPitch = v),
+                        ),
                       ),
-                    ),
-                    Text(localPitch.toStringAsFixed(2)),
-                  ],
-                ),
-              ],
+                      Text(localPitch.toStringAsFixed(2)),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

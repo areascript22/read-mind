@@ -16,3 +16,9 @@ final class AuthFailureState extends AuthState {
   final String message;
   AuthFailureState(this.message);
 }
+
+final class AuthResetPasswordLinkSent extends AuthState {
+  final String message;
+
+  AuthResetPasswordLinkSent({required this.message});
+}

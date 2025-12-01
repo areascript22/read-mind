@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Muestra un diálogo para confirmar el cierre de sesión.
-/// Retorna `true` si se presiona "Cerrar Sesión", `false` si se cancela.
 Future<bool> showDialogLogout({
   required BuildContext context,
   String? userName,

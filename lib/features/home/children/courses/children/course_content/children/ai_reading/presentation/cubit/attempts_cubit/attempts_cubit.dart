@@ -17,6 +17,7 @@ class AttemptsCubit extends Cubit<AttemptsState> {
     required int fluencyScore,
     required int originalityScore,
     required String feedback,
+    required int timeSpentSec,
   }) async {
     emit(AttemptsLoading(attemptOperation: AttemptOperation.paraphrase));
     final response = await attemptsRepository.createParaphraseAttempt(
@@ -25,6 +26,7 @@ class AttemptsCubit extends Cubit<AttemptsState> {
       fluencyScore: fluencyScore,
       originalityScore: originalityScore,
       feedback: feedback,
+      timeSpentSec: timeSpentSec,
     );
     response.fold(
       (l) => emit(
@@ -43,6 +45,7 @@ class AttemptsCubit extends Cubit<AttemptsState> {
     required int clarityScore,
     required int concisenessScore,
     required String feedback,
+    required int timeSpentSec,
   }) async {
     emit(AttemptsLoading(attemptOperation: AttemptOperation.mainIdea));
     final response = await attemptsRepository.createMainIdeaAttempt(
@@ -51,6 +54,7 @@ class AttemptsCubit extends Cubit<AttemptsState> {
       clarityScore: clarityScore,
       concisenessScore: concisenessScore,
       feedback: feedback,
+      timeSpentSec: timeSpentSec,
     );
     response.fold(
       (l) => emit(
@@ -69,6 +73,7 @@ class AttemptsCubit extends Cubit<AttemptsState> {
     required int coverageScore,
     required int clarityScore,
     required String feedback,
+    required int timeSpentSec,
   }) async {
     emit(AttemptsLoading(attemptOperation: AttemptOperation.summary));
     final response = await attemptsRepository.createSummaryAttempt(
@@ -77,6 +82,7 @@ class AttemptsCubit extends Cubit<AttemptsState> {
       coverageScore: coverageScore,
       clarityScore: clarityScore,
       feedback: feedback,
+      timeSpentSec: timeSpentSec,
     );
     response.fold(
       (l) => emit(

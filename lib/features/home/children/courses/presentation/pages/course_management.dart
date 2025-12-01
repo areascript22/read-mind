@@ -1,20 +1,21 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/presentation/bloc/notifications_bloc/notifications_bloc.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/enums/course_option.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc/courses_bloc.dart';
 import 'package:client_app/features/home/children/courses/presentation/widgets/bottomsheet_create_course.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/presentation/widget/notification_bell.dart';
 import 'package:client_app/features/home/children/courses/presentation/widgets/role_course_options.dart';
+import 'package:client_app/init_dependencies.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:client_app/shared/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
 import '../bloc/course_option_cubit/course_option_cubit.dart';
 import '../widgets/course_tile.dart';
-import '../widgets/daily_streak.dart';
 
 class CourseManagementPage extends StatefulWidget {
   const CourseManagementPage({super.key});
@@ -56,17 +57,11 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
           child: GestureDetector(onTap: () {}, child: UserAvatar()),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: Row(
-              children: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.add)),
-                Text("0", style: TextStyle(fontSize: 17)),
-                IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
-                Text("0", style: TextStyle(fontSize: 17)),
-              ],
-            ),
+          BlocProvider.value(
+            value: serviceLocator<NotificationsBloc>(),
+            child: NotificationBell(),
           ),
+          SizedBox(width: 10),
         ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1), // height of the line
@@ -79,8 +74,6 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
 
       body: Column(
         children: [
-          _buildVocabulary(),
-          DailyStreakWidget(currentStreak: 1, attendance: [true, true, true]),
           RolCourseOptions(),
           Expanded(
             child: BlocConsumer<CoursesBloc, CoursesState>(

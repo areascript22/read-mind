@@ -10,7 +10,8 @@ import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
 class GenerateParagraphPage extends StatefulWidget {
-  const GenerateParagraphPage({super.key});
+  final int courseid;
+  const GenerateParagraphPage({super.key, required this.courseid});
 
   @override
   State<GenerateParagraphPage> createState() => _GenerateParagraphPageState();
@@ -92,11 +93,13 @@ class _GenerateParagraphPageState extends State<GenerateParagraphPage> {
                 state is CourseContentLoading &&
                 state.actions == CCActions.generateParagraph;
             return CustomButton(
-              color: Theme.of(context).colorScheme.secondary,
               onTap: loading ? () {} : () => _handleGenerateParagraph(context),
               child:
                   loading
-                      ? LoaderIndicator(spinnerSize: 20)
+                      ? LoaderIndicator(
+                        spinnerSize: 20,
+                        spinnerColor: Colors.blueAccent,
+                      )
                       : const Text("Generar"),
             );
           },
@@ -154,6 +157,7 @@ class _GenerateParagraphPageState extends State<GenerateParagraphPage> {
                           length: _selectedLength,
                           complexity: _selectedComplexity,
                           style: _selectedStyle,
+                          courseId: widget.courseid,
                         );
                     context.push(
                       RouteNames.courseContentCreateAiReading,

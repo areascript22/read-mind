@@ -32,15 +32,6 @@ class ActivityProgressRepositoryImpl implements ActivityProgressRepository {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json", "x-token": token},
-        body: jsonEncode({
-          "completed": false,
-          "totalProgress": 25,
-          "totalScore": 10,
-          "readingCompleted": false,
-          "paraphraseCompleted": false,
-          "mainIdeaCompleted": false,
-          "summaryCompleted": false,
-        }),
       );
 
       final data = jsonDecode(response.body);

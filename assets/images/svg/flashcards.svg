@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="ball"/>
+<g id="wistle"/>
+<g id="pitch"/>
+<g id="goal"/>
+<g id="socks"/>
+<g id="shoe"/>
+<g id="jersey"/>
+<g id="bottle"/>
+<g id="shorts"/>
+<g id="corner"/>
+<g id="winner"/>
+<g id="trophy"/>
+<g id="substitution"/>
+<g id="medal_award"/>
+<g id="strategy"/>
+<g id="card">
+<path d="M14,19H6c-0.553,0-1-0.448-1-1V2c0-0.552,0.447-1,1-1h12c0.553,0,1,0.448,1,1v8c0,0.552-0.447,1-1,1h-3v7   C15,18.552,14.553,19,14,19z M7,17h6v-7c0-0.552,0.447-1,1-1h3V3H7V17z" fill="#FF911C"/>
+<path d="M26,27H14c-0.553,0-1-0.448-1-1V10c0-0.552,0.447-1,1-1h12c0.553,0,1,0.448,1,1v16   C27,26.552,26.553,27,26,27z M15,25h10V11H15V25z" fill="#FF911C"/>
+<path d="M13.832,5.555L12,8.303V11c0,0.552-0.447,1-1,1c-0.553,0-1-0.448-1-1V8.303L8.168,5.555   C7.861,5.095,7.985,4.474,8.445,4.168c0.46-0.308,1.081-0.182,1.387,0.277L11,6.197l1.168-1.752   c0.306-0.46,0.925-0.585,1.387-0.277C14.015,4.474,14.139,5.095,13.832,5.555z" fill="#FFCC2F"/>
+<g>
+<path d="M21.001,20c-0.298,0-0.593-0.133-0.79-0.386l-2-2.571c-0.138-0.177-0.21-0.392-0.211-0.609V19    c0,0.552-0.447,1-1,1c-0.553,0-1-0.448-1-1v-6c0-0.552,0.447-1,1-1h4c0.553,0,1,0.448,1,1c0,2.015-0.767,3.129-1.497,3.732    l1.286,1.654c0.34,0.436,0.261,1.064-0.175,1.403C21.432,19.931,21.215,20,21.001,20z M18,14v2.424    c0.001-0.113,0.02-0.228,0.06-0.337c0.117-0.323,0.394-0.563,0.73-0.636c0.083-0.023,0.826-0.263,1.104-1.451H18z" fill="#FFCC2F"/>
+</g>
+<path d="M30,31h-8c-0.553,0-1-0.448-1-1s0.447-1,1-1h8c0.553,0,1,0.448,1,1S30.553,31,30,31z M20,30   c0-0.552-0.447-1-1-1h-2c-0.553,0-1,0.448-1,1s0.447,1,1,1h2C19.553,31,20,30.552,20,30z M15,30c0-0.552-0.447-1-1-1H2   c-0.553,0-1,0.448-1,1s0.447,1,1,1h12C14.553,31,15,30.552,15,30z" fill="#FFCC2F"/>
+</g>
+<g id="gloves"/>
+<g id="stadium"/>
+<g id="keeper"/>
+<g id="time"/>
+<g id="horns"/>
+<g id="flag"/>
+<g id="referee"/>
+<g id="player"/>
+<g id="injury"/>
+<g id="supporter"/>
+<g id="coach"/>
+<g id="cone"/>
+<g id="captain"/>
+<g id="match"/>
+<g id="score"/>
+<g id="celender"/>
+<g id="grass"/>
+<g id="game"/>
+<g id="subsitutions"/>
+<g id="bench"/>
+</svg>

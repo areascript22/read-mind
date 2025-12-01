@@ -19,6 +19,7 @@ AIReadingModel _$AIReadingModelFromJson(Map<String, dynamic> json) =>
       style: json['style'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
+      $type: json['type'] as String?,
     );
 
 Map<String, dynamic> _$AIReadingModelToJson(AIReadingModel instance) =>
@@ -34,4 +35,37 @@ Map<String, dynamic> _$AIReadingModelToJson(AIReadingModel instance) =>
       'style': instance.style,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
+      'type': instance.$type,
+    };
+
+FlashCardModel _$FlashCardModelFromJson(Map<String, dynamic> json) =>
+    FlashCardModel(
+      id: (json['id'] as num).toInt(),
+      title: json['title'] as String,
+      description: json['description'] as String,
+      dueDate: DateTime.parse(json['dueDate'] as String),
+      hasScoring: json['hasScoring'] as bool,
+      maxScore: (json['maxScore'] as num?)?.toInt(),
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      flashCardActivityId: (json['flashCardActivityId'] as num).toInt(),
+      maxCards: (json['maxCards'] as num).toInt(),
+      cardOrder: json['cardOrder'] as String,
+      $type: json['type'] as String?,
+    );
+
+Map<String, dynamic> _$FlashCardModelToJson(FlashCardModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'description': instance.description,
+      'dueDate': instance.dueDate.toIso8601String(),
+      'hasScoring': instance.hasScoring,
+      'maxScore': instance.maxScore,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'updatedAt': instance.updatedAt.toIso8601String(),
+      'flashCardActivityId': instance.flashCardActivityId,
+      'maxCards': instance.maxCards,
+      'cardOrder': instance.cardOrder,
+      'type': instance.$type,
     };

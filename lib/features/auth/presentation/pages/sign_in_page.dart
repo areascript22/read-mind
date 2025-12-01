@@ -3,7 +3,6 @@ import 'package:client_app/core/common/widget/app_version.dart';
 import 'package:client_app/core/common/widget/custom_button.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:client_app/features/auth/presentation/widgets/dialog_email_not_verified.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -131,84 +130,10 @@ class _SignInPageState extends State<SignInPage> {
                       },
                     ),
 
-                    //Forgot password
                     const SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            //Navigate to Password recovery Page
-                          },
-                          child: const Text(
-                            "¿Olvidaste tu contraseña?",
-                            style: TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                              decorationColor: Colors.blue,
-                              decorationThickness: 0.8,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    //Sign In Button
+                    _buildForgotPassword(context),
                     const SizedBox(height: 15),
-                    BlocConsumer<AuthBloc, AuthState>(
-                      listener: (context, state) {
-                        if (state is AuthFailureState) {
-                          ToastMessageUtil.showToast(state.message, context);
-                        }
-
-                        if (state is AuthSuccessState) {
-                          if (!state.userEntity.emailVerified) {
-                            showEmailNoVerificadoDialog(
-                              context,
-                              state.userEntity,
-                            );
-                            return;
-                          }
-                          context.go(RouteNames.home);
-                        }
-                      },
-                      builder: (context, state) {
-                        return CustomButton(
-                          onTap:
-                              state is AuthLoadingState
-                                  ? () {}
-                                  : () {
-                                    if (formKey.currentState?.validate() ??
-                                        false) {
-                                      if (mounted) {
-                                        context.read<AuthBloc>().add(
-                                          AuthSignInEvent(
-                                            email:
-                                                emailTextController.text
-                                                    .trim()
-                                                    .toLowerCase(),
-                                            password:
-                                                passwordTextController.text
-                                                    .trim(),
-                                          ),
-                                        );
-                                      }
-                                    }
-                                  },
-                          child:
-                              state is AuthLoadingState
-                                  ? SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.blue,
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                  : Text("Iniciar sesión"),
-                        );
-                      },
-                    ),
+                    _buildSignInButton(),
                   ],
                 ),
 
@@ -219,6 +144,71 @@ class _SignInPageState extends State<SignInPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Row _buildForgotPassword(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        GestureDetector(
+          onTap: () => context.go(RouteNames.recoverPassword),
+          child: const Text(
+            "¿Olvidaste tu contraseña?",
+            style: TextStyle(
+              color: Colors.blue,
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.blue,
+              decorationThickness: 0.8,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  BlocConsumer<AuthBloc, AuthState> _buildSignInButton() {
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthFailureState) {
+          ToastMessageUtil.showToast(state.message, context);
+        }
+
+        if (state is AuthSuccessState) {
+          context.go(RouteNames.authWrapper);
+        }
+      },
+      builder: (context, state) {
+        return CustomButton(
+          onTap:
+              state is AuthLoadingState
+                  ? () {}
+                  : () {
+                    if (formKey.currentState?.validate() ?? false) {
+                      if (mounted) {
+                        context.read<AuthBloc>().add(
+                          AuthSignInEvent(
+                            email:
+                                emailTextController.text.trim().toLowerCase(),
+                            password: passwordTextController.text.trim(),
+                          ),
+                        );
+                      }
+                    }
+                  },
+          child:
+              state is AuthLoadingState
+                  ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.blue,
+                      strokeWidth: 2,
+                    ),
+                  )
+                  : Text("Iniciar sesión"),
+        );
+      },
     );
   }
 }

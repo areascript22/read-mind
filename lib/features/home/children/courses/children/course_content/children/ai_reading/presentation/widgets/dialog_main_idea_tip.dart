@@ -5,160 +5,62 @@ class MainIdeaTipDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-      elevation: 10,
-      backgroundColor: Colors.transparent,
-      child: Container(
-        padding: const EdgeInsets.all(0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.amber.shade200.withValues(alpha: 0.5),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: Colors.white,
+      title: const Text(
+        '💡 Consejos de Idea Principal',
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+      ),
+      content: const SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🟡 Header (Amber gradient)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.amber.shade700, Colors.amber.shade400],
-                ),
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20.0),
-                  topRight: Radius.circular(20.0),
-                ),
-              ),
-              child: Column(
-                children: const [
-                  Icon(
-                    Icons.psychology_outlined,
-                    color: Colors.white,
-                    size: 40,
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    "Consejos para identificar la idea principal",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      height: 1.2,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
+            Text(
+              '✨ ¿Qué es la idea principal?',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-
-            // 🟡 Content
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: const [
-                  _TipItem(
-                    icon: Icons.search,
-                    text:
-                        "Lee todo el párrafo antes de intentar identificar la idea principal.",
-                  ),
-                  SizedBox(height: 12),
-                  _TipItem(
-                    icon: Icons.question_mark_outlined,
-                    text:
-                        "Pregúntate: ¿De qué trata principalmente este texto?",
-                  ),
-                  SizedBox(height: 12),
-                  _TipItem(
-                    icon: Icons.highlight_alt,
-                    text:
-                        "Busca frases que resumen el contenido general o se repiten con frecuencia.",
-                  ),
-                  SizedBox(height: 12),
-                  _TipItem(
-                    icon: Icons.compare,
-                    text:
-                        "Distingue entre detalles secundarios y el mensaje central.",
-                  ),
-                  SizedBox(height: 12),
-                  _TipItem(
-                    icon: Icons.lightbulb,
-                    text:
-                        "Intenta formular la idea principal con tus propias palabras en una sola oración.",
-                  ),
-                ],
-              ),
+            SizedBox(height: 8),
+            Text(
+              'La idea principal es el concepto más importante que el autor quiere comunicar. Es el mensaje central alrededor del cual gira todo el texto.',
             ),
-
-            // 🟡 Button
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0, left: 20, right: 20),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber.shade600,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    elevation: 5,
-                    shadowColor: Colors.amber.shade200,
-                  ),
-                  child: const Text(
-                    "Entendido",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
+            SizedBox(height: 16),
+            Text(
+              '🔍 Cómo identificar la idea principal:',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            SizedBox(height: 8),
+            Text('• Lee todo el párrafo completamente antes de analizar.'),
+            Text('• Pregúntate: ¿De qué trata principalmente este texto?'),
+            Text('• Busca frases que resuman el contenido general.'),
+            Text(
+              '• Distingue entre detalles secundarios y el mensaje central.',
+            ),
+            Text('• Identifica conceptos que se repiten con frecuencia.'),
+            Text('• Formula la idea principal con tus propias palabras.'),
+            SizedBox(height: 16),
+            Text(
+              '📘 Ejemplo:',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            SizedBox(height: 8),
+            Text(
+              '"Texto original: La práctica regular de ejercicio físico no solo mejora la salud cardiovascular y fortalece los músculos, sino que también reduce el estrés y aumenta los niveles de energía durante el día."',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+            SizedBox(height: 8),
+            Text(
+              '"Idea principal: El ejercicio regular ofrece múltiples beneficios para la salud física y mental."',
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-// 🟡 Reusable Tip Item Widget
-class _TipItem extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const _TipItem({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: Colors.amber.shade100,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: Colors.amber.shade700, size: 18),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 14,
-              height: 1.4,
-              color: Colors.black87,
-            ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text(
+            '¡Entendido!',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
       ],

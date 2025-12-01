@@ -1,11 +1,24 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
-import 'package:client_app/features/auth/data/repositories/app_version_repository_impl.dart';
-import 'package:client_app/features/auth/domain/repositories/app_version_repository.dart';
+import 'package:client_app/core/common/features/preferences/data/repository/preferences_repository_impl.dart';
+import 'package:client_app/core/common/features/preferences/domian/repository/preferences_repository.dart';
+import 'package:client_app/core/common/features/preferences/presentation/cubit/preferences_cubit/preferences_cubit.dart';
+import 'package:client_app/core/services/firebase_service.dart';
+import 'package:client_app/features/auth/data/repositories/initial_values_repository_impl.dart';
+import 'package:client_app/features/auth/domain/repositories/initial_values_repository.dart';
 import 'package:client_app/features/auth/helper/app_version_helper.dart';
 import 'package:client_app/features/auth/presentation/cubit/app_version_cubit/app_version_cubit.dart';
+import 'package:client_app/features/auth/presentation/cubit/notifications_cubit/notifications_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/datasource/local_datasource/local_reading_progress_datasource%20.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_local_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/data/repository/flash_card_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/repository/flash_card_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/data/repository/notifications_history_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/domain/repository/notifications_history_repository.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/presentation/bloc/notifications_bloc/notifications_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/service/socket_service.dart';
 import 'package:client_app/features/home/children/courses/data/repository/attempts_repository_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_local_repository.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_repository.dart';
@@ -70,6 +83,8 @@ final serviceLocator = GetIt.instance;
 Future<void> initDependencies() async {
   await _initSharedPreferences();
   _initAuth();
+  _initNotificationsHistory();
+  _initUserPreferences();
   _initCourses();
   _initCourseContent();
   _initUserManger();
@@ -78,6 +93,7 @@ Future<void> initDependencies() async {
   _initVocabulary();
   _initActivityProgress();
   _initActivityAttempts();
+  _initFlashCards();
 
   serviceLocator.registerLazySingleton(
     () => AppUserCubit(authLocalDataSource: serviceLocator()),
@@ -87,6 +103,15 @@ Future<void> initDependencies() async {
 Future<void> _initSharedPreferences() async {
   final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
   serviceLocator.registerLazySingleton(() => sharedPrefs);
+}
+
+void _initUserPreferences() {
+  serviceLocator.registerFactory<PreferencesRepository>(
+    () => PreferencesRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+  serviceLocator.registerLazySingleton(
+    () => PreferencesCubit(preferencesRepository: serviceLocator()),
+  );
 }
 
 void _initAuth() {
@@ -108,11 +133,12 @@ void _initAuth() {
       serviceLocator(),
       serviceLocator(),
       serviceLocator(),
+      authRepository: serviceLocator(),
     ),
   );
 
-  serviceLocator.registerFactory<AppVersionRepository>(
-    () => AppVersionRepositoryImpl(),
+  serviceLocator.registerFactory<InitialValuesRepository>(
+    () => InitialValuesRepositoryImpl(authLocalDataSource: serviceLocator()),
   );
   serviceLocator.registerFactory(() => AppVersionHelper());
 
@@ -121,6 +147,27 @@ void _initAuth() {
       appVersionRepository: serviceLocator(),
       appVersionHelper: serviceLocator(),
     ),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => NotificationsCubit(
+      initialValuesRepository: serviceLocator(),
+      firebaseNotifications: FirebaseNotifications(),
+    ),
+  );
+}
+
+void _initNotificationsHistory() {
+  serviceLocator.registerFactory(() => SocketService());
+
+  serviceLocator.registerFactory<NotificationsHistoryRepository>(
+    () => NotificationsHistoryRepositoryImpl(
+      authLocalDataSource: serviceLocator(),
+      socketService: serviceLocator(),
+    ),
+  );
+  serviceLocator.registerLazySingleton(
+    () => NotificationsBloc(notificationsHistoryRepository: serviceLocator()),
   );
 }
 
@@ -266,6 +313,8 @@ void _initActivityAttempts() {
   serviceLocator.registerLazySingleton(
     () => AttemptsCubit(attemptsRepository: serviceLocator()),
   );
+
+  serviceLocator.registerLazySingleton(() => TimerAttemptCubit());
 }
 
 void _initActivityProgress() {
@@ -298,5 +347,15 @@ void _initActivityProgress() {
 
   serviceLocator.registerLazySingleton(
     () => ActivityProgressBloc(activityProgressRepository: serviceLocator()),
+  );
+}
+
+void _initFlashCards() {
+  serviceLocator.registerFactory<FlashCardRepository>(
+    () => FlashCardRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => FlashCardBloc(flashCardRepository: serviceLocator()),
   );
 }

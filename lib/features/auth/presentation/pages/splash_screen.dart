@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Welcome back!",
+                    "¡Bienvenido!",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 40,
@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    "Enter personal details to you employee account",
+                    "Potenciando tu comprensión lectora", // O alguna de las opciones de abajo
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -63,7 +63,6 @@ class _SplashScreenState extends State<SplashScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  AppVersion(),
                 ],
               ),
             ),
