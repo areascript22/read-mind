@@ -9,6 +9,7 @@ import '../../../../domain/entities/ai_reading_entity.dart';
 import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import '../cubit/attempts_cubit/attempts_cubit.dart';
+import '../cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
 
 class SummaryPage extends StatefulWidget {
   final AIReadingEntity aiReadingEntity;
@@ -22,10 +23,17 @@ class SummaryPage extends StatefulWidget {
 class _SummaryPageState extends State<SummaryPage> {
   final TextEditingController _controller = TextEditingController();
   bool _isExpanded = false;
+  late TimerAttemptCubit timerAttemptCubit;
 
   @override
   void initState() {
     super.initState();
+    _initValues();
+  }
+
+  void _initValues() {
+    timerAttemptCubit = context.read<TimerAttemptCubit>();
+    timerAttemptCubit.setStartTime(DateTime.now());
   }
 
   void _submitSummary(BuildContext context) {
@@ -34,6 +42,7 @@ class _SummaryPageState extends State<SummaryPage> {
       ToastMessageUtil.showToast("Escribe algo para continuar", context);
       return;
     }
+    timerAttemptCubit.setCompleteTime(DateTime.now());
     context.read<AiReadingBloc>().add(
       EvaluateSummaryEvent(
         paragraph: widget.aiReadingEntity.content,
@@ -62,13 +71,14 @@ class _SummaryPageState extends State<SummaryPage> {
               dataToUpdate: {"completed": true, "summaryCompleted": true},
             ),
           );
-
+          final timeSpentSec = timerAttemptCubit.totalTimeSec;
           context.read<AttemptsCubit>().createSummaryAttempt(
             aiReadingId: widget.aiReadingEntity.aiReadingId,
             accuracyScore: state.feedbackEntity.accuracyScore,
             coverageScore: state.feedbackEntity.coverageScore,
             clarityScore: state.feedbackEntity.clarityScore,
             feedback: state.feedbackEntity.feedback,
+            timeSpentSec: timeSpentSec,
           );
         }
       },
@@ -77,22 +87,37 @@ class _SummaryPageState extends State<SummaryPage> {
             state is AiReadingLoading &&
             state.actionType == AiActionType.summary;
 
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text("Actividad de resumen"),
-            centerTitle: true,
-            leading: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.arrow_back),
-            ),
-            actions: [
-              BlocConsumer<AttemptsCubit, AttemptsState>(
-                builder: (context, state) {
-                  if (state is AttemptsLoading &&
-                      state.attemptOperation == AttemptOperation.summary) {
-                    return LoaderIndicator(spinnerSize: 20);
-                  }
-                  if (state is AttemptSummaryCreated) {
+        return PopScope(
+          canPop: false,
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text("Actividad de resumen"),
+              centerTitle: true,
+              leading: IconButton(
+                onPressed: () {
+                  timerAttemptCubit.setStartTime(DateTime.now());
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.arrow_back),
+              ),
+              actions: [
+                BlocConsumer<AttemptsCubit, AttemptsState>(
+                  builder: (context, state) {
+                    if (state is AttemptsLoading &&
+                        state.attemptOperation == AttemptOperation.summary) {
+                      return LoaderIndicator(spinnerSize: 20);
+                    }
+                    if (state is AttemptSummaryCreated) {
+                      return IconButton(
+                        onPressed: () {
+                          showSummaryAttemptsDialog(
+                            context,
+                            widget.aiReadingEntity,
+                          );
+                        },
+                        icon: Icon(Icons.book),
+                      );
+                    }
                     return IconButton(
                       onPressed: () {
                         showSummaryAttemptsDialog(
@@ -102,159 +127,155 @@ class _SummaryPageState extends State<SummaryPage> {
                       },
                       icon: Icon(Icons.book),
                     );
-                  }
-                  return IconButton(
-                    onPressed: () {
-                      showSummaryAttemptsDialog(
-                        context,
-                        widget.aiReadingEntity,
-                      );
-                    },
-                    icon: Icon(Icons.book),
-                  );
-                },
-                listener: (context, state) {
-                  if (state is AttemptsError &&
-                      state.attemptOperation == AttemptOperation.summary) {
-                    ToastMessageUtil.showToast(state.message, context);
-                  }
-                },
-              ),
-              BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
-                builder: (context, state) {
-                  if (state is ProgressLoading) {
-                    return LoaderIndicator(
-                      spinnerSize: 20,
-                      spinnerColor: Colors.white,
-                    );
-                  }
-                  if (state is ProgressCreated &&
-                      state.createdProgress.subactivitiesCompleted.summary) {
-                    return Padding(
-                      padding: EdgeInsets.only(right: 20),
-                      child: Icon(Icons.check),
-                    );
-                  }
+                  },
+                  listener: (context, state) {
+                    if (state is AttemptsError &&
+                        state.attemptOperation == AttemptOperation.summary) {
+                      timerAttemptCubit.setStartTime(DateTime.now());
+                      ToastMessageUtil.showToast(state.message, context);
+                    }
 
-                  if (state is ProgressUpdated &&
-                      state.updatedProgress.subactivitiesCompleted.summary) {
-                    return Padding(
-                      padding: EdgeInsets.only(right: 20),
-                      child: Icon(Icons.check),
-                    );
-                  }
-                  return SizedBox.shrink();
-                },
-              ),
-            ],
-          ),
-          body: Stack(
-            children: [
-              SafeArea(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return SingleChildScrollView(
-                      padding: const EdgeInsets.all(16),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight,
-                        ),
-                        child: IntrinsicHeight(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                onTap:
-                                    () => setState(
-                                      () => _isExpanded = !_isExpanded,
-                                    ),
-                                child: Container(
-                                  padding: const EdgeInsets.all(14),
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue.shade50,
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: Colors.blueAccent,
-                                      width: 0.6,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        "Ver párrafo original",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      Icon(
-                                        _isExpanded
-                                            ? Icons.expand_less
-                                            : Icons.expand_more,
-                                        color: Colors.blueAccent,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              AnimatedCrossFade(
-                                firstChild: const SizedBox.shrink(),
-                                secondChild: Container(
-                                  width: double.infinity,
-                                  margin: const EdgeInsets.only(
-                                    top: 8,
-                                    bottom: 16,
-                                  ),
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade100,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    widget.aiReadingEntity.content,
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      height: 1.5,
-                                    ),
-                                  ),
-                                ),
-                                crossFadeState:
-                                    _isExpanded
-                                        ? CrossFadeState.showSecond
-                                        : CrossFadeState.showFirst,
-                                duration: const Duration(milliseconds: 250),
-                              ),
-
-                              const SizedBox(height: 10),
-
-                              Text(
-                                "Ahora escribe el párrafo con tus propias palabras:",
-                                style: theme.textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              _buildRichTextField(),
-                              const SizedBox(height: 20),
-                              _buildSubmitButton(isLoading, context),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
+                    if (state is AttemptSummaryCreated) {
+                      timerAttemptCubit.setStartTime(DateTime.now());
+                    }
                   },
                 ),
-              ),
-              if (isLoading)
-                Container(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  child: const Center(child: CircularProgressIndicator()),
+                BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
+                  builder: (context, state) {
+                    if (state is ProgressLoading) {
+                      return LoaderIndicator(
+                        spinnerSize: 20,
+                        spinnerColor: Colors.white,
+                      );
+                    }
+                    if (state is ProgressCreated &&
+                        state.createdProgress.subactivitiesCompleted.summary) {
+                      return Padding(
+                        padding: EdgeInsets.only(right: 20),
+                        child: Icon(Icons.check),
+                      );
+                    }
+
+                    if (state is ProgressUpdated &&
+                        state.updatedProgress.subactivitiesCompleted.summary) {
+                      return Padding(
+                        padding: EdgeInsets.only(right: 20),
+                        child: Icon(Icons.check),
+                      );
+                    }
+                    return SizedBox.shrink();
+                  },
                 ),
-            ],
+              ],
+            ),
+            body: Stack(
+              children: [
+                SafeArea(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        padding: const EdgeInsets.all(16),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
+                          ),
+                          child: IntrinsicHeight(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                GestureDetector(
+                                  onTap:
+                                      () => setState(
+                                        () => _isExpanded = !_isExpanded,
+                                      ),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(14),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.shade50,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: Colors.blueAccent,
+                                        width: 0.6,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          "Ver párrafo original",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Icon(
+                                          _isExpanded
+                                              ? Icons.expand_less
+                                              : Icons.expand_more,
+                                          color: Colors.blueAccent,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                AnimatedCrossFade(
+                                  firstChild: const SizedBox.shrink(),
+                                  secondChild: Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.only(
+                                      top: 8,
+                                      bottom: 16,
+                                    ),
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade100,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      widget.aiReadingEntity.content,
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        height: 1.5,
+                                      ),
+                                    ),
+                                  ),
+                                  crossFadeState:
+                                      _isExpanded
+                                          ? CrossFadeState.showSecond
+                                          : CrossFadeState.showFirst,
+                                  duration: const Duration(milliseconds: 250),
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                Text(
+                                  "Ahora escribe el párrafo con tus propias palabras:",
+                                  style: theme.textTheme.titleMedium!.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                _buildRichTextField(),
+                                const SizedBox(height: 20),
+                                _buildSubmitButton(isLoading, context),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                if (isLoading)
+                  Container(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+              ],
+            ),
+            floatingActionButton: _buildFloatingActionButton(context),
           ),
-          floatingActionButton: _buildFloatingActionButton(context),
         );
       },
     );

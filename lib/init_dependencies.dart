@@ -11,6 +11,7 @@ import 'package:client_app/features/auth/presentation/cubit/notifications_cubit/
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/datasource/local_datasource/local_reading_progress_datasource%20.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_local_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/data/repository/flash_card_repository_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/repository/flash_card_repository.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
@@ -312,6 +313,8 @@ void _initActivityAttempts() {
   serviceLocator.registerLazySingleton(
     () => AttemptsCubit(attemptsRepository: serviceLocator()),
   );
+
+  serviceLocator.registerLazySingleton(() => TimerAttemptCubit());
 }
 
 void _initActivityProgress() {

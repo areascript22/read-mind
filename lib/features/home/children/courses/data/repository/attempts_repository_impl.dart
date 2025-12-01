@@ -26,6 +26,7 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
     required int clarityScore,
     required int concisenessScore,
     required String feedback,
+    required int timeSpentSec,
   }) async {
     final url = Uri.parse(
       "${AppEnvironment().baseUrl}/courseActivity/mainIdea/attempt",
@@ -46,6 +47,7 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
           "clarityScore": clarityScore,
           "concisenessScore": concisenessScore,
           "feedback": feedback,
+          "timeSpentSec": timeSpentSec,
         }),
       );
 
@@ -74,6 +76,7 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
     required int fluencyScore,
     required int originalityScore,
     required String feedback,
+    required int timeSpentSec,
   }) async {
     final url = Uri.parse(
       "${AppEnvironment().baseUrl}/courseActivity/paraphrase/attempt",
@@ -94,6 +97,7 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
           "fluencyScore": fluencyScore,
           "originalityScore": originalityScore,
           "feedback": feedback,
+          "timeSpentSec": timeSpentSec,
         }),
       );
 
@@ -122,6 +126,7 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
     required int coverageScore,
     required int clarityScore,
     required String feedback,
+    required int timeSpentSec,
   }) async {
     final url = Uri.parse(
       "${AppEnvironment().baseUrl}/courseActivity/summary/attempt",
@@ -142,6 +147,7 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
           "coverageScore": coverageScore,
           "clarityScore": clarityScore,
           "feedback": feedback,
+          "timeSpentSec": timeSpentSec,
         }),
       );
 
