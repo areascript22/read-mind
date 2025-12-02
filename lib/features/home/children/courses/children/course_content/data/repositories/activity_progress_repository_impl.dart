@@ -18,7 +18,7 @@ class ActivityProgressRepositoryImpl implements ActivityProgressRepository {
   ActivityProgressRepositoryImpl({required this.authLocalDataSource});
 
   @override
-  Future<Either<Failure, ReadingProgressEntity>> createInitialActivityProgress({
+  Future<Either<Failure, ProgressModel>> createInitialActivityProgress({
     required int aiReadingId,
   }) async {
     final url = Uri.parse("${AppEnvironment().baseUrl}/progress/$aiReadingId");
@@ -42,7 +42,7 @@ class ActivityProgressRepositoryImpl implements ActivityProgressRepository {
 
       final progressModel = ProgressModel.fromJson(data['data']);
 
-      return Right(progressModel.toEntity());
+      return Right(progressModel);
     } catch (e) {
       debugPrint("Error creating initial progress $e");
       if (e is ServerException) {
@@ -53,7 +53,7 @@ class ActivityProgressRepositoryImpl implements ActivityProgressRepository {
   }
 
   @override
-  Future<Either<Failure, ReadingProgressEntity>> updateActivityProgress({
+  Future<Either<Failure, ProgressModel>> updateActivityProgress({
     required int aiReadingId,
     required Map dataToUpdate,
   }) async {
@@ -79,7 +79,7 @@ class ActivityProgressRepositoryImpl implements ActivityProgressRepository {
 
       final progressModel = ProgressModel.fromJson(data['data']);
 
-      return Right(progressModel.toEntity());
+      return Right(progressModel);
     } catch (e) {
       debugPrint("Error updating progress $e");
       if (e is ServerException) {

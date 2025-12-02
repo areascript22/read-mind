@@ -4,7 +4,7 @@ class ReadingProgressEntity {
   final int aiReadingId;
   final String title;
   final String? description;
-  final String courseName;
+
   final bool completed;
   final int totalProgress;
   final int totalScore;
@@ -21,7 +21,7 @@ class ReadingProgressEntity {
     required this.aiReadingId,
     required this.title,
     required this.description,
-    required this.courseName,
+
     required this.completed,
     required this.totalProgress,
     required this.totalScore,

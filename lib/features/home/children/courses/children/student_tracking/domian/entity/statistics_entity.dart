@@ -4,7 +4,6 @@ class StatisticsEntity {
   final int inProgress;
   final int notStarted;
   final double averageScore;
-  final int totalActivitiesWithScoring;
   final int completionRate;
 
   StatisticsEntity({
@@ -13,7 +12,6 @@ class StatisticsEntity {
     required this.inProgress,
     required this.notStarted,
     required this.averageScore,
-    required this.totalActivitiesWithScoring,
     required this.completionRate,
   });
 }

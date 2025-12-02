@@ -45,9 +45,10 @@ class ProgressRepositoryImpl implements ProgressRepository {
       }
 
       final progresses =
-          (data['data']['readingProgresses'] as List)
-              .map((e) => ProgressModel.fromJson(e).toEntity())
+          (data['data']['allProgresses'] as List)
+              .map((e) => ProgressModel.fromJson(e))
               .toList();
+
       final statistics =
           StatisticsModel.fromJson(data['data']['statistics']).toEntity();
 

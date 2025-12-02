@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/activity_progress_repository.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../student_tracking/domian/entity/progress_entity.dart';

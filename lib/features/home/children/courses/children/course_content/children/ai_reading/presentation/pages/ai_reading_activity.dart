@@ -5,6 +5,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/bs_translate_word.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/activity_progress/activity_progress_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -262,12 +263,18 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
                 );
               }
               if (state is ProgressCreated &&
-                  state.createdProgress.subactivitiesCompleted.reading) {
+                  state.createdProgress
+                      .toReadingProgressEntity()!
+                      .subactivitiesCompleted
+                      .reading) {
                 return Icon(Icons.check);
               }
 
               if (state is ProgressUpdated &&
-                  state.updatedProgress.subactivitiesCompleted.reading) {
+                  state.updatedProgress
+                      .toReadingProgressEntity()!
+                      .subactivitiesCompleted
+                      .reading) {
                 return Icon(Icons.check);
               }
 
@@ -302,12 +309,18 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
           return LoaderIndicator();
         }
         if (state is ProgressCreated &&
-            state.createdProgress.subactivitiesCompleted.reading) {
+            state.createdProgress
+                .toReadingProgressEntity()!
+                .subactivitiesCompleted
+                .reading) {
           return _buildButton(context);
         }
 
         if (state is ProgressUpdated &&
-            state.updatedProgress.subactivitiesCompleted.reading) {
+            state.updatedProgress
+                .toReadingProgressEntity()!
+                .subactivitiesCompleted
+                .reading) {
           return _buildButton(context);
         }
 

@@ -4,6 +4,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_attempts.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_tip.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -156,16 +157,16 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                       );
                     }
                     if (state is ProgressCreated &&
-                        state
-                            .createdProgress
+                        state.createdProgress
+                            .toReadingProgressEntity()!
                             .subactivitiesCompleted
                             .paraphrase) {
                       return Icon(Icons.check);
                     }
 
                     if (state is ProgressUpdated &&
-                        state
-                            .updatedProgress
+                        state.updatedProgress
+                            .toReadingProgressEntity()!
                             .subactivitiesCompleted
                             .paraphrase) {
                       return Icon(Icons.check);
@@ -329,11 +330,17 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
           return LoaderIndicator();
         }
         if (state is ProgressCreated &&
-            state.createdProgress.subactivitiesCompleted.paraphrase) {
+            state.createdProgress
+                .toReadingProgressEntity()!
+                .subactivitiesCompleted
+                .paraphrase) {
           return _buildButton(context);
         }
         if (state is ProgressUpdated &&
-            state.updatedProgress.subactivitiesCompleted.paraphrase) {
+            state.updatedProgress
+                .toReadingProgressEntity()!
+                .subactivitiesCompleted
+                .paraphrase) {
           return _buildButton(context);
         }
 

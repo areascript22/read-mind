@@ -1,6 +1,3 @@
-import 'package:client_app/core/common/entities/user_entity.dart';
-import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/widgets/score_chart.dart';
-import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/student_tracking_info_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
