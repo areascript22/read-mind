@@ -1,6 +1,7 @@
 import 'package:client_app/core/common/entities/user_entity.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/bloc/progress_bloc/tracking_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/pages/flashcard_sessions_track.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/init_dependencies.dart';
 import 'package:flutter/material.dart';
@@ -226,7 +227,22 @@ class ActivityTrackingTile extends StatelessWidget {
     final isOverdue = dueDate != null && now.isAfter(dueDate) && !completed;
 
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => BlocProvider.value(
+                  value: serviceLocator<TrackingBloc>(),
+                  child: FlashCardSessionTrack(
+                    flashcardActId: flashCard.flashCardActivityId,
+                    userEntity: userEntity,
+                    courseId: courseEntity.id,
+                  ),
+                ),
+          ),
+        );
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(

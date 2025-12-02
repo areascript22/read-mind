@@ -39,3 +39,13 @@ final class FetchAllSummaryAttempts extends TrackingEvent {
     required this.targetUserId,
   });
 }
+
+final class FetchAllFlashCardSessions extends TrackingEvent {
+  final int flashcardActId;
+  final int targetUserId;
+
+  FetchAllFlashCardSessions({
+    required this.flashcardActId,
+    required this.targetUserId,
+  });
+}

@@ -1,4 +1,5 @@
 import 'package:client_app/core/error/failure.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/flash_card_session_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/main_idea_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/paraphrase_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/reading_attempt_entity.dart';
@@ -50,6 +51,12 @@ abstract interface class AttemptsRepository {
   });
   Future<Either<Failure, List<SummaryAttemptEntity>>> getAllSummaryAttempts({
     required int aiReadingId,
+    required int targetUserId,
+  });
+
+  Future<Either<Failure, List<FlashCardSessionEntity>>>
+  getAllFlashCardSessions({
+    required int flashcardActId,
     required int targetUserId,
   });
 }

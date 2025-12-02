@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:client_app/core/error/failure.dart';
+import 'package:client_app/features/home/children/courses/data/models/flash_card_session/flash_card_session.dart';
 import 'package:client_app/features/home/children/courses/data/models/reading_attempt/reading_attempt.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/flash_card_session_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/reading_attempt_entity.dart';
 import 'package:client_app/features/home/children/courses/domain/repository/attempts_repository.dart';
 import 'package:client_app/features/home/children/courses/data/models/main_idea_attempt/main_idea_attempt.dart';
@@ -337,6 +339,48 @@ class AttemptsRepositoryImpl implements AttemptsRepository {
         return left(Failure(e.message));
       }
       return left(Failure("No se pudo guardar el intento"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<FlashCardSessionEntity>>>
+  getAllFlashCardSessions({
+    required int flashcardActId,
+    required int targetUserId,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/attempts/flashcards/session/$flashcardActId",
+    );
+
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesión de nuevo"));
+      }
+
+      final response = await http.get(
+        url.replace(queryParameters: {"targetUserId": "$targetUserId"}),
+        headers: {"Content-Type": "application/json", "x-token": token},
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw ServerException(data['message'] ?? "Error al obtener los datos");
+      }
+
+      final flashCardSessions =
+          (data['data']['sessions'] as List)
+              .map((item) => FlashCardSession.fromJson(item).toEntity())
+              .toList();
+
+      return Right(flashCardSessions);
+    } catch (e) {
+      debugPrint("Error getting flashcard sessions $e");
+      if (e is ServerException) {
+        return left(Failure(e.message));
+      }
+      return left(Failure("No se pudo obtener los datos"));
     }
   }
 }
