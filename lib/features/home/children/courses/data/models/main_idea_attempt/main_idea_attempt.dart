@@ -17,6 +17,8 @@ abstract class MainIdeaAttemptModel with _$MainIdeaAttemptModel {
     required String feedback,
     required DateTime createdAt,
     required DateTime updatedAt,
+    required double averageScore,
+    required int timeSpentSec,
   }) = _MainIdeaAttemptModel;
 
   factory MainIdeaAttemptModel.fromJson(Map<String, dynamic> json) =>
@@ -34,5 +36,7 @@ extension MainIdeaAttemptModelX on MainIdeaAttemptModel {
     feedback: feedback,
     createdAt: createdAt,
     updatedAt: updatedAt,
+    averageScore: averageScore,
+    timeSpentSec: timeSpentSec,
   );
 }

@@ -12,9 +12,8 @@ class FlashCardProgressEntity {
   final bool hasScoring;
   final int? maxScore;
   final String dueDate;
-  final String startedAt;
-  final String completedAt;
-  final StatsEntity stats;
+  final String createdAt;
+  final String updatedAt;
 
   const FlashCardProgressEntity({
     required this.id,
@@ -30,9 +29,8 @@ class FlashCardProgressEntity {
     required this.hasScoring,
     required this.maxScore,
     required this.dueDate,
-    required this.startedAt,
-    required this.completedAt,
-    required this.stats,
+    required this.createdAt,
+    required this.updatedAt,
   });
 }
 

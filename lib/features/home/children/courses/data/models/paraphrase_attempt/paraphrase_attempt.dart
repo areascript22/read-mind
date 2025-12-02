@@ -13,6 +13,8 @@ abstract class ParaphraseAttemptModel with _$ParaphraseAttemptModel {
     required double fluencyScore,
     required double originalityScore,
     required String feedback,
+    required int averageScore,
+    required int timeSpentSec,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _ParaphraseAttemptModel;
@@ -33,6 +35,8 @@ extension ParaphraseAttemptModelX on ParaphraseAttemptModel {
       feedback: feedback,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      timeSpentSec: timeSpentSec,
+      averageScore: averageScore,
     );
   }
 }

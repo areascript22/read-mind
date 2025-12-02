@@ -346,7 +346,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
           final timeSpentSec = timerAttemptCubit.totalTimeSec;
           if (readingEntity != null) {
             context.read<AttemptsCubit>().createReadingAttempt(
-              aiReadingId: readingEntity.id,
+              aiReadingId: readingEntity.aiReadingId,
               playCount: timerAttemptCubit.playCount,
               timeSpentSec: timeSpentSec,
             );

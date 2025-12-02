@@ -144,53 +144,13 @@ class ActivityTrackingTile extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      _buildStatusBadge(completed, score, isOverdue),
                     ],
                   ),
 
                   const SizedBox(height: 16),
 
-                  // Progreso general
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Progress',
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                          Text(
-                            '${reading.totalProgress}%',
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: _getScoreColor(score),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      LinearProgressIndicator(
-                        value: reading.totalProgress / 100,
-                        minHeight: 8,
-                        borderRadius: BorderRadius.circular(4),
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          _getScoreColor(score),
-                        ),
-                        backgroundColor: Colors.grey[200],
-                      ),
-                    ],
-                  ),
-
                   const SizedBox(height: 16),
 
-                  // Subactividades
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -255,22 +215,18 @@ class ActivityTrackingTile extends StatelessWidget {
     );
   }
 
-  // Tile para Flash Card Progress
   Widget _buildFlashCardTile(
     BuildContext context,
     FlashCardProgress flashCard,
   ) {
-    final completed = flashCard.completed;
+    final completed = false;
     final score = flashCard.totalScore;
     final dueDate = DateTime.tryParse(flashCard.dueDate);
     final now = DateTime.now();
     final isOverdue = dueDate != null && now.isAfter(dueDate) && !completed;
 
     return GestureDetector(
-      onTap: () {
-        // TODO: Navegar a la página de intentos de flash cards
-        // Navigator.push(...);
-      },
+      onTap: () {},
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
@@ -286,7 +242,6 @@ class ActivityTrackingTile extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Ribbon para tipo de actividad
             Positioned(
               top: 0,
               left: 0,
@@ -325,8 +280,7 @@ class ActivityTrackingTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 24), // Espacio para el ribbon
-                  // Header con título y estado
+                  const SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -362,13 +316,10 @@ class ActivityTrackingTile extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      _buildStatusBadge(completed, score, isOverdue),
                     ],
                   ),
 
                   const SizedBox(height: 16),
-
-                  // Información de configuración
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -395,7 +346,7 @@ class ActivityTrackingTile extends StatelessWidget {
                             _buildFlashCardInfo(
                               icon: Icons.percent,
                               label: 'Progress',
-                              value: '${flashCard.progressPercentage}%',
+                              value: '${100}%',
                             ),
                           ],
                         ),
@@ -405,7 +356,6 @@ class ActivityTrackingTile extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  // Estadísticas
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -418,13 +368,12 @@ class ActivityTrackingTile extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      _buildFlashCardStats(flashCard.stats),
+                      // _buildFlashCardStats(flashCard.stats),
                     ],
                   ),
 
                   const SizedBox(height: 12),
 
-                  // Footer con fecha y puntaje
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -452,21 +401,20 @@ class ActivityTrackingTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            'Score: $score${flashCard.maxScore != null ? '/${flashCard.maxScore}' : ''}',
+                            'Best score: $score${flashCard.maxScore != null ? '/${flashCard.maxScore}' : ''}',
                             style: GoogleFonts.poppins(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
                               color: _getScoreColor(score),
                             ),
                           ),
-                          if (flashCard.startedAt != null)
-                            Text(
-                              'Started: ${_formatDateTime(flashCard.startedAt!)}',
-                              style: GoogleFonts.poppins(
-                                fontSize: 10,
-                                color: Colors.grey[500],
-                              ),
+                          Text(
+                            'Started: ${_formatDateTime(flashCard.createdAt)}',
+                            style: GoogleFonts.poppins(
+                              fontSize: 10,
+                              color: Colors.grey[500],
                             ),
+                          ),
                         ],
                       ),
                     ],
@@ -476,55 +424,6 @@ class ActivityTrackingTile extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // Widgets comunes
-  Widget _buildStatusBadge(bool completed, int score, bool isOverdue) {
-    Color? color;
-    Color? bgColor;
-    String text;
-    IconData icon;
-
-    if (isOverdue) {
-      color = Colors.red[700];
-      bgColor = Colors.red[50];
-      text = 'Overdue';
-      icon = Icons.warning_amber;
-    } else if (completed) {
-      color = Colors.green[700];
-      bgColor = Colors.green[50];
-      text = 'Completed';
-      icon = Icons.check_circle;
-    } else {
-      color = Colors.orange[700];
-      bgColor = Colors.orange[50];
-      text = 'In Progress';
-      icon = Icons.access_time;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color!.withOpacity(0.3), width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: color),
-          const SizedBox(width: 4),
-          Text(
-            text,
-            style: GoogleFonts.poppins(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
-          ),
-        ],
       ),
     );
   }

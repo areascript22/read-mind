@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ParaphraseAttemptModel {
 
- int get id; int get aiReadingId; int get userId; double get similarityScore; double get fluencyScore; double get originalityScore; String get feedback; DateTime get createdAt; DateTime get updatedAt;
+ int get id; int get aiReadingId; int get userId; double get similarityScore; double get fluencyScore; double get originalityScore; String get feedback; int get averageScore; int get timeSpentSec; DateTime get createdAt; DateTime get updatedAt;
 /// Create a copy of ParaphraseAttemptModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ParaphraseAttemptModelCopyWith<ParaphraseAttemptModel> get copyWith => _$Paraph
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ParaphraseAttemptModel&&(identical(other.id, id) || other.id == id)&&(identical(other.aiReadingId, aiReadingId) || other.aiReadingId == aiReadingId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.similarityScore, similarityScore) || other.similarityScore == similarityScore)&&(identical(other.fluencyScore, fluencyScore) || other.fluencyScore == fluencyScore)&&(identical(other.originalityScore, originalityScore) || other.originalityScore == originalityScore)&&(identical(other.feedback, feedback) || other.feedback == feedback)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ParaphraseAttemptModel&&(identical(other.id, id) || other.id == id)&&(identical(other.aiReadingId, aiReadingId) || other.aiReadingId == aiReadingId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.similarityScore, similarityScore) || other.similarityScore == similarityScore)&&(identical(other.fluencyScore, fluencyScore) || other.fluencyScore == fluencyScore)&&(identical(other.originalityScore, originalityScore) || other.originalityScore == originalityScore)&&(identical(other.feedback, feedback) || other.feedback == feedback)&&(identical(other.averageScore, averageScore) || other.averageScore == averageScore)&&(identical(other.timeSpentSec, timeSpentSec) || other.timeSpentSec == timeSpentSec)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,aiReadingId,userId,similarityScore,fluencyScore,originalityScore,feedback,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,aiReadingId,userId,similarityScore,fluencyScore,originalityScore,feedback,averageScore,timeSpentSec,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'ParaphraseAttemptModel(id: $id, aiReadingId: $aiReadingId, userId: $userId, similarityScore: $similarityScore, fluencyScore: $fluencyScore, originalityScore: $originalityScore, feedback: $feedback, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'ParaphraseAttemptModel(id: $id, aiReadingId: $aiReadingId, userId: $userId, similarityScore: $similarityScore, fluencyScore: $fluencyScore, originalityScore: $originalityScore, feedback: $feedback, averageScore: $averageScore, timeSpentSec: $timeSpentSec, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ParaphraseAttemptModelCopyWith<$Res>  {
   factory $ParaphraseAttemptModelCopyWith(ParaphraseAttemptModel value, $Res Function(ParaphraseAttemptModel) _then) = _$ParaphraseAttemptModelCopyWithImpl;
 @useResult
 $Res call({
- int id, int aiReadingId, int userId, double similarityScore, double fluencyScore, double originalityScore, String feedback, DateTime createdAt, DateTime updatedAt
+ int id, int aiReadingId, int userId, double similarityScore, double fluencyScore, double originalityScore, String feedback, int averageScore, int timeSpentSec, DateTime createdAt, DateTime updatedAt
 });
 
 
@@ -65,7 +65,7 @@ class _$ParaphraseAttemptModelCopyWithImpl<$Res>
 
 /// Create a copy of ParaphraseAttemptModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? aiReadingId = null,Object? userId = null,Object? similarityScore = null,Object? fluencyScore = null,Object? originalityScore = null,Object? feedback = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? aiReadingId = null,Object? userId = null,Object? similarityScore = null,Object? fluencyScore = null,Object? originalityScore = null,Object? feedback = null,Object? averageScore = null,Object? timeSpentSec = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,aiReadingId: null == aiReadingId ? _self.aiReadingId : aiReadingId // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,9 @@ as int,similarityScore: null == similarityScore ? _self.similarityScore : simila
 as double,fluencyScore: null == fluencyScore ? _self.fluencyScore : fluencyScore // ignore: cast_nullable_to_non_nullable
 as double,originalityScore: null == originalityScore ? _self.originalityScore : originalityScore // ignore: cast_nullable_to_non_nullable
 as double,feedback: null == feedback ? _self.feedback : feedback // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,averageScore: null == averageScore ? _self.averageScore : averageScore // ignore: cast_nullable_to_non_nullable
+as int,timeSpentSec: null == timeSpentSec ? _self.timeSpentSec : timeSpentSec // ignore: cast_nullable_to_non_nullable
+as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
@@ -161,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int aiReadingId,  int userId,  double similarityScore,  double fluencyScore,  double originalityScore,  String feedback,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int aiReadingId,  int userId,  double similarityScore,  double fluencyScore,  double originalityScore,  String feedback,  int averageScore,  int timeSpentSec,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ParaphraseAttemptModel() when $default != null:
-return $default(_that.id,_that.aiReadingId,_that.userId,_that.similarityScore,_that.fluencyScore,_that.originalityScore,_that.feedback,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.aiReadingId,_that.userId,_that.similarityScore,_that.fluencyScore,_that.originalityScore,_that.feedback,_that.averageScore,_that.timeSpentSec,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -182,10 +184,10 @@ return $default(_that.id,_that.aiReadingId,_that.userId,_that.similarityScore,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int aiReadingId,  int userId,  double similarityScore,  double fluencyScore,  double originalityScore,  String feedback,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int aiReadingId,  int userId,  double similarityScore,  double fluencyScore,  double originalityScore,  String feedback,  int averageScore,  int timeSpentSec,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _ParaphraseAttemptModel():
-return $default(_that.id,_that.aiReadingId,_that.userId,_that.similarityScore,_that.fluencyScore,_that.originalityScore,_that.feedback,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.aiReadingId,_that.userId,_that.similarityScore,_that.fluencyScore,_that.originalityScore,_that.feedback,_that.averageScore,_that.timeSpentSec,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +204,10 @@ return $default(_that.id,_that.aiReadingId,_that.userId,_that.similarityScore,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int aiReadingId,  int userId,  double similarityScore,  double fluencyScore,  double originalityScore,  String feedback,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int aiReadingId,  int userId,  double similarityScore,  double fluencyScore,  double originalityScore,  String feedback,  int averageScore,  int timeSpentSec,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _ParaphraseAttemptModel() when $default != null:
-return $default(_that.id,_that.aiReadingId,_that.userId,_that.similarityScore,_that.fluencyScore,_that.originalityScore,_that.feedback,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.aiReadingId,_that.userId,_that.similarityScore,_that.fluencyScore,_that.originalityScore,_that.feedback,_that.averageScore,_that.timeSpentSec,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -217,7 +219,7 @@ return $default(_that.id,_that.aiReadingId,_that.userId,_that.similarityScore,_t
 @JsonSerializable()
 
 class _ParaphraseAttemptModel implements ParaphraseAttemptModel {
-  const _ParaphraseAttemptModel({required this.id, required this.aiReadingId, required this.userId, required this.similarityScore, required this.fluencyScore, required this.originalityScore, required this.feedback, required this.createdAt, required this.updatedAt});
+  const _ParaphraseAttemptModel({required this.id, required this.aiReadingId, required this.userId, required this.similarityScore, required this.fluencyScore, required this.originalityScore, required this.feedback, required this.averageScore, required this.timeSpentSec, required this.createdAt, required this.updatedAt});
   factory _ParaphraseAttemptModel.fromJson(Map<String, dynamic> json) => _$ParaphraseAttemptModelFromJson(json);
 
 @override final  int id;
@@ -227,6 +229,8 @@ class _ParaphraseAttemptModel implements ParaphraseAttemptModel {
 @override final  double fluencyScore;
 @override final  double originalityScore;
 @override final  String feedback;
+@override final  int averageScore;
+@override final  int timeSpentSec;
 @override final  DateTime createdAt;
 @override final  DateTime updatedAt;
 
@@ -243,16 +247,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ParaphraseAttemptModel&&(identical(other.id, id) || other.id == id)&&(identical(other.aiReadingId, aiReadingId) || other.aiReadingId == aiReadingId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.similarityScore, similarityScore) || other.similarityScore == similarityScore)&&(identical(other.fluencyScore, fluencyScore) || other.fluencyScore == fluencyScore)&&(identical(other.originalityScore, originalityScore) || other.originalityScore == originalityScore)&&(identical(other.feedback, feedback) || other.feedback == feedback)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ParaphraseAttemptModel&&(identical(other.id, id) || other.id == id)&&(identical(other.aiReadingId, aiReadingId) || other.aiReadingId == aiReadingId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.similarityScore, similarityScore) || other.similarityScore == similarityScore)&&(identical(other.fluencyScore, fluencyScore) || other.fluencyScore == fluencyScore)&&(identical(other.originalityScore, originalityScore) || other.originalityScore == originalityScore)&&(identical(other.feedback, feedback) || other.feedback == feedback)&&(identical(other.averageScore, averageScore) || other.averageScore == averageScore)&&(identical(other.timeSpentSec, timeSpentSec) || other.timeSpentSec == timeSpentSec)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,aiReadingId,userId,similarityScore,fluencyScore,originalityScore,feedback,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,aiReadingId,userId,similarityScore,fluencyScore,originalityScore,feedback,averageScore,timeSpentSec,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'ParaphraseAttemptModel(id: $id, aiReadingId: $aiReadingId, userId: $userId, similarityScore: $similarityScore, fluencyScore: $fluencyScore, originalityScore: $originalityScore, feedback: $feedback, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'ParaphraseAttemptModel(id: $id, aiReadingId: $aiReadingId, userId: $userId, similarityScore: $similarityScore, fluencyScore: $fluencyScore, originalityScore: $originalityScore, feedback: $feedback, averageScore: $averageScore, timeSpentSec: $timeSpentSec, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -263,7 +267,7 @@ abstract mixin class _$ParaphraseAttemptModelCopyWith<$Res> implements $Paraphra
   factory _$ParaphraseAttemptModelCopyWith(_ParaphraseAttemptModel value, $Res Function(_ParaphraseAttemptModel) _then) = __$ParaphraseAttemptModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int aiReadingId, int userId, double similarityScore, double fluencyScore, double originalityScore, String feedback, DateTime createdAt, DateTime updatedAt
+ int id, int aiReadingId, int userId, double similarityScore, double fluencyScore, double originalityScore, String feedback, int averageScore, int timeSpentSec, DateTime createdAt, DateTime updatedAt
 });
 
 
@@ -280,7 +284,7 @@ class __$ParaphraseAttemptModelCopyWithImpl<$Res>
 
 /// Create a copy of ParaphraseAttemptModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? aiReadingId = null,Object? userId = null,Object? similarityScore = null,Object? fluencyScore = null,Object? originalityScore = null,Object? feedback = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? aiReadingId = null,Object? userId = null,Object? similarityScore = null,Object? fluencyScore = null,Object? originalityScore = null,Object? feedback = null,Object? averageScore = null,Object? timeSpentSec = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_ParaphraseAttemptModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,aiReadingId: null == aiReadingId ? _self.aiReadingId : aiReadingId // ignore: cast_nullable_to_non_nullable
@@ -289,7 +293,9 @@ as int,similarityScore: null == similarityScore ? _self.similarityScore : simila
 as double,fluencyScore: null == fluencyScore ? _self.fluencyScore : fluencyScore // ignore: cast_nullable_to_non_nullable
 as double,originalityScore: null == originalityScore ? _self.originalityScore : originalityScore // ignore: cast_nullable_to_non_nullable
 as double,feedback: null == feedback ? _self.feedback : feedback // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,averageScore: null == averageScore ? _self.averageScore : averageScore // ignore: cast_nullable_to_non_nullable
+as int,timeSpentSec: null == timeSpentSec ? _self.timeSpentSec : timeSpentSec // ignore: cast_nullable_to_non_nullable
+as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));

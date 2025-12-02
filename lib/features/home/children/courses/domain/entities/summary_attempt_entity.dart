@@ -6,6 +6,8 @@ class SummaryAttemptEntity {
   final double coverageScore;
   final double clarityScore;
   final String feedback;
+  final double averageScore;
+  final int timeSpentSec;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -17,6 +19,8 @@ class SummaryAttemptEntity {
     required this.coverageScore,
     required this.clarityScore,
     required this.feedback,
+    required this.timeSpentSec,
+    required this.averageScore,
     required this.createdAt,
     required this.updatedAt,
   });

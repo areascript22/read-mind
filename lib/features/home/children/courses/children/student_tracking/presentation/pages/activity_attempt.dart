@@ -5,7 +5,6 @@ import 'package:client_app/features/home/children/courses/children/student_track
 import 'package:client_app/init_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'mianidea_attempt_page.dart';
 
 class ActivityAttemptsPage extends StatelessWidget {

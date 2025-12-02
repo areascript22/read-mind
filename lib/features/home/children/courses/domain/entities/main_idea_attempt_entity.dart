@@ -6,6 +6,8 @@ class MainIdeaAttemptEntity {
   final double clarityScore;
   final double concisenessScore;
   final String feedback;
+  final double averageScore;
+  final int timeSpentSec;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -19,5 +21,7 @@ class MainIdeaAttemptEntity {
     required this.feedback,
     required this.createdAt,
     required this.updatedAt,
+    required this.averageScore,
+    required this.timeSpentSec,
   });
 }

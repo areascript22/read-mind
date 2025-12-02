@@ -3,8 +3,6 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../student_tracking/domian/entity/progress_entity.dart';
-
 part 'activity_progress_event.dart';
 part 'activity_progress_state.dart';
 

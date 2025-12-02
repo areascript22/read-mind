@@ -38,7 +38,8 @@ ProgressModel _$ProgressModelFromJson(
 /// @nodoc
 mixin _$ProgressModel {
 
- int get activityId; String get title; String? get description; bool get completed; int get totalScore; bool get hasScoring; int? get maxScore; String get dueDate;
+ int get activityId; String get title; String? get description; int get totalScore;//
+ bool get hasScoring; int? get maxScore; String get dueDate; String get updatedAt;
 /// Create a copy of ProgressModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -51,16 +52,16 @@ $ProgressModelCopyWith<ProgressModel> get copyWith => _$ProgressModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProgressModel&&(identical(other.activityId, activityId) || other.activityId == activityId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.totalScore, totalScore) || other.totalScore == totalScore)&&(identical(other.hasScoring, hasScoring) || other.hasScoring == hasScoring)&&(identical(other.maxScore, maxScore) || other.maxScore == maxScore)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProgressModel&&(identical(other.activityId, activityId) || other.activityId == activityId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.totalScore, totalScore) || other.totalScore == totalScore)&&(identical(other.hasScoring, hasScoring) || other.hasScoring == hasScoring)&&(identical(other.maxScore, maxScore) || other.maxScore == maxScore)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,activityId,title,description,completed,totalScore,hasScoring,maxScore,dueDate);
+int get hashCode => Object.hash(runtimeType,activityId,title,description,totalScore,hasScoring,maxScore,dueDate,updatedAt);
 
 @override
 String toString() {
-  return 'ProgressModel(activityId: $activityId, title: $title, description: $description, completed: $completed, totalScore: $totalScore, hasScoring: $hasScoring, maxScore: $maxScore, dueDate: $dueDate)';
+  return 'ProgressModel(activityId: $activityId, title: $title, description: $description, totalScore: $totalScore, hasScoring: $hasScoring, maxScore: $maxScore, dueDate: $dueDate, updatedAt: $updatedAt)';
 }
 
 
@@ -71,7 +72,7 @@ abstract mixin class $ProgressModelCopyWith<$Res>  {
   factory $ProgressModelCopyWith(ProgressModel value, $Res Function(ProgressModel) _then) = _$ProgressModelCopyWithImpl;
 @useResult
 $Res call({
- int activityId, String title, String? description, bool completed, int totalScore, bool hasScoring, int? maxScore, String dueDate
+ int activityId, String title, String? description, int totalScore, bool hasScoring, int? maxScore, String dueDate, String updatedAt
 });
 
 
@@ -88,16 +89,16 @@ class _$ProgressModelCopyWithImpl<$Res>
 
 /// Create a copy of ProgressModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? activityId = null,Object? title = null,Object? description = freezed,Object? completed = null,Object? totalScore = null,Object? hasScoring = null,Object? maxScore = freezed,Object? dueDate = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? activityId = null,Object? title = null,Object? description = freezed,Object? totalScore = null,Object? hasScoring = null,Object? maxScore = freezed,Object? dueDate = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 activityId: null == activityId ? _self.activityId : activityId // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
-as bool,totalScore: null == totalScore ? _self.totalScore : totalScore // ignore: cast_nullable_to_non_nullable
+as String?,totalScore: null == totalScore ? _self.totalScore : totalScore // ignore: cast_nullable_to_non_nullable
 as int,hasScoring: null == hasScoring ? _self.hasScoring : hasScoring // ignore: cast_nullable_to_non_nullable
 as bool,maxScore: freezed == maxScore ? _self.maxScore : maxScore // ignore: cast_nullable_to_non_nullable
 as int?,dueDate: null == dueDate ? _self.dueDate : dueDate // ignore: cast_nullable_to_non_nullable
+as String,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -186,11 +187,11 @@ return flashCardProgress(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int progressId,  int activityId,  int aiReadingId,  String title,  String? description,  bool completed,  int totalProgress,  int totalScore,  bool hasScoring,  int? maxScore,  String dueDate,  String updatedAt,  SubactivitiesCompletedModel subactivitiesCompleted,  int subactivitiesCompletionRate)?  aiReadingProgress,TResult Function( int id,  int activityId,  int flashCardActivityId,  String title,  String? description,  String cardOrder,  int maxCards,  bool completed,  int progressPercentage,  int totalScore,  bool hasScoring,  int? maxScore,  String dueDate,  String startedAt,  String completedAt,  StatsModel stats)?  flashCardProgress,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int progressId,  int activityId,  int aiReadingId,  String title,  String? description,  bool completed,  int totalProgress,  int totalScore,  bool hasScoring,  int? maxScore,  String dueDate,  String updatedAt,  SubactivitiesCompletedModel subactivitiesCompleted,  int subactivitiesCompletionRate)?  aiReadingProgress,TResult Function( int id,  int activityId,  int flashCardActivityId,  String title,  String? description,  String cardOrder,  int maxCards,  bool hasAnySession,  int totalSessions,  int completedSessions,  int totalScore,  bool hasScoring,  int? maxScore,  String dueDate,  String createdAt,  String updatedAt)?  flashCardProgress,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AiReadingProgress() when aiReadingProgress != null:
 return aiReadingProgress(_that.progressId,_that.activityId,_that.aiReadingId,_that.title,_that.description,_that.completed,_that.totalProgress,_that.totalScore,_that.hasScoring,_that.maxScore,_that.dueDate,_that.updatedAt,_that.subactivitiesCompleted,_that.subactivitiesCompletionRate);case FlashCardProgress() when flashCardProgress != null:
-return flashCardProgress(_that.id,_that.activityId,_that.flashCardActivityId,_that.title,_that.description,_that.cardOrder,_that.maxCards,_that.completed,_that.progressPercentage,_that.totalScore,_that.hasScoring,_that.maxScore,_that.dueDate,_that.startedAt,_that.completedAt,_that.stats);case _:
+return flashCardProgress(_that.id,_that.activityId,_that.flashCardActivityId,_that.title,_that.description,_that.cardOrder,_that.maxCards,_that.hasAnySession,_that.totalSessions,_that.completedSessions,_that.totalScore,_that.hasScoring,_that.maxScore,_that.dueDate,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -208,11 +209,11 @@ return flashCardProgress(_that.id,_that.activityId,_that.flashCardActivityId,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int progressId,  int activityId,  int aiReadingId,  String title,  String? description,  bool completed,  int totalProgress,  int totalScore,  bool hasScoring,  int? maxScore,  String dueDate,  String updatedAt,  SubactivitiesCompletedModel subactivitiesCompleted,  int subactivitiesCompletionRate)  aiReadingProgress,required TResult Function( int id,  int activityId,  int flashCardActivityId,  String title,  String? description,  String cardOrder,  int maxCards,  bool completed,  int progressPercentage,  int totalScore,  bool hasScoring,  int? maxScore,  String dueDate,  String startedAt,  String completedAt,  StatsModel stats)  flashCardProgress,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int progressId,  int activityId,  int aiReadingId,  String title,  String? description,  bool completed,  int totalProgress,  int totalScore,  bool hasScoring,  int? maxScore,  String dueDate,  String updatedAt,  SubactivitiesCompletedModel subactivitiesCompleted,  int subactivitiesCompletionRate)  aiReadingProgress,required TResult Function( int id,  int activityId,  int flashCardActivityId,  String title,  String? description,  String cardOrder,  int maxCards,  bool hasAnySession,  int totalSessions,  int completedSessions,  int totalScore,  bool hasScoring,  int? maxScore,  String dueDate,  String createdAt,  String updatedAt)  flashCardProgress,}) {final _that = this;
 switch (_that) {
 case AiReadingProgress():
 return aiReadingProgress(_that.progressId,_that.activityId,_that.aiReadingId,_that.title,_that.description,_that.completed,_that.totalProgress,_that.totalScore,_that.hasScoring,_that.maxScore,_that.dueDate,_that.updatedAt,_that.subactivitiesCompleted,_that.subactivitiesCompletionRate);case FlashCardProgress():
-return flashCardProgress(_that.id,_that.activityId,_that.flashCardActivityId,_that.title,_that.description,_that.cardOrder,_that.maxCards,_that.completed,_that.progressPercentage,_that.totalScore,_that.hasScoring,_that.maxScore,_that.dueDate,_that.startedAt,_that.completedAt,_that.stats);case _:
+return flashCardProgress(_that.id,_that.activityId,_that.flashCardActivityId,_that.title,_that.description,_that.cardOrder,_that.maxCards,_that.hasAnySession,_that.totalSessions,_that.completedSessions,_that.totalScore,_that.hasScoring,_that.maxScore,_that.dueDate,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -229,11 +230,11 @@ return flashCardProgress(_that.id,_that.activityId,_that.flashCardActivityId,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int progressId,  int activityId,  int aiReadingId,  String title,  String? description,  bool completed,  int totalProgress,  int totalScore,  bool hasScoring,  int? maxScore,  String dueDate,  String updatedAt,  SubactivitiesCompletedModel subactivitiesCompleted,  int subactivitiesCompletionRate)?  aiReadingProgress,TResult? Function( int id,  int activityId,  int flashCardActivityId,  String title,  String? description,  String cardOrder,  int maxCards,  bool completed,  int progressPercentage,  int totalScore,  bool hasScoring,  int? maxScore,  String dueDate,  String startedAt,  String completedAt,  StatsModel stats)?  flashCardProgress,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int progressId,  int activityId,  int aiReadingId,  String title,  String? description,  bool completed,  int totalProgress,  int totalScore,  bool hasScoring,  int? maxScore,  String dueDate,  String updatedAt,  SubactivitiesCompletedModel subactivitiesCompleted,  int subactivitiesCompletionRate)?  aiReadingProgress,TResult? Function( int id,  int activityId,  int flashCardActivityId,  String title,  String? description,  String cardOrder,  int maxCards,  bool hasAnySession,  int totalSessions,  int completedSessions,  int totalScore,  bool hasScoring,  int? maxScore,  String dueDate,  String createdAt,  String updatedAt)?  flashCardProgress,}) {final _that = this;
 switch (_that) {
 case AiReadingProgress() when aiReadingProgress != null:
 return aiReadingProgress(_that.progressId,_that.activityId,_that.aiReadingId,_that.title,_that.description,_that.completed,_that.totalProgress,_that.totalScore,_that.hasScoring,_that.maxScore,_that.dueDate,_that.updatedAt,_that.subactivitiesCompleted,_that.subactivitiesCompletionRate);case FlashCardProgress() when flashCardProgress != null:
-return flashCardProgress(_that.id,_that.activityId,_that.flashCardActivityId,_that.title,_that.description,_that.cardOrder,_that.maxCards,_that.completed,_that.progressPercentage,_that.totalScore,_that.hasScoring,_that.maxScore,_that.dueDate,_that.startedAt,_that.completedAt,_that.stats);case _:
+return flashCardProgress(_that.id,_that.activityId,_that.flashCardActivityId,_that.title,_that.description,_that.cardOrder,_that.maxCards,_that.hasAnySession,_that.totalSessions,_that.completedSessions,_that.totalScore,_that.hasScoring,_that.maxScore,_that.dueDate,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -253,13 +254,13 @@ class AiReadingProgress implements ProgressModel {
  final  int aiReadingId;
 @override final  String title;
 @override final  String? description;
-@override final  bool completed;
+ final  bool completed;
  final  int totalProgress;
 @override final  int totalScore;
 @override final  bool hasScoring;
 @override final  int? maxScore;
 @override final  String dueDate;
- final  String updatedAt;
+@override final  String updatedAt;
  final  SubactivitiesCompletedModel subactivitiesCompleted;
  final  int subactivitiesCompletionRate;
 
@@ -353,7 +354,7 @@ $SubactivitiesCompletedModelCopyWith<$Res> get subactivitiesCompleted {
 @JsonSerializable()
 
 class FlashCardProgress implements ProgressModel {
-  const FlashCardProgress({required this.id, required this.activityId, required this.flashCardActivityId, required this.title, required this.description, required this.cardOrder, required this.maxCards, required this.completed, required this.progressPercentage, required this.totalScore, required this.hasScoring, required this.maxScore, required this.dueDate, required this.startedAt, required this.completedAt, required this.stats, final  String? $type}): $type = $type ?? 'flashCardProgress';
+  const FlashCardProgress({required this.id, required this.activityId, required this.flashCardActivityId, required this.title, required this.description, required this.cardOrder, required this.maxCards, required this.hasAnySession, required this.totalSessions, required this.completedSessions, required this.totalScore, required this.hasScoring, required this.maxScore, required this.dueDate, required this.createdAt, required this.updatedAt, final  String? $type}): $type = $type ?? 'flashCardProgress';
   factory FlashCardProgress.fromJson(Map<String, dynamic> json) => _$FlashCardProgressFromJson(json);
 
  final  int id;
@@ -363,15 +364,16 @@ class FlashCardProgress implements ProgressModel {
 @override final  String? description;
  final  String cardOrder;
  final  int maxCards;
-@override final  bool completed;
- final  int progressPercentage;
+ final  bool hasAnySession;
+ final  int totalSessions;
+ final  int completedSessions;
 @override final  int totalScore;
+//
 @override final  bool hasScoring;
 @override final  int? maxScore;
 @override final  String dueDate;
- final  String startedAt;
- final  String completedAt;
- final  StatsModel stats;
+ final  String createdAt;
+@override final  String updatedAt;
 
 @JsonKey(name: 'type')
 final String $type;
@@ -390,16 +392,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FlashCardProgress&&(identical(other.id, id) || other.id == id)&&(identical(other.activityId, activityId) || other.activityId == activityId)&&(identical(other.flashCardActivityId, flashCardActivityId) || other.flashCardActivityId == flashCardActivityId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.cardOrder, cardOrder) || other.cardOrder == cardOrder)&&(identical(other.maxCards, maxCards) || other.maxCards == maxCards)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.progressPercentage, progressPercentage) || other.progressPercentage == progressPercentage)&&(identical(other.totalScore, totalScore) || other.totalScore == totalScore)&&(identical(other.hasScoring, hasScoring) || other.hasScoring == hasScoring)&&(identical(other.maxScore, maxScore) || other.maxScore == maxScore)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt)&&(identical(other.stats, stats) || other.stats == stats));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FlashCardProgress&&(identical(other.id, id) || other.id == id)&&(identical(other.activityId, activityId) || other.activityId == activityId)&&(identical(other.flashCardActivityId, flashCardActivityId) || other.flashCardActivityId == flashCardActivityId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.cardOrder, cardOrder) || other.cardOrder == cardOrder)&&(identical(other.maxCards, maxCards) || other.maxCards == maxCards)&&(identical(other.hasAnySession, hasAnySession) || other.hasAnySession == hasAnySession)&&(identical(other.totalSessions, totalSessions) || other.totalSessions == totalSessions)&&(identical(other.completedSessions, completedSessions) || other.completedSessions == completedSessions)&&(identical(other.totalScore, totalScore) || other.totalScore == totalScore)&&(identical(other.hasScoring, hasScoring) || other.hasScoring == hasScoring)&&(identical(other.maxScore, maxScore) || other.maxScore == maxScore)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,activityId,flashCardActivityId,title,description,cardOrder,maxCards,completed,progressPercentage,totalScore,hasScoring,maxScore,dueDate,startedAt,completedAt,stats);
+int get hashCode => Object.hash(runtimeType,id,activityId,flashCardActivityId,title,description,cardOrder,maxCards,hasAnySession,totalSessions,completedSessions,totalScore,hasScoring,maxScore,dueDate,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'ProgressModel.flashCardProgress(id: $id, activityId: $activityId, flashCardActivityId: $flashCardActivityId, title: $title, description: $description, cardOrder: $cardOrder, maxCards: $maxCards, completed: $completed, progressPercentage: $progressPercentage, totalScore: $totalScore, hasScoring: $hasScoring, maxScore: $maxScore, dueDate: $dueDate, startedAt: $startedAt, completedAt: $completedAt, stats: $stats)';
+  return 'ProgressModel.flashCardProgress(id: $id, activityId: $activityId, flashCardActivityId: $flashCardActivityId, title: $title, description: $description, cardOrder: $cardOrder, maxCards: $maxCards, hasAnySession: $hasAnySession, totalSessions: $totalSessions, completedSessions: $completedSessions, totalScore: $totalScore, hasScoring: $hasScoring, maxScore: $maxScore, dueDate: $dueDate, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -410,11 +412,11 @@ abstract mixin class $FlashCardProgressCopyWith<$Res> implements $ProgressModelC
   factory $FlashCardProgressCopyWith(FlashCardProgress value, $Res Function(FlashCardProgress) _then) = _$FlashCardProgressCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int activityId, int flashCardActivityId, String title, String? description, String cardOrder, int maxCards, bool completed, int progressPercentage, int totalScore, bool hasScoring, int? maxScore, String dueDate, String startedAt, String completedAt, StatsModel stats
+ int id, int activityId, int flashCardActivityId, String title, String? description, String cardOrder, int maxCards, bool hasAnySession, int totalSessions, int completedSessions, int totalScore, bool hasScoring, int? maxScore, String dueDate, String createdAt, String updatedAt
 });
 
 
-$StatsModelCopyWith<$Res> get stats;
+
 
 }
 /// @nodoc
@@ -427,7 +429,7 @@ class _$FlashCardProgressCopyWithImpl<$Res>
 
 /// Create a copy of ProgressModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? activityId = null,Object? flashCardActivityId = null,Object? title = null,Object? description = freezed,Object? cardOrder = null,Object? maxCards = null,Object? completed = null,Object? progressPercentage = null,Object? totalScore = null,Object? hasScoring = null,Object? maxScore = freezed,Object? dueDate = null,Object? startedAt = null,Object? completedAt = null,Object? stats = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? activityId = null,Object? flashCardActivityId = null,Object? title = null,Object? description = freezed,Object? cardOrder = null,Object? maxCards = null,Object? hasAnySession = null,Object? totalSessions = null,Object? completedSessions = null,Object? totalScore = null,Object? hasScoring = null,Object? maxScore = freezed,Object? dueDate = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(FlashCardProgress(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,activityId: null == activityId ? _self.activityId : activityId // ignore: cast_nullable_to_non_nullable
@@ -436,29 +438,20 @@ as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_no
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,cardOrder: null == cardOrder ? _self.cardOrder : cardOrder // ignore: cast_nullable_to_non_nullable
 as String,maxCards: null == maxCards ? _self.maxCards : maxCards // ignore: cast_nullable_to_non_nullable
-as int,completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
-as bool,progressPercentage: null == progressPercentage ? _self.progressPercentage : progressPercentage // ignore: cast_nullable_to_non_nullable
+as int,hasAnySession: null == hasAnySession ? _self.hasAnySession : hasAnySession // ignore: cast_nullable_to_non_nullable
+as bool,totalSessions: null == totalSessions ? _self.totalSessions : totalSessions // ignore: cast_nullable_to_non_nullable
+as int,completedSessions: null == completedSessions ? _self.completedSessions : completedSessions // ignore: cast_nullable_to_non_nullable
 as int,totalScore: null == totalScore ? _self.totalScore : totalScore // ignore: cast_nullable_to_non_nullable
 as int,hasScoring: null == hasScoring ? _self.hasScoring : hasScoring // ignore: cast_nullable_to_non_nullable
 as bool,maxScore: freezed == maxScore ? _self.maxScore : maxScore // ignore: cast_nullable_to_non_nullable
 as int?,dueDate: null == dueDate ? _self.dueDate : dueDate // ignore: cast_nullable_to_non_nullable
-as String,startedAt: null == startedAt ? _self.startedAt : startedAt // ignore: cast_nullable_to_non_nullable
-as String,completedAt: null == completedAt ? _self.completedAt : completedAt // ignore: cast_nullable_to_non_nullable
-as String,stats: null == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
-as StatsModel,
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
-/// Create a copy of ProgressModel
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$StatsModelCopyWith<$Res> get stats {
-  
-  return $StatsModelCopyWith<$Res>(_self.stats, (value) {
-    return _then(_self.copyWith(stats: value));
-  });
-}
+
 }
 
 
