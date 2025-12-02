@@ -1,7 +1,11 @@
+import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/bs_translate_word.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/activity_progress/activity_progress_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -44,9 +48,12 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   String? selectedWord;
   Offset? tapPosition;
 
+  late TimerAttemptCubit timerAttemptCubit;
+
   @override
   void initState() {
     super.initState();
+    _initValues();
 
     paragraph =
         (widget.activityModel.maybeMap(
@@ -64,6 +71,12 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   void dispose() {
     _teardownTts();
     super.dispose();
+  }
+
+  void _initValues() {
+    timerAttemptCubit = context.read<TimerAttemptCubit>();
+    timerAttemptCubit.setStartTime(DateTime.now());
+    timerAttemptCubit.setPlayCount(0);
   }
 
   void _storeTapPosition(TapDownDetails details) {
@@ -217,6 +230,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
 
     await speakFrom(currentCharIndex);
     isPlaying = true;
+    timerAttemptCubit.setPlayCount(timerAttemptCubit.playCount + 1);
     setState(() {});
   }
 
@@ -249,12 +263,18 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
                 );
               }
               if (state is ProgressCreated &&
-                  state.createdProgress.subactivitiesCompleted.reading) {
+                  state.createdProgress
+                      .toReadingProgressEntity()!
+                      .subactivitiesCompleted
+                      .reading) {
                 return Icon(Icons.check);
               }
 
               if (state is ProgressUpdated &&
-                  state.updatedProgress.subactivitiesCompleted.reading) {
+                  state.updatedProgress
+                      .toReadingProgressEntity()!
+                      .subactivitiesCompleted
+                      .reading) {
                 return Icon(Icons.check);
               }
 
@@ -289,12 +309,18 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
           return LoaderIndicator();
         }
         if (state is ProgressCreated &&
-            state.createdProgress.subactivitiesCompleted.reading) {
+            state.createdProgress
+                .toReadingProgressEntity()!
+                .subactivitiesCompleted
+                .reading) {
           return _buildButton(context);
         }
 
         if (state is ProgressUpdated &&
-            state.updatedProgress.subactivitiesCompleted.reading) {
+            state.updatedProgress
+                .toReadingProgressEntity()!
+                .subactivitiesCompleted
+                .reading) {
           return _buildButton(context);
         }
 
@@ -304,19 +330,41 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     );
   }
 
-  ElevatedButton _buildButton(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () {
-        context.push(
-          RouteNames.activityParaphrase,
-          extra: widget.activityModel.toAIReadingEntity(),
-        );
+  Widget _buildButton(BuildContext context) {
+    return BlocListener<AttemptsCubit, AttemptsState>(
+      listener: (context, state) {
+        if (state is AttemptsError &&
+            state.attemptOperation == AttemptOperation.arReading) {
+          ToastMessageUtil.showToast(state.message, context);
+        }
+        if (state is AttemptReadingCreated) {}
       },
-      icon: const Icon(Icons.arrow_forward),
-      label: const Text('Continuar'),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
-        minimumSize: const Size(double.infinity, 45),
+      child: ElevatedButton.icon(
+        onPressed: () {
+          timerAttemptCubit.setCompleteTime(DateTime.now());
+          final readingEntity = widget.activityModel.toAIReadingEntity();
+          final timeSpentSec = timerAttemptCubit.totalTimeSec;
+          if (readingEntity != null) {
+            context.read<AttemptsCubit>().createReadingAttempt(
+              aiReadingId: readingEntity.aiReadingId,
+              playCount: timerAttemptCubit.playCount,
+              timeSpentSec: timeSpentSec,
+            );
+            timerAttemptCubit.setPlayCount(0);
+            timerAttemptCubit.setStartTime(DateTime.now());
+          }
+
+          context.push(
+            RouteNames.activityParaphrase,
+            extra: widget.activityModel.toAIReadingEntity(),
+          );
+        },
+        icon: const Icon(Icons.arrow_forward),
+        label: const Text('Continuar'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green,
+          minimumSize: const Size(double.infinity, 45),
+        ),
       ),
     );
   }

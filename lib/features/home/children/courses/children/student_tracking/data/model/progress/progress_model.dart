@@ -1,17 +1,17 @@
+import 'package:client_app/features/home/children/courses/children/student_tracking/domian/entity/flash_card_progress_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../domian/entity/progress_entity.dart';
 part 'progress_model.freezed.dart';
 part 'progress_model.g.dart';
 
-@freezed
+@Freezed(unionKey: 'type')
 abstract class ProgressModel with _$ProgressModel {
-  const factory ProgressModel({
+  const factory ProgressModel.aiReadingProgress({
     required int progressId,
     required int activityId,
     required int aiReadingId,
     required String title,
     required String? description,
-    required String courseName,
     required bool completed,
     required int totalProgress,
     required int totalScore,
@@ -21,7 +21,26 @@ abstract class ProgressModel with _$ProgressModel {
     required String updatedAt,
     required SubactivitiesCompletedModel subactivitiesCompleted,
     required int subactivitiesCompletionRate,
-  }) = _ProgressModel;
+  }) = AiReadingProgress;
+
+  const factory ProgressModel.flashCardProgress({
+    required int id,
+    required int activityId,
+    required int flashCardActivityId,
+    required String title,
+    required String? description,
+    required String cardOrder,
+    required int maxCards,
+    required bool hasAnySession,
+    required int totalSessions,
+    required int completedSessions,
+    required int totalScore, //
+    required bool hasScoring,
+    required int? maxScore,
+    required String dueDate,
+    required String createdAt,
+    required String updatedAt,
+  }) = FlashCardProgress;
 
   factory ProgressModel.fromJson(Map<String, dynamic> json) =>
       _$ProgressModelFromJson(json);
@@ -40,29 +59,67 @@ abstract class SubactivitiesCompletedModel with _$SubactivitiesCompletedModel {
       _$SubactivitiesCompletedModelFromJson(json);
 }
 
-extension ProgressModelExtension on ProgressModel {
-  ProgressEntity toEntity() {
-    return ProgressEntity(
-      progressId: progressId,
-      activityId: activityId,
-      aiReadingId: aiReadingId,
-      title: title,
-      description: description,
-      courseName: courseName,
-      completed: completed,
-      totalProgress: totalProgress,
-      totalScore: totalScore,
-      hasScoring: hasScoring,
-      maxScore: maxScore,
-      dueDate: dueDate,
-      updatedAt: updatedAt,
-      subactivitiesCompleted: SubactivitiesCompletedEntity(
-        reading: subactivitiesCompleted.reading,
-        paraphrase: subactivitiesCompleted.paraphrase,
-        mainIdea: subactivitiesCompleted.mainIdea,
-        summary: subactivitiesCompleted.summary,
-      ),
-      subactivitiesCompletionRate: subactivitiesCompletionRate,
-    );
-  }
+@freezed
+abstract class StatsModel with _$StatsModel {
+  const factory StatsModel({
+    required int totalAttempts,
+    required int correctAnswers,
+    required int incorrectAnswers,
+    required int totalTimeSec,
+    required int avgTimePerCard,
+    required int confidenceScore,
+  }) = _StatsModel;
+
+  factory StatsModel.fromJson(Map<String, dynamic> json) =>
+      _$StatsModelFromJson(json);
+}
+
+extension ActivityEntityMapper on ProgressModel {
+  ReadingProgressEntity? toReadingProgressEntity() => maybeMap(
+    aiReadingProgress:
+        (m) => ReadingProgressEntity(
+          progressId: m.progressId,
+          activityId: m.activityId,
+          aiReadingId: m.aiReadingId,
+          title: m.title,
+          description: m.description,
+          completed: m.completed,
+          totalProgress: m.totalProgress,
+          totalScore: m.totalScore,
+          hasScoring: m.hasScoring,
+          maxScore: m.maxScore,
+          dueDate: m.dueDate,
+          updatedAt: m.updatedAt,
+          subactivitiesCompleted: SubactivitiesCompletedEntity(
+            reading: m.subactivitiesCompleted.reading,
+            paraphrase: m.subactivitiesCompleted.paraphrase,
+            mainIdea: m.subactivitiesCompleted.mainIdea,
+            summary: m.subactivitiesCompleted.summary,
+          ),
+          subactivitiesCompletionRate: m.subactivitiesCompletionRate,
+        ),
+    orElse: () => null,
+  );
+
+  FlashCardProgressEntity? toFlashCardProgressEntity() => maybeMap(
+    flashCardProgress:
+        (m) => FlashCardProgressEntity(
+          id: m.id,
+          activityId: m.activityId,
+          flashCardActivityId: m.flashCardActivityId,
+          title: m.title,
+          description: m.description,
+          cardOrder: m.cardOrder,
+          maxCards: m.maxCards,
+          completed: false,
+          progressPercentage: 100,
+          totalScore: m.totalScore,
+          hasScoring: m.hasScoring,
+          maxScore: m.maxScore,
+          dueDate: m.dueDate,
+          createdAt: m.createdAt,
+          updatedAt: m.updatedAt,
+        ),
+    orElse: () => null,
+  );
 }

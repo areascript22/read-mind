@@ -13,8 +13,6 @@ _StatisticsModel _$StatisticsModelFromJson(Map<String, dynamic> json) =>
       inProgress: (json['inProgress'] as num).toInt(),
       notStarted: (json['notStarted'] as num).toInt(),
       averageScore: (json['averageScore'] as num).toDouble(),
-      totalActivitiesWithScoring:
-          (json['totalActivitiesWithScoring'] as num).toInt(),
       completionRate: (json['completionRate'] as num).toInt(),
     );
 
@@ -25,6 +23,5 @@ Map<String, dynamic> _$StatisticsModelToJson(_StatisticsModel instance) =>
       'inProgress': instance.inProgress,
       'notStarted': instance.notStarted,
       'averageScore': instance.averageScore,
-      'totalActivitiesWithScoring': instance.totalActivitiesWithScoring,
       'completionRate': instance.completionRate,
     };

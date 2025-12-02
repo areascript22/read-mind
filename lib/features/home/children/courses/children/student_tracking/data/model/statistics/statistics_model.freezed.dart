@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$StatisticsModel {
 
- int get total; int get completed; int get inProgress; int get notStarted; double get averageScore; int get totalActivitiesWithScoring; int get completionRate;
+ int get total; int get completed; int get inProgress; int get notStarted; double get averageScore; int get completionRate;
 /// Create a copy of StatisticsModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $StatisticsModelCopyWith<StatisticsModel> get copyWith => _$StatisticsModelCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StatisticsModel&&(identical(other.total, total) || other.total == total)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.inProgress, inProgress) || other.inProgress == inProgress)&&(identical(other.notStarted, notStarted) || other.notStarted == notStarted)&&(identical(other.averageScore, averageScore) || other.averageScore == averageScore)&&(identical(other.totalActivitiesWithScoring, totalActivitiesWithScoring) || other.totalActivitiesWithScoring == totalActivitiesWithScoring)&&(identical(other.completionRate, completionRate) || other.completionRate == completionRate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StatisticsModel&&(identical(other.total, total) || other.total == total)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.inProgress, inProgress) || other.inProgress == inProgress)&&(identical(other.notStarted, notStarted) || other.notStarted == notStarted)&&(identical(other.averageScore, averageScore) || other.averageScore == averageScore)&&(identical(other.completionRate, completionRate) || other.completionRate == completionRate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,total,completed,inProgress,notStarted,averageScore,totalActivitiesWithScoring,completionRate);
+int get hashCode => Object.hash(runtimeType,total,completed,inProgress,notStarted,averageScore,completionRate);
 
 @override
 String toString() {
-  return 'StatisticsModel(total: $total, completed: $completed, inProgress: $inProgress, notStarted: $notStarted, averageScore: $averageScore, totalActivitiesWithScoring: $totalActivitiesWithScoring, completionRate: $completionRate)';
+  return 'StatisticsModel(total: $total, completed: $completed, inProgress: $inProgress, notStarted: $notStarted, averageScore: $averageScore, completionRate: $completionRate)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $StatisticsModelCopyWith<$Res>  {
   factory $StatisticsModelCopyWith(StatisticsModel value, $Res Function(StatisticsModel) _then) = _$StatisticsModelCopyWithImpl;
 @useResult
 $Res call({
- int total, int completed, int inProgress, int notStarted, double averageScore, int totalActivitiesWithScoring, int completionRate
+ int total, int completed, int inProgress, int notStarted, double averageScore, int completionRate
 });
 
 
@@ -65,15 +65,14 @@ class _$StatisticsModelCopyWithImpl<$Res>
 
 /// Create a copy of StatisticsModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? total = null,Object? completed = null,Object? inProgress = null,Object? notStarted = null,Object? averageScore = null,Object? totalActivitiesWithScoring = null,Object? completionRate = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? total = null,Object? completed = null,Object? inProgress = null,Object? notStarted = null,Object? averageScore = null,Object? completionRate = null,}) {
   return _then(_self.copyWith(
 total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
 as int,completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
 as int,inProgress: null == inProgress ? _self.inProgress : inProgress // ignore: cast_nullable_to_non_nullable
 as int,notStarted: null == notStarted ? _self.notStarted : notStarted // ignore: cast_nullable_to_non_nullable
 as int,averageScore: null == averageScore ? _self.averageScore : averageScore // ignore: cast_nullable_to_non_nullable
-as double,totalActivitiesWithScoring: null == totalActivitiesWithScoring ? _self.totalActivitiesWithScoring : totalActivitiesWithScoring // ignore: cast_nullable_to_non_nullable
-as int,completionRate: null == completionRate ? _self.completionRate : completionRate // ignore: cast_nullable_to_non_nullable
+as double,completionRate: null == completionRate ? _self.completionRate : completionRate // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -159,10 +158,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int total,  int completed,  int inProgress,  int notStarted,  double averageScore,  int totalActivitiesWithScoring,  int completionRate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int total,  int completed,  int inProgress,  int notStarted,  double averageScore,  int completionRate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StatisticsModel() when $default != null:
-return $default(_that.total,_that.completed,_that.inProgress,_that.notStarted,_that.averageScore,_that.totalActivitiesWithScoring,_that.completionRate);case _:
+return $default(_that.total,_that.completed,_that.inProgress,_that.notStarted,_that.averageScore,_that.completionRate);case _:
   return orElse();
 
 }
@@ -180,10 +179,10 @@ return $default(_that.total,_that.completed,_that.inProgress,_that.notStarted,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int total,  int completed,  int inProgress,  int notStarted,  double averageScore,  int totalActivitiesWithScoring,  int completionRate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int total,  int completed,  int inProgress,  int notStarted,  double averageScore,  int completionRate)  $default,) {final _that = this;
 switch (_that) {
 case _StatisticsModel():
-return $default(_that.total,_that.completed,_that.inProgress,_that.notStarted,_that.averageScore,_that.totalActivitiesWithScoring,_that.completionRate);case _:
+return $default(_that.total,_that.completed,_that.inProgress,_that.notStarted,_that.averageScore,_that.completionRate);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +199,10 @@ return $default(_that.total,_that.completed,_that.inProgress,_that.notStarted,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int total,  int completed,  int inProgress,  int notStarted,  double averageScore,  int totalActivitiesWithScoring,  int completionRate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int total,  int completed,  int inProgress,  int notStarted,  double averageScore,  int completionRate)?  $default,) {final _that = this;
 switch (_that) {
 case _StatisticsModel() when $default != null:
-return $default(_that.total,_that.completed,_that.inProgress,_that.notStarted,_that.averageScore,_that.totalActivitiesWithScoring,_that.completionRate);case _:
+return $default(_that.total,_that.completed,_that.inProgress,_that.notStarted,_that.averageScore,_that.completionRate);case _:
   return null;
 
 }
@@ -215,7 +214,7 @@ return $default(_that.total,_that.completed,_that.inProgress,_that.notStarted,_t
 @JsonSerializable()
 
 class _StatisticsModel implements StatisticsModel {
-  const _StatisticsModel({required this.total, required this.completed, required this.inProgress, required this.notStarted, required this.averageScore, required this.totalActivitiesWithScoring, required this.completionRate});
+  const _StatisticsModel({required this.total, required this.completed, required this.inProgress, required this.notStarted, required this.averageScore, required this.completionRate});
   factory _StatisticsModel.fromJson(Map<String, dynamic> json) => _$StatisticsModelFromJson(json);
 
 @override final  int total;
@@ -223,7 +222,6 @@ class _StatisticsModel implements StatisticsModel {
 @override final  int inProgress;
 @override final  int notStarted;
 @override final  double averageScore;
-@override final  int totalActivitiesWithScoring;
 @override final  int completionRate;
 
 /// Create a copy of StatisticsModel
@@ -239,16 +237,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StatisticsModel&&(identical(other.total, total) || other.total == total)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.inProgress, inProgress) || other.inProgress == inProgress)&&(identical(other.notStarted, notStarted) || other.notStarted == notStarted)&&(identical(other.averageScore, averageScore) || other.averageScore == averageScore)&&(identical(other.totalActivitiesWithScoring, totalActivitiesWithScoring) || other.totalActivitiesWithScoring == totalActivitiesWithScoring)&&(identical(other.completionRate, completionRate) || other.completionRate == completionRate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StatisticsModel&&(identical(other.total, total) || other.total == total)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.inProgress, inProgress) || other.inProgress == inProgress)&&(identical(other.notStarted, notStarted) || other.notStarted == notStarted)&&(identical(other.averageScore, averageScore) || other.averageScore == averageScore)&&(identical(other.completionRate, completionRate) || other.completionRate == completionRate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,total,completed,inProgress,notStarted,averageScore,totalActivitiesWithScoring,completionRate);
+int get hashCode => Object.hash(runtimeType,total,completed,inProgress,notStarted,averageScore,completionRate);
 
 @override
 String toString() {
-  return 'StatisticsModel(total: $total, completed: $completed, inProgress: $inProgress, notStarted: $notStarted, averageScore: $averageScore, totalActivitiesWithScoring: $totalActivitiesWithScoring, completionRate: $completionRate)';
+  return 'StatisticsModel(total: $total, completed: $completed, inProgress: $inProgress, notStarted: $notStarted, averageScore: $averageScore, completionRate: $completionRate)';
 }
 
 
@@ -259,7 +257,7 @@ abstract mixin class _$StatisticsModelCopyWith<$Res> implements $StatisticsModel
   factory _$StatisticsModelCopyWith(_StatisticsModel value, $Res Function(_StatisticsModel) _then) = __$StatisticsModelCopyWithImpl;
 @override @useResult
 $Res call({
- int total, int completed, int inProgress, int notStarted, double averageScore, int totalActivitiesWithScoring, int completionRate
+ int total, int completed, int inProgress, int notStarted, double averageScore, int completionRate
 });
 
 
@@ -276,15 +274,14 @@ class __$StatisticsModelCopyWithImpl<$Res>
 
 /// Create a copy of StatisticsModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? total = null,Object? completed = null,Object? inProgress = null,Object? notStarted = null,Object? averageScore = null,Object? totalActivitiesWithScoring = null,Object? completionRate = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? total = null,Object? completed = null,Object? inProgress = null,Object? notStarted = null,Object? averageScore = null,Object? completionRate = null,}) {
   return _then(_StatisticsModel(
 total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
 as int,completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
 as int,inProgress: null == inProgress ? _self.inProgress : inProgress // ignore: cast_nullable_to_non_nullable
 as int,notStarted: null == notStarted ? _self.notStarted : notStarted // ignore: cast_nullable_to_non_nullable
 as int,averageScore: null == averageScore ? _self.averageScore : averageScore // ignore: cast_nullable_to_non_nullable
-as double,totalActivitiesWithScoring: null == totalActivitiesWithScoring ? _self.totalActivitiesWithScoring : totalActivitiesWithScoring // ignore: cast_nullable_to_non_nullable
-as int,completionRate: null == completionRate ? _self.completionRate : completionRate // ignore: cast_nullable_to_non_nullable
+as double,completionRate: null == completionRate ? _self.completionRate : completionRate // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

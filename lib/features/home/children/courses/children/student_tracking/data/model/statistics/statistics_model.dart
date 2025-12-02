@@ -12,7 +12,6 @@ abstract class StatisticsModel with _$StatisticsModel {
     required int inProgress,
     required int notStarted,
     required double averageScore,
-    required int totalActivitiesWithScoring,
     required int completionRate,
   }) = _StatisticsModel;
 
@@ -28,7 +27,6 @@ extension StatisticsModelExtension on StatisticsModel {
       inProgress: inProgress,
       notStarted: notStarted,
       averageScore: averageScore,
-      totalActivitiesWithScoring: totalActivitiesWithScoring,
       completionRate: completionRate,
     );
   }

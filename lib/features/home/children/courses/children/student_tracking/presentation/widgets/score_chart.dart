@@ -3,7 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class ScoreChartWidget extends StatelessWidget {
-  final List<ProgressEntity> studentTracking;
+  final List<ReadingProgressEntity> studentTracking;
   const ScoreChartWidget({super.key, required this.studentTracking});
 
   @override
