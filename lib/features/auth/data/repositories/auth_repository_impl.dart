@@ -1,11 +1,9 @@
 import 'dart:convert';
-
 import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:client_app/features/auth/data/models/user_model/user_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
-
 import '../../../../core/constants/app_environment.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/error/server_exception.dart';
@@ -90,8 +88,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
       if (response.statusCode != 200) {
         throw ServerException(
-          data['message'] ??
-              "Error al generar link de recuperación de contraseña",
+          data['message'] ?? "Error al generar link de verificación",
         );
       }
       debugPrint("Link: ${data['link']}");
@@ -102,6 +99,41 @@ class AuthRepositoryImpl implements AuthRepository {
         return left(Failure(e.message));
       }
       return left(Failure("Servicio no disponible"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> resendVerificationLink({
+    required String email,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/auth/verification/resendlink",
+    );
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({'email': email}),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw ServerException(
+          data['message'] ??
+              "Error al generar link de recuperación de contraseña",
+        );
+      }
+      debugPrint("Link: ${data['link']}");
+      final message = data['message'];
+      return Right(message);
+    } catch (e) {
+      debugPrint("Error resending new verification link: ${e}");
+      if (e is ServerException) {
+        return left(Failure(e.message));
+      }
+      return left(Failure("Servicio no disponible1"));
     }
   }
 }

@@ -20,6 +20,7 @@ abstract class ActivityModel with _$ActivityModel {
     required String style, // New field
     required DateTime createdAt,
     required DateTime updatedAt,
+    required double? totalScore,
   }) = AIReadingModel;
 
   const factory ActivityModel.flashCard({
@@ -36,6 +37,7 @@ abstract class ActivityModel with _$ActivityModel {
     required int flashCardActivityId,
     required int maxCards,
     required String cardOrder,
+    required double? bestScore,
   }) = FlashCardModel;
 
   factory ActivityModel.fromJson(Map<String, dynamic> json) =>
@@ -58,6 +60,7 @@ extension ActivityEntityMapper on ActivityModel {
           style: m.style,
           createdAt: m.createdAt,
           updatedAt: m.updatedAt,
+          totalScore: m.totalScore,
         ),
     orElse: () => null,
   );
@@ -76,6 +79,7 @@ extension ActivityEntityMapper on ActivityModel {
           maxScore: m.maxScore,
           createdAt: m.createdAt,
           updatedAt: m.updatedAt,
+          bestScore: m.bestScore,
         ),
     orElse: () => null,
   );

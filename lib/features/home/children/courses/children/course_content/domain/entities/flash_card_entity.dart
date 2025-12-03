@@ -10,6 +10,7 @@ class FlashCardEntity {
   final int? maxScore;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final double? bestScore;
 
   FlashCardEntity({
     required this.id,
@@ -23,5 +24,6 @@ class FlashCardEntity {
     required this.maxScore,
     required this.createdAt,
     required this.updatedAt,
+    required this.bestScore,
   });
 }

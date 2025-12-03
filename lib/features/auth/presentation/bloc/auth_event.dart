@@ -31,3 +31,9 @@ final class AuthUserForgotPassword extends AuthEvent {
 
   AuthUserForgotPassword({required this.email});
 }
+
+final class AuthResendVerificationLink extends AuthEvent {
+  final String email;
+
+  AuthResendVerificationLink({required this.email});
+}

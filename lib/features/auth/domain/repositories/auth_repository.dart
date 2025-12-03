@@ -18,4 +18,7 @@ abstract interface class AuthRepository {
 
   Future<Either<Failure, UserEntity>> getCurrentUser();
   Future<Either<Failure, String>> forgotPassword({required String email});
+  Future<Either<Failure, String>> resendVerificationLink({
+    required String email,
+  });
 }

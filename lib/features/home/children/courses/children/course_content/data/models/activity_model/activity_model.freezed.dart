@@ -185,11 +185,11 @@ return flashCard(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int id,  String title,  String description,  DateTime dueDate,  int aiReadingId,  String content,  String length,  String complexity,  String style,  DateTime createdAt,  DateTime updatedAt)?  aIReading,TResult Function( int id,  String title,  String description,  DateTime dueDate,  bool hasScoring,  int? maxScore,  DateTime createdAt,  DateTime updatedAt,  int flashCardActivityId,  int maxCards,  String cardOrder)?  flashCard,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int id,  String title,  String description,  DateTime dueDate,  int aiReadingId,  String content,  String length,  String complexity,  String style,  DateTime createdAt,  DateTime updatedAt,  double? totalScore)?  aIReading,TResult Function( int id,  String title,  String description,  DateTime dueDate,  bool hasScoring,  int? maxScore,  DateTime createdAt,  DateTime updatedAt,  int flashCardActivityId,  int maxCards,  String cardOrder,  double? bestScore)?  flashCard,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AIReadingModel() when aIReading != null:
-return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.aiReadingId,_that.content,_that.length,_that.complexity,_that.style,_that.createdAt,_that.updatedAt);case FlashCardModel() when flashCard != null:
-return flashCard(_that.id,_that.title,_that.description,_that.dueDate,_that.hasScoring,_that.maxScore,_that.createdAt,_that.updatedAt,_that.flashCardActivityId,_that.maxCards,_that.cardOrder);case _:
+return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.aiReadingId,_that.content,_that.length,_that.complexity,_that.style,_that.createdAt,_that.updatedAt,_that.totalScore);case FlashCardModel() when flashCard != null:
+return flashCard(_that.id,_that.title,_that.description,_that.dueDate,_that.hasScoring,_that.maxScore,_that.createdAt,_that.updatedAt,_that.flashCardActivityId,_that.maxCards,_that.cardOrder,_that.bestScore);case _:
   return orElse();
 
 }
@@ -207,11 +207,11 @@ return flashCard(_that.id,_that.title,_that.description,_that.dueDate,_that.hasS
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int id,  String title,  String description,  DateTime dueDate,  int aiReadingId,  String content,  String length,  String complexity,  String style,  DateTime createdAt,  DateTime updatedAt)  aIReading,required TResult Function( int id,  String title,  String description,  DateTime dueDate,  bool hasScoring,  int? maxScore,  DateTime createdAt,  DateTime updatedAt,  int flashCardActivityId,  int maxCards,  String cardOrder)  flashCard,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int id,  String title,  String description,  DateTime dueDate,  int aiReadingId,  String content,  String length,  String complexity,  String style,  DateTime createdAt,  DateTime updatedAt,  double? totalScore)  aIReading,required TResult Function( int id,  String title,  String description,  DateTime dueDate,  bool hasScoring,  int? maxScore,  DateTime createdAt,  DateTime updatedAt,  int flashCardActivityId,  int maxCards,  String cardOrder,  double? bestScore)  flashCard,}) {final _that = this;
 switch (_that) {
 case AIReadingModel():
-return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.aiReadingId,_that.content,_that.length,_that.complexity,_that.style,_that.createdAt,_that.updatedAt);case FlashCardModel():
-return flashCard(_that.id,_that.title,_that.description,_that.dueDate,_that.hasScoring,_that.maxScore,_that.createdAt,_that.updatedAt,_that.flashCardActivityId,_that.maxCards,_that.cardOrder);case _:
+return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.aiReadingId,_that.content,_that.length,_that.complexity,_that.style,_that.createdAt,_that.updatedAt,_that.totalScore);case FlashCardModel():
+return flashCard(_that.id,_that.title,_that.description,_that.dueDate,_that.hasScoring,_that.maxScore,_that.createdAt,_that.updatedAt,_that.flashCardActivityId,_that.maxCards,_that.cardOrder,_that.bestScore);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -228,11 +228,11 @@ return flashCard(_that.id,_that.title,_that.description,_that.dueDate,_that.hasS
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int id,  String title,  String description,  DateTime dueDate,  int aiReadingId,  String content,  String length,  String complexity,  String style,  DateTime createdAt,  DateTime updatedAt)?  aIReading,TResult? Function( int id,  String title,  String description,  DateTime dueDate,  bool hasScoring,  int? maxScore,  DateTime createdAt,  DateTime updatedAt,  int flashCardActivityId,  int maxCards,  String cardOrder)?  flashCard,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int id,  String title,  String description,  DateTime dueDate,  int aiReadingId,  String content,  String length,  String complexity,  String style,  DateTime createdAt,  DateTime updatedAt,  double? totalScore)?  aIReading,TResult? Function( int id,  String title,  String description,  DateTime dueDate,  bool hasScoring,  int? maxScore,  DateTime createdAt,  DateTime updatedAt,  int flashCardActivityId,  int maxCards,  String cardOrder,  double? bestScore)?  flashCard,}) {final _that = this;
 switch (_that) {
 case AIReadingModel() when aIReading != null:
-return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.aiReadingId,_that.content,_that.length,_that.complexity,_that.style,_that.createdAt,_that.updatedAt);case FlashCardModel() when flashCard != null:
-return flashCard(_that.id,_that.title,_that.description,_that.dueDate,_that.hasScoring,_that.maxScore,_that.createdAt,_that.updatedAt,_that.flashCardActivityId,_that.maxCards,_that.cardOrder);case _:
+return aIReading(_that.id,_that.title,_that.description,_that.dueDate,_that.aiReadingId,_that.content,_that.length,_that.complexity,_that.style,_that.createdAt,_that.updatedAt,_that.totalScore);case FlashCardModel() when flashCard != null:
+return flashCard(_that.id,_that.title,_that.description,_that.dueDate,_that.hasScoring,_that.maxScore,_that.createdAt,_that.updatedAt,_that.flashCardActivityId,_that.maxCards,_that.cardOrder,_that.bestScore);case _:
   return null;
 
 }
@@ -244,7 +244,7 @@ return flashCard(_that.id,_that.title,_that.description,_that.dueDate,_that.hasS
 @JsonSerializable()
 
 class AIReadingModel implements ActivityModel {
-  const AIReadingModel({required this.id, required this.title, required this.description, required this.dueDate, required this.aiReadingId, required this.content, required this.length, required this.complexity, required this.style, required this.createdAt, required this.updatedAt, final  String? $type}): $type = $type ?? 'aIReading';
+  const AIReadingModel({required this.id, required this.title, required this.description, required this.dueDate, required this.aiReadingId, required this.content, required this.length, required this.complexity, required this.style, required this.createdAt, required this.updatedAt, required this.totalScore, final  String? $type}): $type = $type ?? 'aIReading';
   factory AIReadingModel.fromJson(Map<String, dynamic> json) => _$AIReadingModelFromJson(json);
 
 @override final  int id;
@@ -261,6 +261,7 @@ class AIReadingModel implements ActivityModel {
 // New field
 @override final  DateTime createdAt;
 @override final  DateTime updatedAt;
+ final  double? totalScore;
 
 @JsonKey(name: 'type')
 final String $type;
@@ -279,16 +280,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AIReadingModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.aiReadingId, aiReadingId) || other.aiReadingId == aiReadingId)&&(identical(other.content, content) || other.content == content)&&(identical(other.length, length) || other.length == length)&&(identical(other.complexity, complexity) || other.complexity == complexity)&&(identical(other.style, style) || other.style == style)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AIReadingModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.aiReadingId, aiReadingId) || other.aiReadingId == aiReadingId)&&(identical(other.content, content) || other.content == content)&&(identical(other.length, length) || other.length == length)&&(identical(other.complexity, complexity) || other.complexity == complexity)&&(identical(other.style, style) || other.style == style)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.totalScore, totalScore) || other.totalScore == totalScore));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,dueDate,aiReadingId,content,length,complexity,style,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,title,description,dueDate,aiReadingId,content,length,complexity,style,createdAt,updatedAt,totalScore);
 
 @override
 String toString() {
-  return 'ActivityModel.aIReading(id: $id, title: $title, description: $description, dueDate: $dueDate, aiReadingId: $aiReadingId, content: $content, length: $length, complexity: $complexity, style: $style, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'ActivityModel.aIReading(id: $id, title: $title, description: $description, dueDate: $dueDate, aiReadingId: $aiReadingId, content: $content, length: $length, complexity: $complexity, style: $style, createdAt: $createdAt, updatedAt: $updatedAt, totalScore: $totalScore)';
 }
 
 
@@ -299,7 +300,7 @@ abstract mixin class $AIReadingModelCopyWith<$Res> implements $ActivityModelCopy
   factory $AIReadingModelCopyWith(AIReadingModel value, $Res Function(AIReadingModel) _then) = _$AIReadingModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, String description, DateTime dueDate, int aiReadingId, String content, String length, String complexity, String style, DateTime createdAt, DateTime updatedAt
+ int id, String title, String description, DateTime dueDate, int aiReadingId, String content, String length, String complexity, String style, DateTime createdAt, DateTime updatedAt, double? totalScore
 });
 
 
@@ -316,7 +317,7 @@ class _$AIReadingModelCopyWithImpl<$Res>
 
 /// Create a copy of ActivityModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? dueDate = null,Object? aiReadingId = null,Object? content = null,Object? length = null,Object? complexity = null,Object? style = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? dueDate = null,Object? aiReadingId = null,Object? content = null,Object? length = null,Object? complexity = null,Object? style = null,Object? createdAt = null,Object? updatedAt = null,Object? totalScore = freezed,}) {
   return _then(AIReadingModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -329,7 +330,8 @@ as String,complexity: null == complexity ? _self.complexity : complexity // igno
 as String,style: null == style ? _self.style : style // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,totalScore: freezed == totalScore ? _self.totalScore : totalScore // ignore: cast_nullable_to_non_nullable
+as double?,
   ));
 }
 
@@ -340,7 +342,7 @@ as DateTime,
 @JsonSerializable()
 
 class FlashCardModel implements ActivityModel {
-  const FlashCardModel({required this.id, required this.title, required this.description, required this.dueDate, required this.hasScoring, this.maxScore, required this.createdAt, required this.updatedAt, required this.flashCardActivityId, required this.maxCards, required this.cardOrder, final  String? $type}): $type = $type ?? 'flashCard';
+  const FlashCardModel({required this.id, required this.title, required this.description, required this.dueDate, required this.hasScoring, this.maxScore, required this.createdAt, required this.updatedAt, required this.flashCardActivityId, required this.maxCards, required this.cardOrder, required this.bestScore, final  String? $type}): $type = $type ?? 'flashCard';
   factory FlashCardModel.fromJson(Map<String, dynamic> json) => _$FlashCardModelFromJson(json);
 
 @override final  int id;
@@ -355,6 +357,7 @@ class FlashCardModel implements ActivityModel {
  final  int flashCardActivityId;
  final  int maxCards;
  final  String cardOrder;
+ final  double? bestScore;
 
 @JsonKey(name: 'type')
 final String $type;
@@ -373,16 +376,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FlashCardModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.hasScoring, hasScoring) || other.hasScoring == hasScoring)&&(identical(other.maxScore, maxScore) || other.maxScore == maxScore)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.flashCardActivityId, flashCardActivityId) || other.flashCardActivityId == flashCardActivityId)&&(identical(other.maxCards, maxCards) || other.maxCards == maxCards)&&(identical(other.cardOrder, cardOrder) || other.cardOrder == cardOrder));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FlashCardModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.hasScoring, hasScoring) || other.hasScoring == hasScoring)&&(identical(other.maxScore, maxScore) || other.maxScore == maxScore)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.flashCardActivityId, flashCardActivityId) || other.flashCardActivityId == flashCardActivityId)&&(identical(other.maxCards, maxCards) || other.maxCards == maxCards)&&(identical(other.cardOrder, cardOrder) || other.cardOrder == cardOrder)&&(identical(other.bestScore, bestScore) || other.bestScore == bestScore));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,dueDate,hasScoring,maxScore,createdAt,updatedAt,flashCardActivityId,maxCards,cardOrder);
+int get hashCode => Object.hash(runtimeType,id,title,description,dueDate,hasScoring,maxScore,createdAt,updatedAt,flashCardActivityId,maxCards,cardOrder,bestScore);
 
 @override
 String toString() {
-  return 'ActivityModel.flashCard(id: $id, title: $title, description: $description, dueDate: $dueDate, hasScoring: $hasScoring, maxScore: $maxScore, createdAt: $createdAt, updatedAt: $updatedAt, flashCardActivityId: $flashCardActivityId, maxCards: $maxCards, cardOrder: $cardOrder)';
+  return 'ActivityModel.flashCard(id: $id, title: $title, description: $description, dueDate: $dueDate, hasScoring: $hasScoring, maxScore: $maxScore, createdAt: $createdAt, updatedAt: $updatedAt, flashCardActivityId: $flashCardActivityId, maxCards: $maxCards, cardOrder: $cardOrder, bestScore: $bestScore)';
 }
 
 
@@ -393,7 +396,7 @@ abstract mixin class $FlashCardModelCopyWith<$Res> implements $ActivityModelCopy
   factory $FlashCardModelCopyWith(FlashCardModel value, $Res Function(FlashCardModel) _then) = _$FlashCardModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, String description, DateTime dueDate, bool hasScoring, int? maxScore, DateTime createdAt, DateTime updatedAt, int flashCardActivityId, int maxCards, String cardOrder
+ int id, String title, String description, DateTime dueDate, bool hasScoring, int? maxScore, DateTime createdAt, DateTime updatedAt, int flashCardActivityId, int maxCards, String cardOrder, double? bestScore
 });
 
 
@@ -410,7 +413,7 @@ class _$FlashCardModelCopyWithImpl<$Res>
 
 /// Create a copy of ActivityModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? dueDate = null,Object? hasScoring = null,Object? maxScore = freezed,Object? createdAt = null,Object? updatedAt = null,Object? flashCardActivityId = null,Object? maxCards = null,Object? cardOrder = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? dueDate = null,Object? hasScoring = null,Object? maxScore = freezed,Object? createdAt = null,Object? updatedAt = null,Object? flashCardActivityId = null,Object? maxCards = null,Object? cardOrder = null,Object? bestScore = freezed,}) {
   return _then(FlashCardModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -423,7 +426,8 @@ as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore
 as DateTime,flashCardActivityId: null == flashCardActivityId ? _self.flashCardActivityId : flashCardActivityId // ignore: cast_nullable_to_non_nullable
 as int,maxCards: null == maxCards ? _self.maxCards : maxCards // ignore: cast_nullable_to_non_nullable
 as int,cardOrder: null == cardOrder ? _self.cardOrder : cardOrder // ignore: cast_nullable_to_non_nullable
-as String,
+as String,bestScore: freezed == bestScore ? _self.bestScore : bestScore // ignore: cast_nullable_to_non_nullable
+as double?,
   ));
 }
 
