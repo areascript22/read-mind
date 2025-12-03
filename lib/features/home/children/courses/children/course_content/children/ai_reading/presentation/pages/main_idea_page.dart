@@ -68,13 +68,6 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
         if (state is MainIdeaSuccess) {
           showFeedbackMainIdeaDialog(context, state.feedbackEntity);
 
-          context.read<ActivityProgressBloc>().add(
-            UpdateProgressEvent(
-              aiReadingId: widget.aiReadingEntity.aiReadingId,
-              dataToUpdate: {"mainIdeaCompleted": true},
-            ),
-          );
-
           final timeSpentSec = timerAttemptCubit.totalTimeSec;
           context.read<AttemptsCubit>().createMainIdeaAttempt(
             aiReadingId: widget.aiReadingEntity.aiReadingId,
@@ -139,6 +132,12 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                       ToastMessageUtil.showToast(state.message, context);
                     }
                     if (state is AttemptMainIdeaCreated) {
+                      context.read<ActivityProgressBloc>().add(
+                        UpdateProgressEvent(
+                          aiReadingId: widget.aiReadingEntity.aiReadingId,
+                          dataToUpdate: {"mainIdeaCompleted": true},
+                        ),
+                      );
                       timerAttemptCubit.setStartTime(DateTime.now());
                     }
                   },

@@ -66,12 +66,6 @@ class _SummaryPageState extends State<SummaryPage> {
         if (state is SummarySuccess) {
           showFeedbackSummaryDialog(context, state.feedbackEntity);
 
-          context.read<ActivityProgressBloc>().add(
-            UpdateProgressEvent(
-              aiReadingId: widget.aiReadingEntity.aiReadingId,
-              dataToUpdate: {"completed": true, "summaryCompleted": true},
-            ),
-          );
           final timeSpentSec = timerAttemptCubit.totalTimeSec;
           context.read<AttemptsCubit>().createSummaryAttempt(
             aiReadingId: widget.aiReadingEntity.aiReadingId,
@@ -137,6 +131,15 @@ class _SummaryPageState extends State<SummaryPage> {
                     }
 
                     if (state is AttemptSummaryCreated) {
+                      context.read<ActivityProgressBloc>().add(
+                        UpdateProgressEvent(
+                          aiReadingId: widget.aiReadingEntity.aiReadingId,
+                          dataToUpdate: {
+                            "completed": true,
+                            "summaryCompleted": true,
+                          },
+                        ),
+                      );
                       timerAttemptCubit.setStartTime(DateTime.now());
                     }
                   },
