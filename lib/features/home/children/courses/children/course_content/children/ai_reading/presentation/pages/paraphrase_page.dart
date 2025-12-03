@@ -69,12 +69,13 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
             state.actionType == AiActionType.paraphrase) {
           showFeedbackDialog(context, state.feedbackEntity);
 
-          context.read<ActivityProgressBloc>().add(
-            UpdateProgressEvent(
-              aiReadingId: widget.aiReadingEntity.aiReadingId,
-              dataToUpdate: {"paraphraseCompleted": true},
-            ),
-          );
+          // context.read<ActivityProgressBloc>().add(
+          //   UpdateProgressEvent(
+          //     aiReadingId: widget.aiReadingEntity.aiReadingId,
+          //     dataToUpdate: {"paraphraseCompleted": true},
+          //   ),
+          // );
+
           final totalSeconds = timerAttemptCubit.totalTimeSec;
           context.read<AttemptsCubit>().createParaphraseAttempt(
             aiReadingId: widget.aiReadingEntity.aiReadingId,
@@ -145,6 +146,12 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
 
                     if (state is AttemptParaphraseCreated) {
                       timerAttemptCubit.setStartTime(DateTime.now());
+                      context.read<ActivityProgressBloc>().add(
+                        UpdateProgressEvent(
+                          aiReadingId: widget.aiReadingEntity.aiReadingId,
+                          dataToUpdate: {"paraphraseCompleted": true},
+                        ),
+                      );
                     }
                   },
                 ),
