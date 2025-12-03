@@ -32,6 +32,7 @@ class ActivityTile extends StatelessWidget {
         style,
         createdAt,
         updatedAt,
+        totalScore,
       ) {
         return _buildAIReadingTile(
           context,
@@ -43,6 +44,7 @@ class ActivityTile extends StatelessWidget {
           length: length,
           complexity: complexity,
           style: style,
+          totalScore: totalScore,
         );
       },
 
@@ -58,6 +60,7 @@ class ActivityTile extends StatelessWidget {
         flashCardActivityId,
         maxCards,
         cardOrder,
+        bestScore,
       ) {
         return _buildFlashCardTile(
           context,
@@ -69,6 +72,7 @@ class ActivityTile extends StatelessWidget {
           maxCards: maxCards,
           cardOrder: cardOrder,
           hasScoring: hasScoring,
+          bestScore: bestScore,
         );
       },
     );
@@ -84,6 +88,7 @@ class ActivityTile extends StatelessWidget {
     required String length,
     required String complexity,
     required String style,
+    required double? totalScore,
   }) {
     return BlocProvider.value(
       value: serviceLocator<ActivityProgressBloc>(),
@@ -97,6 +102,7 @@ class ActivityTile extends StatelessWidget {
         complexity: complexity,
         style: style,
         activity: activity,
+        totalScore: totalScore,
       ),
     );
   }
@@ -111,6 +117,7 @@ class ActivityTile extends StatelessWidget {
     required int maxCards,
     required String cardOrder,
     required bool hasScoring,
+    required double? bestScore,
   }) {
     return BlocProvider.value(
       value: serviceLocator<FlashCardBloc>(),
@@ -124,6 +131,7 @@ class ActivityTile extends StatelessWidget {
         cardOrder: cardOrder,
         hasScoring: hasScoring,
         activity: activity,
+        bestScore: bestScore,
       ),
     );
   }
@@ -139,6 +147,7 @@ class _AIReadingTileContent extends StatelessWidget {
   final String complexity;
   final String style;
   final ActivityModel activity;
+  final double? totalScore;
 
   const _AIReadingTileContent({
     required this.activityId,
@@ -150,6 +159,7 @@ class _AIReadingTileContent extends StatelessWidget {
     required this.complexity,
     required this.style,
     required this.activity,
+    required this.totalScore,
   });
 
   @override
@@ -219,8 +229,19 @@ class _AIReadingTileContent extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  if (totalScore != null)
+                    Text(
+                      "Score: $totalScore/100",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
                 ],
               ),
               const SizedBox(height: 6),

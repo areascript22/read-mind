@@ -16,6 +16,8 @@ _ParaphraseAttemptModel _$ParaphraseAttemptModelFromJson(
   fluencyScore: (json['fluencyScore'] as num).toDouble(),
   originalityScore: (json['originalityScore'] as num).toDouble(),
   feedback: json['feedback'] as String,
+  averageScore: (json['averageScore'] as num).toInt(),
+  timeSpentSec: (json['timeSpentSec'] as num).toInt(),
   createdAt: DateTime.parse(json['createdAt'] as String),
   updatedAt: DateTime.parse(json['updatedAt'] as String),
 );
@@ -30,6 +32,8 @@ Map<String, dynamic> _$ParaphraseAttemptModelToJson(
   'fluencyScore': instance.fluencyScore,
   'originalityScore': instance.originalityScore,
   'feedback': instance.feedback,
+  'averageScore': instance.averageScore,
+  'timeSpentSec': instance.timeSpentSec,
   'createdAt': instance.createdAt.toIso8601String(),
   'updatedAt': instance.updatedAt.toIso8601String(),
 };

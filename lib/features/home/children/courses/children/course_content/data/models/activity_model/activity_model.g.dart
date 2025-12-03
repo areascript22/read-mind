@@ -19,6 +19,7 @@ AIReadingModel _$AIReadingModelFromJson(Map<String, dynamic> json) =>
       style: json['style'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
+      totalScore: (json['totalScore'] as num?)?.toDouble(),
       $type: json['type'] as String?,
     );
 
@@ -35,6 +36,7 @@ Map<String, dynamic> _$AIReadingModelToJson(AIReadingModel instance) =>
       'style': instance.style,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
+      'totalScore': instance.totalScore,
       'type': instance.$type,
     };
 
@@ -51,6 +53,7 @@ FlashCardModel _$FlashCardModelFromJson(Map<String, dynamic> json) =>
       flashCardActivityId: (json['flashCardActivityId'] as num).toInt(),
       maxCards: (json['maxCards'] as num).toInt(),
       cardOrder: json['cardOrder'] as String,
+      bestScore: (json['bestScore'] as num?)?.toDouble(),
       $type: json['type'] as String?,
     );
 
@@ -67,5 +70,6 @@ Map<String, dynamic> _$FlashCardModelToJson(FlashCardModel instance) =>
       'flashCardActivityId': instance.flashCardActivityId,
       'maxCards': instance.maxCards,
       'cardOrder': instance.cardOrder,
+      'bestScore': instance.bestScore,
       'type': instance.$type,
     };

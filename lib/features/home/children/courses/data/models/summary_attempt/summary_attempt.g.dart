@@ -17,6 +17,8 @@ _SummaryAttemptModel _$SummaryAttemptModelFromJson(Map<String, dynamic> json) =>
       feedback: json['feedback'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
+      averageScore: (json['averageScore'] as num).toDouble(),
+      timeSpentSec: (json['timeSpentSec'] as num).toInt(),
     );
 
 Map<String, dynamic> _$SummaryAttemptModelToJson(
@@ -31,4 +33,6 @@ Map<String, dynamic> _$SummaryAttemptModelToJson(
   'feedback': instance.feedback,
   'createdAt': instance.createdAt.toIso8601String(),
   'updatedAt': instance.updatedAt.toIso8601String(),
+  'averageScore': instance.averageScore,
+  'timeSpentSec': instance.timeSpentSec,
 };

@@ -4,6 +4,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_attempts.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_tip.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -90,25 +91,41 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
             state is AiReadingLoading &&
             state.actionType == AiActionType.paraphrase;
 
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text("Actividad de paráfrasis"),
-            centerTitle: true,
-            leading: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.arrow_back),
-            ),
-            actions: [
-              BlocConsumer<AttemptsCubit, AttemptsState>(
-                builder: (context, state) {
-                  if (state is AttemptsLoading &&
-                      state.attemptOperation == AttemptOperation.paraphrase) {
-                    return LoaderIndicator(
-                      spinnerSize: 20,
-                      spinnerColor: Colors.red,
-                    );
-                  }
-                  if (state is AttemptParaphraseCreated) {
+        return PopScope(
+          canPop: false,
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text("Actividad de paráfrasis"),
+              centerTitle: true,
+              leading: IconButton(
+                onPressed: () {
+                  timerAttemptCubit.setPlayCount(0);
+                  timerAttemptCubit.setStartTime(DateTime.now());
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.arrow_back),
+              ),
+              actions: [
+                BlocConsumer<AttemptsCubit, AttemptsState>(
+                  builder: (context, state) {
+                    if (state is AttemptsLoading &&
+                        state.attemptOperation == AttemptOperation.paraphrase) {
+                      return LoaderIndicator(
+                        spinnerSize: 20,
+                        spinnerColor: Colors.red,
+                      );
+                    }
+                    if (state is AttemptParaphraseCreated) {
+                      return IconButton(
+                        onPressed: () {
+                          showParaphraseAttemptsDialog(
+                            context,
+                            widget.aiReadingEntity,
+                          );
+                        },
+                        icon: Icon(Icons.book),
+                      );
+                    }
                     return IconButton(
                       onPressed: () {
                         showParaphraseAttemptsDialog(
@@ -118,192 +135,189 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                       },
                       icon: Icon(Icons.book),
                     );
-                  }
-                  return IconButton(
-                    onPressed: () {
-                      showParaphraseAttemptsDialog(
-                        context,
-                        widget.aiReadingEntity,
-                      );
-                    },
-                    icon: Icon(Icons.book),
-                  );
-                },
-                listener: (context, state) {
-                  if (state is AttemptsError &&
-                      state.attemptOperation == AttemptOperation.paraphrase) {
-                    timerAttemptCubit.setStartTime(DateTime.now());
-                    ToastMessageUtil.showToast(state.message, context);
-                  }
+                  },
+                  listener: (context, state) {
+                    if (state is AttemptsError &&
+                        state.attemptOperation == AttemptOperation.paraphrase) {
+                      timerAttemptCubit.setStartTime(DateTime.now());
+                      ToastMessageUtil.showToast(state.message, context);
+                    }
 
-                  if (state is AttemptParaphraseCreated) {
-                    timerAttemptCubit.setStartTime(DateTime.now());
-                  }
-                },
-              ),
-              BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
-                builder: (context, state) {
-                  if (state is ProgressLoading) {
-                    return LoaderIndicator(
-                      spinnerSize: 20,
-                      spinnerColor: Colors.white,
-                    );
-                  }
-                  if (state is ProgressCreated &&
-                      state.createdProgress.subactivitiesCompleted.paraphrase) {
-                    return Icon(Icons.check);
-                  }
-
-                  if (state is ProgressUpdated &&
-                      state.updatedProgress.subactivitiesCompleted.paraphrase) {
-                    return Icon(Icons.check);
-                  }
-
-                  return SizedBox.shrink();
-                },
-              ),
-            ],
-          ),
-          body: Stack(
-            children: [
-              SafeArea(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return SingleChildScrollView(
-                      padding: const EdgeInsets.all(16),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight,
-                        ),
-                        child: IntrinsicHeight(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                onTap:
-                                    () => setState(
-                                      () => _isExpanded = !_isExpanded,
-                                    ),
-                                child: Container(
-                                  padding: const EdgeInsets.all(14),
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue.shade50,
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: Colors.blueAccent,
-                                      width: 0.6,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        "Ver párrafo original",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      Icon(
-                                        _isExpanded
-                                            ? Icons.expand_less
-                                            : Icons.expand_more,
-                                        color: Colors.blueAccent,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              AnimatedCrossFade(
-                                firstChild: const SizedBox.shrink(),
-                                secondChild: Container(
-                                  width: double.infinity,
-                                  margin: const EdgeInsets.only(
-                                    top: 8,
-                                    bottom: 16,
-                                  ),
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade100,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    widget.aiReadingEntity.content,
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      height: 1.5,
-                                    ),
-                                  ),
-                                ),
-                                crossFadeState:
-                                    _isExpanded
-                                        ? CrossFadeState.showSecond
-                                        : CrossFadeState.showFirst,
-                                duration: const Duration(milliseconds: 250),
-                              ),
-
-                              const SizedBox(height: 10),
-
-                              Text(
-                                "Ahora escribe el párrafo con tus propias palabras:",
-                                style: theme.textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              _buildRichTextField(),
-                              const SizedBox(height: 20),
-                              SizedBox(
-                                width: double.infinity,
-                                height: 50,
-                                child: ElevatedButton(
-                                  onPressed:
-                                      isLoading
-                                          ? null
-                                          : () => _submitParaphrase(context),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blueAccent,
-                                    disabledBackgroundColor:
-                                        Colors.grey.shade400,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child:
-                                      isLoading
-                                          ? const SizedBox(
-                                            height: 24,
-                                            width: 24,
-                                            child: CircularProgressIndicator(
-                                              color: Colors.white,
-                                              strokeWidth: 2.5,
-                                            ),
-                                          )
-                                          : const Text(
-                                            "Evaluar paráfrasis",
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                ),
-                              ),
-                              SizedBox(height: 15),
-                              _buildNextButton(),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
+                    if (state is AttemptParaphraseCreated) {
+                      timerAttemptCubit.setStartTime(DateTime.now());
+                    }
                   },
                 ),
-              ),
-              if (isLoading)
-                Container(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  child: const Center(child: LoaderIndicator()),
+                BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
+                  builder: (context, state) {
+                    if (state is ProgressLoading) {
+                      return LoaderIndicator(
+                        spinnerSize: 20,
+                        spinnerColor: Colors.white,
+                      );
+                    }
+                    if (state is ProgressCreated &&
+                        state.createdProgress
+                            .toReadingProgressEntity()!
+                            .subactivitiesCompleted
+                            .paraphrase) {
+                      return Icon(Icons.check);
+                    }
+
+                    if (state is ProgressUpdated &&
+                        state.updatedProgress
+                            .toReadingProgressEntity()!
+                            .subactivitiesCompleted
+                            .paraphrase) {
+                      return Icon(Icons.check);
+                    }
+
+                    return SizedBox.shrink();
+                  },
                 ),
-            ],
+              ],
+            ),
+            body: Stack(
+              children: [
+                SafeArea(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        padding: const EdgeInsets.all(16),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
+                          ),
+                          child: IntrinsicHeight(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                GestureDetector(
+                                  onTap:
+                                      () => setState(
+                                        () => _isExpanded = !_isExpanded,
+                                      ),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(14),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.shade50,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: Colors.blueAccent,
+                                        width: 0.6,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          "Ver párrafo original",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Icon(
+                                          _isExpanded
+                                              ? Icons.expand_less
+                                              : Icons.expand_more,
+                                          color: Colors.blueAccent,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                AnimatedCrossFade(
+                                  firstChild: const SizedBox.shrink(),
+                                  secondChild: Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.only(
+                                      top: 8,
+                                      bottom: 16,
+                                    ),
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade100,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      widget.aiReadingEntity.content,
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        height: 1.5,
+                                      ),
+                                    ),
+                                  ),
+                                  crossFadeState:
+                                      _isExpanded
+                                          ? CrossFadeState.showSecond
+                                          : CrossFadeState.showFirst,
+                                  duration: const Duration(milliseconds: 250),
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                Text(
+                                  "Ahora escribe el párrafo con tus propias palabras:",
+                                  style: theme.textTheme.titleMedium!.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                _buildRichTextField(),
+                                const SizedBox(height: 20),
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed:
+                                        isLoading
+                                            ? null
+                                            : () => _submitParaphrase(context),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blueAccent,
+                                      disabledBackgroundColor:
+                                          Colors.grey.shade400,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child:
+                                        isLoading
+                                            ? const SizedBox(
+                                              height: 24,
+                                              width: 24,
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                                strokeWidth: 2.5,
+                                              ),
+                                            )
+                                            : const Text(
+                                              "Evaluar paráfrasis",
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                  ),
+                                ),
+                                SizedBox(height: 15),
+                                _buildNextButton(),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                if (isLoading)
+                  Container(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    child: const Center(child: LoaderIndicator()),
+                  ),
+              ],
+            ),
+            floatingActionButton: _buildFloatingActionButton(context),
           ),
-          floatingActionButton: _buildFloatingActionButton(context),
         );
       },
     );
@@ -316,11 +330,17 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
           return LoaderIndicator();
         }
         if (state is ProgressCreated &&
-            state.createdProgress.subactivitiesCompleted.paraphrase) {
+            state.createdProgress
+                .toReadingProgressEntity()!
+                .subactivitiesCompleted
+                .paraphrase) {
           return _buildButton(context);
         }
         if (state is ProgressUpdated &&
-            state.updatedProgress.subactivitiesCompleted.paraphrase) {
+            state.updatedProgress
+                .toReadingProgressEntity()!
+                .subactivitiesCompleted
+                .paraphrase) {
           return _buildButton(context);
         }
 

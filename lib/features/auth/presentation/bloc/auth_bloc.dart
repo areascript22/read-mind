@@ -31,6 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthIsUserLoggedIn>(_onAuthUserIsLoggedIn);
     on<AuthSignUpEvent>(_onAuthSignUp);
     on<AuthUserForgotPassword>(_userForgotPassword);
+    on<AuthResendVerificationLink>(_resendVerificationLink);
   }
 
   void _onAuthSignIn(AuthSignInEvent event, Emitter<AuthState> emit) async {
@@ -87,6 +88,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     response.fold(
       (l) => emit(AuthFailureState(l.message)),
       (r) => emit(AuthResetPasswordLinkSent(message: r)),
+    );
+  }
+
+  void _resendVerificationLink(
+    AuthResendVerificationLink event,
+    Emitter<AuthState> emit,
+  ) async {
+    final response = await authRepository.resendVerificationLink(
+      email: event.email,
+    );
+    response.fold(
+      (l) => emit(AuthFailureState(l.message)),
+      (r) => emit(AuthVerificationLinkSent(message: r)),
     );
   }
 }

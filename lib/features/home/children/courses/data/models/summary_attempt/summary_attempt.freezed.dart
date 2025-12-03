@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SummaryAttemptModel {
 
- int get id; int get aiReadingId; int get userId; double get accuracyScore; double get coverageScore; double get clarityScore; String get feedback; DateTime get createdAt; DateTime get updatedAt;
+ int get id; int get aiReadingId; int get userId; double get accuracyScore; double get coverageScore; double get clarityScore; String get feedback; DateTime get createdAt; DateTime get updatedAt; double get averageScore; int get timeSpentSec;
 /// Create a copy of SummaryAttemptModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $SummaryAttemptModelCopyWith<SummaryAttemptModel> get copyWith => _$SummaryAttem
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SummaryAttemptModel&&(identical(other.id, id) || other.id == id)&&(identical(other.aiReadingId, aiReadingId) || other.aiReadingId == aiReadingId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.accuracyScore, accuracyScore) || other.accuracyScore == accuracyScore)&&(identical(other.coverageScore, coverageScore) || other.coverageScore == coverageScore)&&(identical(other.clarityScore, clarityScore) || other.clarityScore == clarityScore)&&(identical(other.feedback, feedback) || other.feedback == feedback)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SummaryAttemptModel&&(identical(other.id, id) || other.id == id)&&(identical(other.aiReadingId, aiReadingId) || other.aiReadingId == aiReadingId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.accuracyScore, accuracyScore) || other.accuracyScore == accuracyScore)&&(identical(other.coverageScore, coverageScore) || other.coverageScore == coverageScore)&&(identical(other.clarityScore, clarityScore) || other.clarityScore == clarityScore)&&(identical(other.feedback, feedback) || other.feedback == feedback)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.averageScore, averageScore) || other.averageScore == averageScore)&&(identical(other.timeSpentSec, timeSpentSec) || other.timeSpentSec == timeSpentSec));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,aiReadingId,userId,accuracyScore,coverageScore,clarityScore,feedback,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,aiReadingId,userId,accuracyScore,coverageScore,clarityScore,feedback,createdAt,updatedAt,averageScore,timeSpentSec);
 
 @override
 String toString() {
-  return 'SummaryAttemptModel(id: $id, aiReadingId: $aiReadingId, userId: $userId, accuracyScore: $accuracyScore, coverageScore: $coverageScore, clarityScore: $clarityScore, feedback: $feedback, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'SummaryAttemptModel(id: $id, aiReadingId: $aiReadingId, userId: $userId, accuracyScore: $accuracyScore, coverageScore: $coverageScore, clarityScore: $clarityScore, feedback: $feedback, createdAt: $createdAt, updatedAt: $updatedAt, averageScore: $averageScore, timeSpentSec: $timeSpentSec)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $SummaryAttemptModelCopyWith<$Res>  {
   factory $SummaryAttemptModelCopyWith(SummaryAttemptModel value, $Res Function(SummaryAttemptModel) _then) = _$SummaryAttemptModelCopyWithImpl;
 @useResult
 $Res call({
- int id, int aiReadingId, int userId, double accuracyScore, double coverageScore, double clarityScore, String feedback, DateTime createdAt, DateTime updatedAt
+ int id, int aiReadingId, int userId, double accuracyScore, double coverageScore, double clarityScore, String feedback, DateTime createdAt, DateTime updatedAt, double averageScore, int timeSpentSec
 });
 
 
@@ -65,7 +65,7 @@ class _$SummaryAttemptModelCopyWithImpl<$Res>
 
 /// Create a copy of SummaryAttemptModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? aiReadingId = null,Object? userId = null,Object? accuracyScore = null,Object? coverageScore = null,Object? clarityScore = null,Object? feedback = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? aiReadingId = null,Object? userId = null,Object? accuracyScore = null,Object? coverageScore = null,Object? clarityScore = null,Object? feedback = null,Object? createdAt = null,Object? updatedAt = null,Object? averageScore = null,Object? timeSpentSec = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,aiReadingId: null == aiReadingId ? _self.aiReadingId : aiReadingId // ignore: cast_nullable_to_non_nullable
@@ -76,7 +76,9 @@ as double,clarityScore: null == clarityScore ? _self.clarityScore : clarityScore
 as double,feedback: null == feedback ? _self.feedback : feedback // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,averageScore: null == averageScore ? _self.averageScore : averageScore // ignore: cast_nullable_to_non_nullable
+as double,timeSpentSec: null == timeSpentSec ? _self.timeSpentSec : timeSpentSec // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -161,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int aiReadingId,  int userId,  double accuracyScore,  double coverageScore,  double clarityScore,  String feedback,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int aiReadingId,  int userId,  double accuracyScore,  double coverageScore,  double clarityScore,  String feedback,  DateTime createdAt,  DateTime updatedAt,  double averageScore,  int timeSpentSec)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SummaryAttemptModel() when $default != null:
-return $default(_that.id,_that.aiReadingId,_that.userId,_that.accuracyScore,_that.coverageScore,_that.clarityScore,_that.feedback,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.aiReadingId,_that.userId,_that.accuracyScore,_that.coverageScore,_that.clarityScore,_that.feedback,_that.createdAt,_that.updatedAt,_that.averageScore,_that.timeSpentSec);case _:
   return orElse();
 
 }
@@ -182,10 +184,10 @@ return $default(_that.id,_that.aiReadingId,_that.userId,_that.accuracyScore,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int aiReadingId,  int userId,  double accuracyScore,  double coverageScore,  double clarityScore,  String feedback,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int aiReadingId,  int userId,  double accuracyScore,  double coverageScore,  double clarityScore,  String feedback,  DateTime createdAt,  DateTime updatedAt,  double averageScore,  int timeSpentSec)  $default,) {final _that = this;
 switch (_that) {
 case _SummaryAttemptModel():
-return $default(_that.id,_that.aiReadingId,_that.userId,_that.accuracyScore,_that.coverageScore,_that.clarityScore,_that.feedback,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.aiReadingId,_that.userId,_that.accuracyScore,_that.coverageScore,_that.clarityScore,_that.feedback,_that.createdAt,_that.updatedAt,_that.averageScore,_that.timeSpentSec);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +204,10 @@ return $default(_that.id,_that.aiReadingId,_that.userId,_that.accuracyScore,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int aiReadingId,  int userId,  double accuracyScore,  double coverageScore,  double clarityScore,  String feedback,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int aiReadingId,  int userId,  double accuracyScore,  double coverageScore,  double clarityScore,  String feedback,  DateTime createdAt,  DateTime updatedAt,  double averageScore,  int timeSpentSec)?  $default,) {final _that = this;
 switch (_that) {
 case _SummaryAttemptModel() when $default != null:
-return $default(_that.id,_that.aiReadingId,_that.userId,_that.accuracyScore,_that.coverageScore,_that.clarityScore,_that.feedback,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.aiReadingId,_that.userId,_that.accuracyScore,_that.coverageScore,_that.clarityScore,_that.feedback,_that.createdAt,_that.updatedAt,_that.averageScore,_that.timeSpentSec);case _:
   return null;
 
 }
@@ -217,7 +219,7 @@ return $default(_that.id,_that.aiReadingId,_that.userId,_that.accuracyScore,_tha
 @JsonSerializable()
 
 class _SummaryAttemptModel implements SummaryAttemptModel {
-  const _SummaryAttemptModel({required this.id, required this.aiReadingId, required this.userId, required this.accuracyScore, required this.coverageScore, required this.clarityScore, required this.feedback, required this.createdAt, required this.updatedAt});
+  const _SummaryAttemptModel({required this.id, required this.aiReadingId, required this.userId, required this.accuracyScore, required this.coverageScore, required this.clarityScore, required this.feedback, required this.createdAt, required this.updatedAt, required this.averageScore, required this.timeSpentSec});
   factory _SummaryAttemptModel.fromJson(Map<String, dynamic> json) => _$SummaryAttemptModelFromJson(json);
 
 @override final  int id;
@@ -229,6 +231,8 @@ class _SummaryAttemptModel implements SummaryAttemptModel {
 @override final  String feedback;
 @override final  DateTime createdAt;
 @override final  DateTime updatedAt;
+@override final  double averageScore;
+@override final  int timeSpentSec;
 
 /// Create a copy of SummaryAttemptModel
 /// with the given fields replaced by the non-null parameter values.
@@ -243,16 +247,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SummaryAttemptModel&&(identical(other.id, id) || other.id == id)&&(identical(other.aiReadingId, aiReadingId) || other.aiReadingId == aiReadingId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.accuracyScore, accuracyScore) || other.accuracyScore == accuracyScore)&&(identical(other.coverageScore, coverageScore) || other.coverageScore == coverageScore)&&(identical(other.clarityScore, clarityScore) || other.clarityScore == clarityScore)&&(identical(other.feedback, feedback) || other.feedback == feedback)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SummaryAttemptModel&&(identical(other.id, id) || other.id == id)&&(identical(other.aiReadingId, aiReadingId) || other.aiReadingId == aiReadingId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.accuracyScore, accuracyScore) || other.accuracyScore == accuracyScore)&&(identical(other.coverageScore, coverageScore) || other.coverageScore == coverageScore)&&(identical(other.clarityScore, clarityScore) || other.clarityScore == clarityScore)&&(identical(other.feedback, feedback) || other.feedback == feedback)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.averageScore, averageScore) || other.averageScore == averageScore)&&(identical(other.timeSpentSec, timeSpentSec) || other.timeSpentSec == timeSpentSec));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,aiReadingId,userId,accuracyScore,coverageScore,clarityScore,feedback,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,aiReadingId,userId,accuracyScore,coverageScore,clarityScore,feedback,createdAt,updatedAt,averageScore,timeSpentSec);
 
 @override
 String toString() {
-  return 'SummaryAttemptModel(id: $id, aiReadingId: $aiReadingId, userId: $userId, accuracyScore: $accuracyScore, coverageScore: $coverageScore, clarityScore: $clarityScore, feedback: $feedback, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'SummaryAttemptModel(id: $id, aiReadingId: $aiReadingId, userId: $userId, accuracyScore: $accuracyScore, coverageScore: $coverageScore, clarityScore: $clarityScore, feedback: $feedback, createdAt: $createdAt, updatedAt: $updatedAt, averageScore: $averageScore, timeSpentSec: $timeSpentSec)';
 }
 
 
@@ -263,7 +267,7 @@ abstract mixin class _$SummaryAttemptModelCopyWith<$Res> implements $SummaryAtte
   factory _$SummaryAttemptModelCopyWith(_SummaryAttemptModel value, $Res Function(_SummaryAttemptModel) _then) = __$SummaryAttemptModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int aiReadingId, int userId, double accuracyScore, double coverageScore, double clarityScore, String feedback, DateTime createdAt, DateTime updatedAt
+ int id, int aiReadingId, int userId, double accuracyScore, double coverageScore, double clarityScore, String feedback, DateTime createdAt, DateTime updatedAt, double averageScore, int timeSpentSec
 });
 
 
@@ -280,7 +284,7 @@ class __$SummaryAttemptModelCopyWithImpl<$Res>
 
 /// Create a copy of SummaryAttemptModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? aiReadingId = null,Object? userId = null,Object? accuracyScore = null,Object? coverageScore = null,Object? clarityScore = null,Object? feedback = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? aiReadingId = null,Object? userId = null,Object? accuracyScore = null,Object? coverageScore = null,Object? clarityScore = null,Object? feedback = null,Object? createdAt = null,Object? updatedAt = null,Object? averageScore = null,Object? timeSpentSec = null,}) {
   return _then(_SummaryAttemptModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,aiReadingId: null == aiReadingId ? _self.aiReadingId : aiReadingId // ignore: cast_nullable_to_non_nullable
@@ -291,7 +295,9 @@ as double,clarityScore: null == clarityScore ? _self.clarityScore : clarityScore
 as double,feedback: null == feedback ? _self.feedback : feedback // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,averageScore: null == averageScore ? _self.averageScore : averageScore // ignore: cast_nullable_to_non_nullable
+as double,timeSpentSec: null == timeSpentSec ? _self.timeSpentSec : timeSpentSec // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

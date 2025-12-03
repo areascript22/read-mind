@@ -21,6 +21,7 @@ class FlashCardTileContent extends StatelessWidget {
   final String cardOrder;
   final bool hasScoring;
   final ActivityModel activity;
+  final double? bestScore;
 
   const FlashCardTileContent({
     super.key,
@@ -33,6 +34,7 @@ class FlashCardTileContent extends StatelessWidget {
     required this.cardOrder,
     required this.hasScoring,
     required this.activity,
+    required this.bestScore,
   });
 
   @override
@@ -128,6 +130,15 @@ class FlashCardTileContent extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (bestScore != null)
+                    Text(
+                      "Score: $bestScore/100",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
                 ],
               ),
               const SizedBox(height: 6),
@@ -151,11 +162,6 @@ class FlashCardTileContent extends StatelessWidget {
                     Icons.sort,
                     "Orden: $cardOrder",
                     Colors.blueAccent,
-                  ),
-                  _buildInfoChip(
-                    Icons.score,
-                    hasScoring ? "Con puntaje" : "Sin puntaje",
-                    Colors.orangeAccent,
                   ),
                 ],
               ),

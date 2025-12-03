@@ -42,6 +42,11 @@ final class TrackingAllSummariesLoaded extends TrackingState {
   TrackingAllSummariesLoaded({required this.summaries});
 }
 
+final class TrackingAllFlashCardSessions extends TrackingState {
+  final List<FlashCardSessionEntity> flashCards;
+  TrackingAllFlashCardSessions({required this.flashCards});
+}
+
 enum TrackingOperation {
   load,
   create,
@@ -49,4 +54,5 @@ enum TrackingOperation {
   allParaphrases,
   allMainIdeas,
   allSummaries,
+  flashCardSessionAll,
 }

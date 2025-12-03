@@ -8,6 +8,8 @@ class ParaphraseAttemptEntity {
   final String feedback;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int averageScore;
+  final int timeSpentSec;
 
   const ParaphraseAttemptEntity({
     required this.id,
@@ -19,5 +21,7 @@ class ParaphraseAttemptEntity {
     required this.feedback,
     required this.createdAt,
     required this.updatedAt,
+    required this.averageScore,
+    required this.timeSpentSec,
   });
 }

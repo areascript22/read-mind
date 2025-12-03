@@ -36,6 +36,12 @@ final class AttemptSummaryCreated extends AttemptsState {
   AttemptSummaryCreated({required this.summaryAttemptEntity});
 }
 
+final class AttemptReadingCreated extends AttemptsState {
+  final ReadingAttemptEntity readingAttemptEntity;
+
+  AttemptReadingCreated({required this.readingAttemptEntity});
+}
+
 final class AttemptParaphraseAll extends AttemptsState {
   final List<ParaphraseAttemptEntity> paraphrases;
 
@@ -55,6 +61,7 @@ final class AttemptSummaryAll extends AttemptsState {
 }
 
 enum AttemptOperation {
+  arReading,
   paraphrase,
   mainIdea,
   summary,

@@ -34,5 +34,6 @@ extension AIReadingModelX on AIReadingModel {
     length: '',
     complexity: '',
     style: '',
+    totalScore: 0,
   );
 }

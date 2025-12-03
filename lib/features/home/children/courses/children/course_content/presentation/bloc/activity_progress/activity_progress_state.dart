@@ -25,14 +25,14 @@ final class ProgressError extends ActivityProgressState {
 }
 
 final class ProgressCreated extends ActivityProgressState {
-  final ProgressEntity createdProgress;
+  final ProgressModel createdProgress;
   final int activityId;
 
   ProgressCreated({required this.createdProgress, required this.activityId});
 }
 
 final class ProgressUpdated extends ActivityProgressState {
-  final ProgressEntity updatedProgress;
+  final ProgressModel updatedProgress;
   final int activityId;
 
   ProgressUpdated({required this.updatedProgress, required this.activityId});

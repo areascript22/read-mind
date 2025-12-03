@@ -5,6 +5,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_main_idea_attempts.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_main_idea_tip.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -151,7 +152,10 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                       );
                     }
                     if (state is ProgressCreated &&
-                        state.createdProgress.subactivitiesCompleted.mainIdea) {
+                        state.createdProgress
+                            .toReadingProgressEntity()!
+                            .subactivitiesCompleted
+                            .mainIdea) {
                       return Padding(
                         padding: EdgeInsets.only(right: 20),
                         child: Icon(Icons.check),
@@ -159,7 +163,10 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                     }
 
                     if (state is ProgressUpdated &&
-                        state.updatedProgress.subactivitiesCompleted.mainIdea) {
+                        state.updatedProgress
+                            .toReadingProgressEntity()!
+                            .subactivitiesCompleted
+                            .mainIdea) {
                       return Padding(
                         padding: EdgeInsets.only(right: 20),
                         child: Icon(Icons.check),
@@ -252,7 +259,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                                 const SizedBox(height: 10),
 
                                 Text(
-                                  "Ahora escribe el párrafo con tus propias palabras:",
+                                  "Ahora trata de encontrar la idea principal:",
                                   style: theme.textTheme.titleMedium!.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -301,11 +308,17 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
           return LoaderIndicator();
         }
         if (state is ProgressCreated &&
-            state.createdProgress.subactivitiesCompleted.mainIdea) {
+            state.createdProgress
+                .toReadingProgressEntity()!
+                .subactivitiesCompleted
+                .mainIdea) {
           return _buildButton(context);
         }
         if (state is ProgressUpdated &&
-            state.updatedProgress.subactivitiesCompleted.mainIdea) {
+            state.updatedProgress
+                .toReadingProgressEntity()!
+                .subactivitiesCompleted
+                .mainIdea) {
           return _buildButton(context);
         }
         return SizedBox.shrink();
@@ -367,7 +380,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
         keyboardType: TextInputType.multiline,
         textAlignVertical: TextAlignVertical.top,
         decoration: InputDecoration(
-          hintText: "Escribe tu paráfrasis aquí...",
+          hintText: "Escribe tu respuesta aquí...",
           filled: true,
           fillColor: Colors.grey.shade100,
           border: OutlineInputBorder(

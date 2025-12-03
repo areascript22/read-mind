@@ -12,6 +12,7 @@ class AIReadingEntity extends Equatable {
   final String length;
   final String complexity;
   final String style;
+  final double? totalScore;
 
   const AIReadingEntity({
     required this.id,
@@ -25,6 +26,7 @@ class AIReadingEntity extends Equatable {
     required this.length,
     required this.complexity,
     required this.style,
+    required this.totalScore,
   });
 
   @override

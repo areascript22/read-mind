@@ -99,7 +99,7 @@ class _CourseSettingsState extends State<CourseSettings> {
                               icon: const Icon(Icons.content_copy, size: 22),
                               onPressed: () async {
                                 await Clipboard.setData(
-                                  ClipboardData(text: "invite code"),
+                                  ClipboardData(text: courseEntity.inviteCode),
                                 );
                                 if (context.mounted) {
                                   ToastMessageUtil.showToast(

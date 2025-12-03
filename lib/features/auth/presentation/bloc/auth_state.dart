@@ -22,3 +22,8 @@ final class AuthResetPasswordLinkSent extends AuthState {
 
   AuthResetPasswordLinkSent({required this.message});
 }
+
+final class AuthVerificationLinkSent extends AuthState {
+  final String message;
+  AuthVerificationLinkSent({required this.message});
+}

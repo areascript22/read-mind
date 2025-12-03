@@ -15,6 +15,8 @@ abstract class SummaryAttemptModel with _$SummaryAttemptModel {
     required String feedback,
     required DateTime createdAt,
     required DateTime updatedAt,
+    required double averageScore,
+    required int timeSpentSec,
   }) = _SummaryAttemptModel;
 
   factory SummaryAttemptModel.fromJson(Map<String, dynamic> json) =>
@@ -32,5 +34,7 @@ extension SummaryAttemptModelX on SummaryAttemptModel {
     feedback: feedback,
     createdAt: createdAt,
     updatedAt: updatedAt,
+    timeSpentSec: timeSpentSec,
+    averageScore: averageScore,
   );
 }

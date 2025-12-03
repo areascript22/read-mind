@@ -5,5 +5,6 @@ import 'package:fpdart/fpdart.dart';
 abstract interface class ProgressRepository {
   Future<Either<Failure, TrackingEntity>> getStudentTrackData({
     required int userId,
+    required int courseId,
   });
 }

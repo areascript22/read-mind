@@ -2,6 +2,7 @@ import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback_summary.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_summary_attempts.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_summary_tip.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../../../../../shared/widgets/loader_indicator.dart';
@@ -149,7 +150,10 @@ class _SummaryPageState extends State<SummaryPage> {
                       );
                     }
                     if (state is ProgressCreated &&
-                        state.createdProgress.subactivitiesCompleted.summary) {
+                        state.createdProgress
+                            .toReadingProgressEntity()!
+                            .subactivitiesCompleted
+                            .summary) {
                       return Padding(
                         padding: EdgeInsets.only(right: 20),
                         child: Icon(Icons.check),
@@ -157,7 +161,10 @@ class _SummaryPageState extends State<SummaryPage> {
                     }
 
                     if (state is ProgressUpdated &&
-                        state.updatedProgress.subactivitiesCompleted.summary) {
+                        state.updatedProgress
+                            .toReadingProgressEntity()!
+                            .subactivitiesCompleted
+                            .summary) {
                       return Padding(
                         padding: EdgeInsets.only(right: 20),
                         child: Icon(Icons.check),
@@ -250,7 +257,7 @@ class _SummaryPageState extends State<SummaryPage> {
                                 const SizedBox(height: 10),
 
                                 Text(
-                                  "Ahora escribe el párrafo con tus propias palabras:",
+                                  "Ahora escribe el resumen del parrafo:",
                                   style: theme.textTheme.titleMedium!.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -317,7 +324,7 @@ class _SummaryPageState extends State<SummaryPage> {
         keyboardType: TextInputType.multiline,
         textAlignVertical: TextAlignVertical.top,
         decoration: InputDecoration(
-          hintText: "Escribe tu paráfrasis aquí...",
+          hintText: "Escribe tu respuesta aquí...",
           filled: true,
           fillColor: Colors.grey.shade100,
           border: OutlineInputBorder(

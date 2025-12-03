@@ -1,10 +1,10 @@
-class ProgressEntity {
+class ReadingProgressEntity {
   final int progressId;
   final int activityId;
   final int aiReadingId;
   final String title;
   final String? description;
-  final String courseName;
+
   final bool completed;
   final int totalProgress;
   final int totalScore;
@@ -15,13 +15,13 @@ class ProgressEntity {
   final SubactivitiesCompletedEntity subactivitiesCompleted;
   final int subactivitiesCompletionRate;
 
-  ProgressEntity({
+  ReadingProgressEntity({
     required this.progressId,
     required this.activityId,
     required this.aiReadingId,
     required this.title,
     required this.description,
-    required this.courseName,
+
     required this.completed,
     required this.totalProgress,
     required this.totalScore,
