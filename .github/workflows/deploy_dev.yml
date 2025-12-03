@@ -71,3 +71,5 @@ jobs:
           releaseFiles: build/app/outputs/bundle/devRelease/app-dev-release.aab
           track: internal
           status: draft
+          inAppUpdatePriority: 0
+          changesNotSentForReview: true  # 👈 ESTA ES LA SOLUCIÓN
