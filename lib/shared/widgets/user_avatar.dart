@@ -49,20 +49,16 @@ class UserAvatar extends StatelessWidget {
             children: [
               Text(
                 "${user.name} ${user.lastName}",
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(color: Colors.white70),
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
                 user.email,
-                style: Theme.of(context).textTheme.bodySmall,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text(
-                user.role.name,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: Colors.white60),
                 overflow: TextOverflow.ellipsis,
               ),
             ],
