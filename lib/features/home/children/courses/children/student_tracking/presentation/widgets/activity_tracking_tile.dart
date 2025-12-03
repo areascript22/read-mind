@@ -164,7 +164,7 @@ class ActivityTrackingTile extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      _buildSubactivitiesProgress(
+                      _buildSubActivitiesProgress(
                         reading.subactivitiesCompleted,
                         reading.subactivitiesCompletionRate,
                       ),
@@ -250,7 +250,7 @@ class ActivityTrackingTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -444,7 +444,7 @@ class ActivityTrackingTile extends StatelessWidget {
     );
   }
 
-  Widget _buildSubactivitiesProgress(
+  Widget _buildSubActivitiesProgress(
     SubactivitiesCompletedModel subactivities,
     int completionRate,
   ) {
@@ -622,7 +622,7 @@ class ActivityTrackingTile extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Text(

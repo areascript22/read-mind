@@ -1,11 +1,21 @@
 import 'package:client_app/core/common/entities/user_entity.dart';
+import 'package:client_app/core/common/utils/toast_util.dart';
+import 'package:client_app/core/common/widget/custom_button.dart';
+import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:client_app/init_dependencies.dart';
+import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void showEmailNoVerificadoDialog(BuildContext context, UserEntity userEntity) {
   showDialog(
     context: context,
     barrierDismissible: true,
-    builder: (context) => EmailNoVerificadoDialog(userEntity: userEntity),
+    builder:
+        (context) => BlocProvider.value(
+          value: serviceLocator<AuthBloc>(),
+          child: EmailNoVerificadoDialog(userEntity: userEntity),
+        ),
   );
 }
 
@@ -69,23 +79,58 @@ class EmailNoVerificadoDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: theme.dividerColor),
                   ),
-                  child: Row(
+                  child: Column(
                     children: [
-                      Icon(Icons.email_outlined, color: Colors.grey),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          userEntity.email,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87,
+                      Row(
+                        children: [
+                          Icon(Icons.email_outlined, color: Colors.grey),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              userEntity.email,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 28),
+                BlocConsumer<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    final loading = state is AuthLoadingState;
+                    return CustomButton(
+                      onTap:
+                          loading
+                              ? () {}
+                              : () {
+                                context.read<AuthBloc>().add(
+                                  AuthResendVerificationLink(
+                                    email: userEntity.email,
+                                  ),
+                                );
+                              },
+                      child:
+                          loading
+                              ? LoaderIndicator(spinnerColor: Colors.blueAccent)
+                              : const Text("Reenviar enlace"),
+                    );
+                  },
+                  listener: (context, state) {
+                    if (state is AuthFailureState) {
+                      ToastMessageUtil.showToast(state.message, context);
+                      Navigator.pop(context);
+                    }
+                    if (state is AuthVerificationLinkSent) {
+                      ToastMessageUtil.showToast(state.message, context);
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
               ],
             ),
 
