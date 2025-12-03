@@ -259,7 +259,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                                 const SizedBox(height: 10),
 
                                 Text(
-                                  "Ahora escribe el párrafo con tus propias palabras:",
+                                  "Ahora trata de encontrar la idea principal:",
                                   style: theme.textTheme.titleMedium!.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -380,7 +380,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
         keyboardType: TextInputType.multiline,
         textAlignVertical: TextAlignVertical.top,
         decoration: InputDecoration(
-          hintText: "Escribe tu paráfrasis aquí...",
+          hintText: "Escribe tu respuesta aquí...",
           filled: true,
           fillColor: Colors.grey.shade100,
           border: OutlineInputBorder(

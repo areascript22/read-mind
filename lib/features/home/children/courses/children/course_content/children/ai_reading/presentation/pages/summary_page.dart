@@ -257,7 +257,7 @@ class _SummaryPageState extends State<SummaryPage> {
                                 const SizedBox(height: 10),
 
                                 Text(
-                                  "Ahora escribe el párrafo con tus propias palabras:",
+                                  "Ahora escribe el resumen del parrafo:",
                                   style: theme.textTheme.titleMedium!.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -324,7 +324,7 @@ class _SummaryPageState extends State<SummaryPage> {
         keyboardType: TextInputType.multiline,
         textAlignVertical: TextAlignVertical.top,
         decoration: InputDecoration(
-          hintText: "Escribe tu paráfrasis aquí...",
+          hintText: "Escribe tu respuesta aquí...",
           filled: true,
           fillColor: Colors.grey.shade100,
           border: OutlineInputBorder(
