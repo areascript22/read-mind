@@ -143,26 +143,23 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
   }
 
   Widget _buildEmptyState() {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.8,
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.translate_rounded, size: 110, color: Colors.grey),
-            SizedBox(height: 16),
-            Text(
-              'No hay traducciones todavía',
-              style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Desliza hacia abajo para actualizar',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
-            ),
-          ],
-        ),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: const Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.translate_rounded, size: 110, color: Colors.grey),
+          SizedBox(height: 16),
+          Text(
+            'No hay traducciones todavía',
+            style: TextStyle(fontSize: 18, color: Colors.grey),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Desliza hacia abajo para actualizar',
+            style: TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+        ],
       ),
     );
   }

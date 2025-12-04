@@ -12,6 +12,7 @@ import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:client_app/shared/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../bloc/course_option_cubit/course_option_cubit.dart';
@@ -134,57 +135,6 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
     return const SizedBox.shrink();
   }
 
-  Container _buildVocabulary() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        color: Color(0xFFF5F8FD),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  //Percent
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '0',
-                          style: TextStyle(
-                            color: Colors.blueAccent,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 35,
-                          ),
-                        ),
-                        TextSpan(
-                          text: ' %',
-
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.blueAccent,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    "Vocabulario",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 27),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   FloatingActionButton _buildFloatingActionButton() {
     return FloatingActionButton(
       onPressed: () {
@@ -196,7 +146,7 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
 
   Widget _listViewCourses(List<CourseEntity> courses) {
     if (courses.isEmpty) {
-      return Center(child: Text("No hay cursos disponibles"));
+      return _buildEmptyState();
     }
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
@@ -213,6 +163,33 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
           child: CourseTile(course: course),
         );
       },
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            "assets/images/svg/blackboard.svg",
+            colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+            width: 500,
+            height: 250,
+          ),
+          SizedBox(height: 46),
+          Text(
+            'Unete a un curso para empezar',
+            style: TextStyle(fontSize: 18, color: Colors.grey),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Desliza hacia abajo para actualizar',
+            style: TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+        ],
+      ),
     );
   }
 }
