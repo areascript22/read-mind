@@ -75,7 +75,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
 
   void _initValues() {
     timerAttemptCubit = context.read<TimerAttemptCubit>();
-    timerAttemptCubit.setStartTime(DateTime.now());
+    // timerAttemptCubit.setStartTime(DateTime.now());
     timerAttemptCubit.setPlayCount(0);
   }
 
@@ -252,43 +252,44 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
-            builder: (context, state) {
-              if (state is ProgressLoading) {
-                return LoaderIndicator(
-                  spinnerSize: 20,
-                  spinnerColor: Colors.white,
-                );
-              }
-              if (state is ProgressCreated &&
-                  state.createdProgress
-                      .toReadingProgressEntity()!
-                      .subactivitiesCompleted
-                      .reading) {
-                return Icon(Icons.check);
-              }
-
-              if (state is ProgressUpdated &&
-                  state.updatedProgress
-                      .toReadingProgressEntity()!
-                      .subactivitiesCompleted
-                      .reading) {
-                return Icon(Icons.check);
-              }
-
-              return SizedBox.shrink();
-            },
-          ),
-          IconButton(
-            onPressed: _openSettings,
-            icon: const Icon(Icons.settings),
-          ),
-        ],
-      ),
       body: Column(
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
+                builder: (context, state) {
+                  if (state is ProgressLoading) {
+                    return LoaderIndicator(
+                      spinnerSize: 20,
+                      spinnerColor: Colors.white,
+                    );
+                  }
+                  if (state is ProgressCreated &&
+                      state.createdProgress
+                          .toReadingProgressEntity()!
+                          .subactivitiesCompleted
+                          .reading) {
+                    return Icon(Icons.check, color: Colors.green);
+                  }
+
+                  if (state is ProgressUpdated &&
+                      state.updatedProgress
+                          .toReadingProgressEntity()!
+                          .subactivitiesCompleted
+                          .reading) {
+                    return Icon(Icons.check, color: Colors.green);
+                  }
+
+                  return SizedBox.shrink();
+                },
+              ),
+              IconButton(
+                onPressed: _openSettings,
+                icon: const Icon(Icons.settings),
+              ),
+            ],
+          ),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -313,7 +314,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
                 .toReadingProgressEntity()!
                 .subactivitiesCompleted
                 .reading) {
-          return _buildButton(context);
+          //return _buildButton(context);
         }
 
         if (state is ProgressUpdated &&
@@ -321,7 +322,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
                 .toReadingProgressEntity()!
                 .subactivitiesCompleted
                 .reading) {
-          return _buildButton(context);
+          // return _buildButton(context);
         }
 
         return SizedBox.shrink();

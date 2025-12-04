@@ -5,10 +5,12 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/widget/dialog_close_activity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/widget/dialog_flashcards_result.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/widget/flash_card.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import '../../../../presentation/bloc/course_content/course_content_bloc.dart';
 import '../../domain/entity/param_flashcard_entity.dart';
 
 class FlashCardsActivityPage extends StatefulWidget {
@@ -107,6 +109,12 @@ class _FlashCardsActivityPageState extends State<FlashCardsActivityPage> {
                     return;
                   }
                   if (result == true && context.mounted) {
+                    final course = context.read<CourseCubit>().state;
+                    if (course != null) {
+                      context.read<CourseContentBloc>().add(
+                        EventGetAllActivities(course.id.toString()),
+                      );
+                    }
                     Navigator.pop(context);
                   }
                 },
@@ -377,6 +385,7 @@ class _FlashCardsActivityPageState extends State<FlashCardsActivityPage> {
                             : 'Comprobar Respuesta',
                         style: theme.textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.w600,
+                          color: Colors.white70,
                         ),
                       ),
             );
