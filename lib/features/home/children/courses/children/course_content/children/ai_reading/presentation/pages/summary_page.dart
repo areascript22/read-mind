@@ -217,7 +217,10 @@ class _SummaryPageState extends State<SummaryPage> {
                                                 padding: EdgeInsets.only(
                                                   right: 20,
                                                 ),
-                                                child: Icon(Icons.check),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                ),
                                               );
                                             }
 
@@ -230,7 +233,10 @@ class _SummaryPageState extends State<SummaryPage> {
                                                 padding: EdgeInsets.only(
                                                   right: 20,
                                                 ),
-                                                child: Icon(Icons.check),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                ),
                                               );
                                             }
                                             return SizedBox.shrink();
@@ -351,17 +357,7 @@ class _SummaryPageState extends State<SummaryPage> {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child:
-            isLoading
-                ? const SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2.5,
-                  ),
-                )
-                : const Text("Enviar resumen", style: TextStyle(fontSize: 16)),
+        child: const Text("Enviar resumen", style: TextStyle(fontSize: 16)),
       ),
     );
   }
@@ -396,7 +392,7 @@ class _SummaryPageState extends State<SummaryPage> {
       child: FloatingActionButton.extended(
         onPressed: () => showSummaryTips(context),
         icon: const Icon(Icons.lightbulb),
-        label: const Text("Tips"),
+        label: SizedBox(),
         backgroundColor: Colors.amber,
       ),
     );

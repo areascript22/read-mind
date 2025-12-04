@@ -8,7 +8,8 @@ import 'package:client_app/features/home/children/courses/children/student_track
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
+import '../../../../presentation/bloc/course_content/course_content_bloc.dart';
+import '../../../../presentation/cubit/course_cubit.dart';
 import '../cubit/attempts_cubit/attempts_cubit.dart';
 import '../cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
 
@@ -62,7 +63,15 @@ class _ReadingActivitiesContainerState
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            final course = context.read<CourseCubit>().state;
+            if (course != null) {
+              context.read<CourseContentBloc>().add(
+                EventGetAllActivities(course.id.toString()),
+              );
+            }
+            Navigator.pop(context);
+          },
           icon: Icon(Icons.close),
         ),
       ),
