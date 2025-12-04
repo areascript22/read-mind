@@ -121,7 +121,7 @@ class _ReadingActivitiesContainerState
 
   Widget _buildPageIndicator() {
     return SizedBox(
-      height: 100,
+      height: 0,
       child: BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
         builder: (context, state) {
           if (state is ProgressCreated &&
