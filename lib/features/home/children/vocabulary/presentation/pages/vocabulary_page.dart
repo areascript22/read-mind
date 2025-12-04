@@ -1,7 +1,9 @@
+import 'package:client_app/features/home/children/vocabulary/presentation/widget/dialog_show_translation_advice.dart';
 import 'package:client_app/features/home/domain/entity/translation_entity.dart';
 import 'package:client_app/init_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -84,7 +86,20 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Vocabulary')),
+      appBar: AppBar(
+        title: const Text('Vocabulario'),
+        leading: IconButton(
+          onPressed: () {
+            showTranslationAdviceDialog(context);
+          },
+          icon: SvgPicture.asset(
+            "assets/images/svg/question.svg",
+            colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+            width: 31,
+            height: 31,
+          ),
+        ),
+      ),
       body: BlocBuilder<VocabularyBloc, VocabularyState>(
         builder: (context, state) {
           return _buildBody(state);
@@ -94,7 +109,6 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
   }
 
   Widget _buildBody(VocabularyState state) {
-    // Siempre usar SmartRefresher para permitir refresh en cualquier estado
     return SmartRefresher(
       controller: _refreshController,
       enablePullDown: true,
@@ -136,15 +150,15 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
         child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.translate_rounded, size: 64, color: Colors.grey),
+            Icon(Icons.translate_rounded, size: 110, color: Colors.grey),
             SizedBox(height: 16),
             Text(
-              'No translations yet',
+              'No hay traducciones todavía',
               style: TextStyle(fontSize: 18, color: Colors.grey),
             ),
             SizedBox(height: 8),
             Text(
-              'Pull down to refresh',
+              'Desliza hacia abajo para actualizar',
               style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
           ],
@@ -174,7 +188,7 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Pull down to try again',
+              'Tire hacia abajo para volver a intentarlo',
               style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
           ],
@@ -196,17 +210,15 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ---------- HEADER ----------
             Row(
               children: [
-                // Badge pequeño
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: cs.primary.withOpacity(0.1),
+                    color: cs.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -229,7 +241,6 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
 
             const SizedBox(height: 12),
 
-            // ---------- ORIGINAL ----------
             Text(
               "Original",
               style: theme.textTheme.labelMedium?.copyWith(
@@ -263,7 +274,6 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
                 ),
                 const SizedBox(width: 10),
 
-                // Botón redondo mini
                 InkWell(
                   onTap: () => _speak(t.sourceText),
                   borderRadius: BorderRadius.circular(40),
@@ -282,7 +292,6 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
 
             const SizedBox(height: 14),
 
-            // ---------- TRADUCCIÓN ----------
             Text(
               "Traducción",
               style: theme.textTheme.labelMedium?.copyWith(
@@ -295,9 +304,9 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: cs.primary.withOpacity(0.06),
+                color: cs.primary.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: cs.primary.withOpacity(0.1)),
+                border: Border.all(color: cs.primary.withValues(alpha: 0.1)),
               ),
               child: Text(
                 t.translated,
@@ -310,13 +319,12 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
 
             const SizedBox(height: 16),
 
-            // ---------- FOOTER ----------
             Row(
               children: [
                 Icon(
                   Icons.repeat_rounded,
                   size: 18,
-                  color: cs.primary.withOpacity(0.8),
+                  color: cs.primary.withValues(alpha: 0.8),
                 ),
                 const SizedBox(width: 6),
                 Text(
@@ -330,7 +338,7 @@ class _VocabularyPageBodyState extends State<VocabularyPageBody> {
                 Text(
                   DateFormat("dd/MM/yy").format(t.createdAt),
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: cs.onSurfaceVariant.withOpacity(0.5),
+                    color: cs.onSurfaceVariant.withValues(alpha: 0.5),
                   ),
                 ),
               ],

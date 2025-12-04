@@ -1,3 +1,4 @@
+import 'package:client_app/core/common/widget/app_version.dart';
 import 'package:client_app/core/common/widget/custom_button.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -191,14 +192,11 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ],
               ),
-              _buildVersionInfoSection(),
+              AppVersion(),
             ],
           ),
         ),
       ),
     );
   }
-
-  Column _buildVersionInfoSection() =>
-      Column(children: [Divider(), Text("sharedViewModel.version")]);
 }
