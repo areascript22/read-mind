@@ -1,6 +1,10 @@
 import 'package:client_app/core/common/widget/custom_button.dart';
 import 'package:client_app/core/common/widget/custom_outlined_button.dart';
+import 'package:client_app/init_dependencies.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../presentation/bloc/course_content/course_content_bloc.dart';
+import '../../../../presentation/cubit/course_cubit.dart';
 import '../../domain/entity/flashcard_session_entity.dart';
 
 Future<bool> showFlashCardResultsDialog({
@@ -11,7 +15,13 @@ Future<bool> showFlashCardResultsDialog({
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      return _FlashCardResultsDialog(session: session);
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: serviceLocator<CourseCubit>()),
+          BlocProvider.value(value: serviceLocator<CourseContentBloc>()),
+        ],
+        child: _FlashCardResultsDialog(session: session),
+      );
     },
   ).then((value) => value ?? false);
 }
@@ -303,6 +313,12 @@ class _FlashCardResultsDialog extends StatelessWidget {
         Expanded(
           child: CustomButton(
             onTap: () {
+              final course = context.read<CourseCubit>().state;
+              if (course != null) {
+                context.read<CourseContentBloc>().add(
+                  EventGetAllActivities(course.id.toString()),
+                );
+              }
               Navigator.of(context).pop(true);
             },
             icon: Icon(

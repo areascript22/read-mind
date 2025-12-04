@@ -16,7 +16,7 @@ import '../cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
 class ReadingActivitiesContainer extends StatefulWidget {
   final ActivityModel activityModel;
 
-  ReadingActivitiesContainer({super.key, required this.activityModel});
+  const ReadingActivitiesContainer({super.key, required this.activityModel});
 
   @override
   State<ReadingActivitiesContainer> createState() =>
