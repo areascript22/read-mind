@@ -217,7 +217,10 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                                                 padding: EdgeInsets.only(
                                                   right: 20,
                                                 ),
-                                                child: Icon(Icons.check),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                ),
                                               );
                                             }
 
@@ -230,7 +233,10 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                                                 padding: EdgeInsets.only(
                                                   right: 20,
                                                 ),
-                                                child: Icon(Icons.check),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                ),
                                               );
                                             }
                                             return SizedBox.shrink();
@@ -361,20 +367,10 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child:
-            isLoading
-                ? const SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2.5,
-                  ),
-                )
-                : const Text(
-                  "Submit main idea",
-                  style: TextStyle(fontSize: 16),
-                ),
+        child: const Text(
+          "Evaluar idea principal",
+          style: TextStyle(fontSize: 16),
+        ),
       ),
     );
   }
@@ -409,7 +405,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
       child: FloatingActionButton.extended(
         onPressed: () => showMainIdeaTipDialog(context),
         icon: const Icon(Icons.lightbulb),
-        label: const Text("Tips"),
+        label: SizedBox(),
         backgroundColor: Colors.amber,
       ),
     );

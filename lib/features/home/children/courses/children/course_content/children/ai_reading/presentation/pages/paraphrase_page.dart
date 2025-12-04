@@ -93,7 +93,7 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
             state.actionType == AiActionType.paraphrase;
 
         return PopScope(
-          canPop: false,
+          canPop: true,
           child: Scaffold(
             // appBar: AppBar(
             //   title: const Text("Actividad de paráfrasis"),
@@ -227,7 +227,10 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                                                     .toReadingProgressEntity()!
                                                     .subactivitiesCompleted
                                                     .paraphrase) {
-                                              return Icon(Icons.check);
+                                              return Icon(
+                                                Icons.check,
+                                                color: Colors.green,
+                                              );
                                             }
 
                                             if (state is ProgressUpdated &&
@@ -235,7 +238,10 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                                                     .toReadingProgressEntity()!
                                                     .subactivitiesCompleted
                                                     .paraphrase) {
-                                              return Icon(Icons.check);
+                                              return Icon(
+                                                Icons.check,
+                                                color: Colors.green,
+                                              );
                                             }
 
                                             return SizedBox.shrink();
@@ -336,20 +342,10 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                     ),
-                                    child:
-                                        isLoading
-                                            ? const SizedBox(
-                                              height: 24,
-                                              width: 24,
-                                              child: CircularProgressIndicator(
-                                                color: Colors.white,
-                                                strokeWidth: 2.5,
-                                              ),
-                                            )
-                                            : const Text(
-                                              "Evaluar paráfrasis",
-                                              style: TextStyle(fontSize: 16),
-                                            ),
+                                    child: const Text(
+                                      "Evaluar paráfrasis",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(height: 15),
