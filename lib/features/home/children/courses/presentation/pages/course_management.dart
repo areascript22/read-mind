@@ -175,8 +175,8 @@ class _CourseManagementPageState extends State<CourseManagementPage> {
           SvgPicture.asset(
             "assets/images/svg/blackboard.svg",
             colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
-            width: 500,
-            height: 250,
+            width: 200,
+            height: 200,
           ),
           SizedBox(height: 46),
           Text(

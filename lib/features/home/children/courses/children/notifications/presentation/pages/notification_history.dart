@@ -1,6 +1,7 @@
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../../../../../init_dependencies.dart';
 import '../../domain/entity/notification_entity.dart';
@@ -42,7 +43,7 @@ class _NotificationHistoryViewState extends State<NotificationHistoryView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Notifications"),
+        title: const Text("Notificaciones"),
         automaticallyImplyLeading: false,
         leading: BlocBuilder<NotificationsBloc, NotificationsState>(
           builder: (context, state) {
@@ -79,7 +80,7 @@ class _NotificationHistoryViewState extends State<NotificationHistoryView> {
             return Center(child: Text("Error: ${state.errorMessageGetAll}"));
           }
           if (state.notificationsLoaded && state.notifications.isEmpty) {
-            return Center(child: Text("Aun no tienes notificaciónes..."));
+            return Center(child: _buildEmptyState());
           }
 
           if (state.notificationsLoaded) {
@@ -137,6 +138,28 @@ class _NotificationHistoryViewState extends State<NotificationHistoryView> {
       onTap: () {
         // Handle markAsRead or navigation later
       },
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            "assets/images/svg/bell_diagonal.svg",
+            colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+            width: 100,
+            height: 100,
+          ),
+          SizedBox(height: 46),
+          Text(
+            'Aun no tienes notificaciónes..',
+            style: TextStyle(fontSize: 18, color: Colors.grey),
+          ),
+        ],
+      ),
     );
   }
 
