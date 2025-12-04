@@ -14,6 +14,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/ai_reading_activity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/main_idea_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/paraphrase_page.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/reading_activities_container.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/summary_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/param_flashcard_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
@@ -196,6 +197,14 @@ class AppRouter {
             builder: (context, state) {
               final activityModel = state.extra as ActivityModel;
               return AiReadingActivity(activityModel: activityModel);
+            },
+          ),
+
+          GoRoute(
+            path: RouteNames.readingActivitiesContainer,
+            builder: (context, state) {
+              final activityModel = state.extra as ActivityModel;
+              return ReadingActivitiesContainer(activityModel: activityModel);
             },
           ),
 

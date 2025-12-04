@@ -97,7 +97,7 @@ class TranslationAdviceDialog extends StatelessWidget {
 
                   Text(
                     '1. Ve a la sección de "Lectura"\n'
-                    '2. Selecciona o sube un texto\n'
+                    '2. Selecciona una palabra\n'
                     '3. Marca las palabras que quieras traducir\n'
                     '4. Las traducciones aparecerán automáticamente aquí',
                     style: theme.textTheme.bodyMedium?.copyWith(

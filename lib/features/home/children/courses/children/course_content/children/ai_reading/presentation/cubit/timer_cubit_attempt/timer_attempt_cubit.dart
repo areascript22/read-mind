@@ -21,6 +21,7 @@ class TimerAttemptCubit extends Cubit<TimerAttemptState> {
   }
 
   void setPlayCount(int value) {
+    print("Play count numero: $value");
     emit(state.copyWith(playCount: value));
   }
 

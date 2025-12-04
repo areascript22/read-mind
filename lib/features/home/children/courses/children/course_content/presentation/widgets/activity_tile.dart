@@ -1,3 +1,4 @@
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/reading_activities_container.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -209,7 +210,11 @@ class _AIReadingTileContent extends StatelessWidget {
 
                   if (state is ProgressCreated &&
                       activityId == state.activityId) {
-                    context.push(RouteNames.activityAIReading, extra: activity);
+                    //  context.push(RouteNames.activityAIReading, extra: activity);
+                    context.push(
+                      RouteNames.readingActivitiesContainer,
+                      extra: activity,
+                    );
                   }
                 },
               ),
