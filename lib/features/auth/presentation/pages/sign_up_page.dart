@@ -66,7 +66,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       children: [
                         const Text(
                           "¿Yá tienes una cuenta? ",
-                          style: TextStyle(fontSize: 15),
+                          style: TextStyle(fontSize: 17),
                         ),
                         GestureDetector(
                           onTap: () {
@@ -74,7 +74,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           },
                           child: const Text(
                             "Iniciar sesión",
-                            style: TextStyle(color: Colors.blue),
+                            style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.blue,
+                              decorationThickness: 0.8,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ],
