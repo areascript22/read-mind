@@ -238,8 +238,12 @@ class AppRouter {
         path: RouteNames.activityFlashCard,
         builder: (context, state) {
           final translations = state.extra as ParamFlashCardEntity;
-          return BlocProvider.value(
-            value: serviceLocator<FlashCardBloc>(),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: serviceLocator<FlashCardBloc>()),
+              BlocProvider.value(value: serviceLocator<CourseCubit>()),
+              BlocProvider.value(value: serviceLocator<CourseContentBloc>()),
+            ],
             child: FlashCardsActivityPage(data: translations),
           );
         },
