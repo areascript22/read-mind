@@ -36,7 +36,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
 
   void _initValues() {
     timerAttemptCubit = context.read<TimerAttemptCubit>();
-    timerAttemptCubit.setStartTime(DateTime.now());
+    //timerAttemptCubit.setStartTime(DateTime.now());
   }
 
   void _submitMainIdea(BuildContext context) {
@@ -87,95 +87,20 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
         return PopScope(
           canPop: false,
           child: Scaffold(
-            appBar: AppBar(
-              title: const Text("Actividad de idea principal"),
-              centerTitle: true,
-              leading: IconButton(
-                onPressed: () {
-                  timerAttemptCubit.setStartTime(DateTime.now());
-                  context.pop();
-                },
-                icon: const Icon(Icons.arrow_back),
-              ),
-              actions: [
-                BlocConsumer<AttemptsCubit, AttemptsState>(
-                  builder: (context, state) {
-                    if (state is AttemptsLoading &&
-                        state.attemptOperation == AttemptOperation.mainIdea) {
-                      return LoaderIndicator(spinnerSize: 20);
-                    }
-                    if (state is AttemptMainIdeaCreated) {
-                      return IconButton(
-                        onPressed: () {
-                          showMainIdeaAttemptsDialog(
-                            context,
-                            widget.aiReadingEntity,
-                          );
-                        },
-                        icon: Icon(Icons.book),
-                      );
-                    }
-                    return IconButton(
-                      onPressed: () {
-                        showMainIdeaAttemptsDialog(
-                          context,
-                          widget.aiReadingEntity,
-                        );
-                      },
-                      icon: Icon(Icons.book),
-                    );
-                  },
-                  listener: (context, state) {
-                    if (state is AttemptsError &&
-                        state.attemptOperation == AttemptOperation.mainIdea) {
-                      timerAttemptCubit.setStartTime(DateTime.now());
-                      ToastMessageUtil.showToast(state.message, context);
-                    }
-                    if (state is AttemptMainIdeaCreated) {
-                      context.read<ActivityProgressBloc>().add(
-                        UpdateProgressEvent(
-                          aiReadingId: widget.aiReadingEntity.aiReadingId,
-                          dataToUpdate: {"mainIdeaCompleted": true},
-                        ),
-                      );
-                      timerAttemptCubit.setStartTime(DateTime.now());
-                    }
-                  },
-                ),
-                BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
-                  builder: (context, state) {
-                    if (state is ProgressLoading) {
-                      return LoaderIndicator(
-                        spinnerSize: 20,
-                        spinnerColor: Colors.white,
-                      );
-                    }
-                    if (state is ProgressCreated &&
-                        state.createdProgress
-                            .toReadingProgressEntity()!
-                            .subactivitiesCompleted
-                            .mainIdea) {
-                      return Padding(
-                        padding: EdgeInsets.only(right: 20),
-                        child: Icon(Icons.check),
-                      );
-                    }
-
-                    if (state is ProgressUpdated &&
-                        state.updatedProgress
-                            .toReadingProgressEntity()!
-                            .subactivitiesCompleted
-                            .mainIdea) {
-                      return Padding(
-                        padding: EdgeInsets.only(right: 20),
-                        child: Icon(Icons.check),
-                      );
-                    }
-                    return SizedBox.shrink();
-                  },
-                ),
-              ],
-            ),
+            // appBar: AppBar(
+            //   title: const Text("Actividad de idea principal"),
+            //   centerTitle: true,
+            //   leading: IconButton(
+            //     onPressed: () {
+            //       timerAttemptCubit.setStartTime(DateTime.now());
+            //       context.pop();
+            //     },
+            //     icon: const Icon(Icons.arrow_back),
+            //   ),
+            //   actions: [
+            //
+            //   ],
+            // ),
             body: Stack(
               children: [
                 SafeArea(
@@ -191,6 +116,136 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Actividad de idea principal",
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        BlocConsumer<
+                                          AttemptsCubit,
+                                          AttemptsState
+                                        >(
+                                          builder: (context, state) {
+                                            if (state is AttemptsLoading &&
+                                                state.attemptOperation ==
+                                                    AttemptOperation.mainIdea) {
+                                              return LoaderIndicator(
+                                                spinnerSize: 20,
+                                              );
+                                            }
+                                            if (state
+                                                is AttemptMainIdeaCreated) {
+                                              return IconButton(
+                                                onPressed: () {
+                                                  showMainIdeaAttemptsDialog(
+                                                    context,
+                                                    widget.aiReadingEntity,
+                                                  );
+                                                },
+                                                icon: Icon(Icons.book),
+                                              );
+                                            }
+                                            return IconButton(
+                                              onPressed: () {
+                                                showMainIdeaAttemptsDialog(
+                                                  context,
+                                                  widget.aiReadingEntity,
+                                                );
+                                              },
+                                              icon: Icon(Icons.book),
+                                            );
+                                          },
+                                          listener: (context, state) {
+                                            if (state is AttemptsError &&
+                                                state.attemptOperation ==
+                                                    AttemptOperation.mainIdea) {
+                                              timerAttemptCubit.setStartTime(
+                                                DateTime.now(),
+                                              );
+                                              ToastMessageUtil.showToast(
+                                                state.message,
+                                                context,
+                                              );
+                                            }
+                                            if (state
+                                                is AttemptMainIdeaCreated) {
+                                              context
+                                                  .read<ActivityProgressBloc>()
+                                                  .add(
+                                                    UpdateProgressEvent(
+                                                      aiReadingId:
+                                                          widget
+                                                              .aiReadingEntity
+                                                              .aiReadingId,
+                                                      dataToUpdate: {
+                                                        "mainIdeaCompleted":
+                                                            true,
+                                                      },
+                                                    ),
+                                                  );
+                                              timerAttemptCubit.setStartTime(
+                                                DateTime.now(),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                        BlocBuilder<
+                                          ActivityProgressBloc,
+                                          ActivityProgressState
+                                        >(
+                                          builder: (context, state) {
+                                            if (state is ProgressLoading) {
+                                              return LoaderIndicator(
+                                                spinnerSize: 20,
+                                                spinnerColor: Colors.white,
+                                              );
+                                            }
+                                            if (state is ProgressCreated &&
+                                                state.createdProgress
+                                                    .toReadingProgressEntity()!
+                                                    .subactivitiesCompleted
+                                                    .mainIdea) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(
+                                                  right: 20,
+                                                ),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                ),
+                                              );
+                                            }
+
+                                            if (state is ProgressUpdated &&
+                                                state.updatedProgress
+                                                    .toReadingProgressEntity()!
+                                                    .subactivitiesCompleted
+                                                    .mainIdea) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(
+                                                  right: 20,
+                                                ),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                ),
+                                              );
+                                            }
+                                            return SizedBox.shrink();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                                 GestureDetector(
                                   onTap:
                                       () => setState(
@@ -268,7 +323,6 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                                 const SizedBox(height: 20),
                                 _buildSubmitButton(isLoading, context),
                                 const SizedBox(height: 15),
-                                _buildNextButton(),
                                 // CustomButton(
                                 //   color: Colors.green,
                                 //   onTap:
@@ -300,46 +354,6 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
     );
   }
 
-  Widget _buildNextButton() {
-    return BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
-      builder: (context, state) {
-        if (state is ProgressLoading) {
-          return LoaderIndicator();
-        }
-        if (state is ProgressCreated &&
-            state.createdProgress
-                .toReadingProgressEntity()!
-                .subactivitiesCompleted
-                .mainIdea) {
-          return _buildButton(context);
-        }
-        if (state is ProgressUpdated &&
-            state.updatedProgress
-                .toReadingProgressEntity()!
-                .subactivitiesCompleted
-                .mainIdea) {
-          return _buildButton(context);
-        }
-        return SizedBox.shrink();
-      },
-      listener: (context, state) {},
-    );
-  }
-
-  ElevatedButton _buildButton(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () {
-        context.push(RouteNames.activitySummary, extra: widget.aiReadingEntity);
-      },
-      icon: const Icon(Icons.arrow_forward),
-      label: const Text('Siguiente actividad'),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
-        minimumSize: const Size(double.infinity, 45),
-      ),
-    );
-  }
-
   SizedBox _buildSubmitButton(bool isLoading, BuildContext context) {
     return SizedBox(
       width: double.infinity,
@@ -353,20 +367,10 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child:
-            isLoading
-                ? const SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2.5,
-                  ),
-                )
-                : const Text(
-                  "Submit main idea",
-                  style: TextStyle(fontSize: 16),
-                ),
+        child: const Text(
+          "Evaluar idea principal",
+          style: TextStyle(fontSize: 16),
+        ),
       ),
     );
   }
@@ -401,7 +405,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
       child: FloatingActionButton.extended(
         onPressed: () => showMainIdeaTipDialog(context),
         icon: const Icon(Icons.lightbulb),
-        label: const Text("Tips"),
+        label: SizedBox(),
         backgroundColor: Colors.amber,
       ),
     );

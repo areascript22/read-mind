@@ -7,6 +7,7 @@ import 'package:client_app/features/home/children/courses/domain/entities/studen
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart'; // Importar el paquete
 
 class StudentsPage extends StatefulWidget {
   final CourseEntity courseEntity;
@@ -19,6 +20,9 @@ class StudentsPage extends StatefulWidget {
 class _StudentsPageState extends State<StudentsPage> {
   bool ownCourse = false;
   late AppUserCubit appUserCubit;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  ); // Controlador para el pull to refresh
 
   @override
   void initState() {
@@ -36,13 +40,23 @@ class _StudentsPageState extends State<StudentsPage> {
     return text.substring(0, n);
   }
 
+  // Método para manejar el refresh
+  void _onRefresh() {
+    context.read<StudentsBloc>().add(
+      EventLoadAllStudents(widget.courseEntity.id),
+    );
+    _refreshController.refreshCompleted(); // Completar el refresh
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10).copyWith(top: 20),
         child: BlocConsumer<StudentsBloc, StudentsState>(
-          listener: (context, state) {},
+          listener: (context, state) {
+            // Opcional: Puedes escuchar cambios en el estado para manejar errores
+          },
           builder: (context, state) {
             if (state.isLoading &&
                 state.professor == null &&
@@ -79,24 +93,89 @@ class _StudentsPageState extends State<StudentsPage> {
         Text("Profesor", style: Theme.of(context).textTheme.titleLarge),
         const Divider(),
         Card(
-          elevation: 2,
+          elevation: 3,
+          margin: const EdgeInsets.symmetric(vertical: 8),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.grey.shade300, width: 1.5),
           ),
-          child: ListTile(
-            leading: CircleAvatar(
-              radius: 28,
-              child: Text(
-                _getFirstWords(userEntity.name),
-                style: const TextStyle(fontSize: 24),
+          child: Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 12,
+              ),
+              leading: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.blue.shade700,
+                      Colors.blue.shade500,
+                      Colors.blue.shade300,
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Text(
+                    _getFirstWords(userEntity.name),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              title: Text(
+                userEntity.name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.blue,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 4),
+                  Text(
+                    userEntity.email,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade700,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade100,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.school,
+                  size: 24,
+                  color: Colors.blue.shade800,
+                ),
               ),
             ),
-            title: Text(
-              userEntity.name,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(userEntity.email),
-            trailing: const Icon(Icons.school, color: Colors.blue),
           ),
         ),
         const SizedBox(height: 20),
@@ -112,20 +191,31 @@ class _StudentsPageState extends State<StudentsPage> {
           Text("Estudiantes", style: Theme.of(context).textTheme.titleLarge),
           const Divider(),
           Expanded(
-            child: ListView.builder(
-              itemCount: students.length,
-              itemBuilder: (context, index) {
-                final student = students[index];
-                final studentTrackingInfo = StudentTrackingInfoEntity(
-                  user: student,
-                  course: widget.courseEntity,
-                );
-                return _buildStudentsTile(
-                  context,
-                  studentTrackingInfo,
-                  student,
-                );
-              },
+            // Envolver en SmartRefresher para habilitar pull to refresh
+            child: SmartRefresher(
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              enablePullDown: true,
+              enablePullUp: false, // Solo queremos pull down, no pull up
+              header: WaterDropHeader(
+                complete: Icon(Icons.check, color: Colors.blue[400]),
+                waterDropColor: Colors.blue[400]!,
+              ),
+              child: ListView.builder(
+                itemCount: students.length,
+                itemBuilder: (context, index) {
+                  final student = students[index];
+                  final studentTrackingInfo = StudentTrackingInfoEntity(
+                    user: student,
+                    course: widget.courseEntity,
+                  );
+                  return _buildStudentsTile(
+                    context,
+                    studentTrackingInfo,
+                    student,
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -133,7 +223,7 @@ class _StudentsPageState extends State<StudentsPage> {
     );
   }
 
-  GestureDetector _buildStudentsTile(
+  Widget _buildStudentsTile(
     BuildContext context,
     StudentTrackingInfoEntity studentTrackingInfo,
     UserEntity student,
@@ -145,14 +235,105 @@ class _StudentsPageState extends State<StudentsPage> {
         }
       },
       child: Card(
-        elevation: 1,
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        child: ListTile(
-          leading: CircleAvatar(child: Text(_getFirstWords(student.name))),
-          title: Text(student.name),
-          subtitle: Text(student.email),
+        elevation: 2,
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: Colors.grey.shade200, width: 1),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [Colors.white, Colors.grey.shade50],
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
+            leading: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                    Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Text(
+                  _getFirstWords(student.name),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            title: Text(
+              student.name,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 2),
+                Text(
+                  student.email,
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+            trailing:
+                (ownCourse || appUserCubit.isSuperUser || appUserCubit.isAdmin)
+                    ? Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    )
+                    : null,
+            tileColor: Colors.transparent,
+          ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose(); // Importante: limpiar el controlador
+    super.dispose();
   }
 }

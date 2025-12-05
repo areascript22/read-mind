@@ -68,7 +68,7 @@ class _SummaryAttemptsDialogBodyState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Summary Attempts',
+                    'Resumen Intentos',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   IconButton(
@@ -114,7 +114,7 @@ class _SummaryAttemptsDialogBodyState
 
                       if (paraphrases.isEmpty) {
                         return const Center(
-                          child: Text('No attempts found yet'),
+                          child: Text('No se encontraron intentos todavía...'),
                         );
                       }
 
@@ -133,7 +133,10 @@ class _SummaryAttemptsDialogBodyState
                           itemCount: paraphrases.length,
                           itemBuilder: (context, index) {
                             final attempt = paraphrases[index];
-                            return _ParaphraseAttemptTile(attempt);
+                            return _ParaphraseAttemptTile(
+                              attempt,
+                              paraphrases.length - index,
+                            );
                           },
                         ),
                       );
@@ -153,8 +156,9 @@ class _SummaryAttemptsDialogBodyState
 
 class _ParaphraseAttemptTile extends StatelessWidget {
   final SummaryAttemptEntity attempt;
+  final int order;
 
-  const _ParaphraseAttemptTile(this.attempt, {super.key});
+  const _ParaphraseAttemptTile(this.attempt, this.order, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +177,7 @@ class _ParaphraseAttemptTile extends StatelessWidget {
               children: [
                 Flexible(
                   child: Text(
-                    'Attempt #${attempt.id}',
+                    'Intento #$order',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                     overflow: TextOverflow.ellipsis,
                   ),

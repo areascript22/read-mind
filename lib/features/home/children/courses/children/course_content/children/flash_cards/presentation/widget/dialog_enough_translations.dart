@@ -1,5 +1,4 @@
 import 'package:client_app/core/common/widget/custom_button.dart';
-import 'package:client_app/core/common/widget/custom_outlined_button.dart';
 import 'package:flutter/material.dart';
 
 Future<void> showNotEnoughTranslations(BuildContext context, int minLimit) {
@@ -167,23 +166,21 @@ class _NotEnoughTranslationsDialog extends StatelessWidget {
             // BOTONES CORREGIDOS - Solución al right overflow
             Column(
               children: [
-                CustomButton(
-                  icon: Icon(Icons.auto_awesome_rounded, size: 20),
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Text(
-                    "Continuar",
-                    style: textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
+                SizedBox(
+                  width: double.infinity,
+                  child: CustomButton(
+                    icon: Icon(
+                      Icons.auto_awesome_rounded,
+                      size: 20,
+                      color: Colors.white70,
                     ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                CustomOutlinedButton(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Text(
-                    "Cerrar",
-                    style: textTheme.bodyLarge?.copyWith(
-                      color: colorScheme.onSurface,
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Text(
+                      "Entendido",
+                      style: textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white70,
+                      ),
                     ),
                   ),
                 ),

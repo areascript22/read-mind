@@ -2,6 +2,7 @@ import 'package:client_app/features/home/children/courses/domain/entities/studen
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart'; // Agregar esta importación
 import '../../../../../../../../init_dependencies.dart';
 import '../bloc/progress_bloc/tracking_bloc.dart';
 import '../widgets/activity_tracking_tile.dart';
@@ -30,15 +31,39 @@ class _StudentTrackingContent extends StatefulWidget {
 }
 
 class _StudentTrackingContentState extends State<_StudentTrackingContent> {
+  final RefreshController _refreshController =
+      RefreshController(); // Controlador para el refresh
+
   @override
   void initState() {
     super.initState();
+    _loadTrackingData();
+  }
+
+  void _loadTrackingData() {
     context.read<TrackingBloc>().add(
       LoadTrackingEvent(
         userId: widget.info.user.id,
         courseId: widget.info.course.id,
       ),
     );
+  }
+
+  void _onRefresh() async {
+    // Disparar evento de recarga
+    _loadTrackingData();
+
+    // Simular un delay para mostrar la animación de refresh
+    await Future.delayed(const Duration(milliseconds: 1000));
+
+    // Completar el refresh
+    _refreshController.refreshCompleted();
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose(); // Importante: limpiar el controlador
+    super.dispose();
   }
 
   @override
@@ -58,116 +83,135 @@ class _StudentTrackingContentState extends State<_StudentTrackingContent> {
         ),
         iconTheme: const IconThemeData(color: Colors.black87),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            StudentHeader(
-              student: widget.info.user,
-              course: widget.info.course,
-            ),
+      body: SmartRefresher(
+        // Envolver el cuerpo con SmartRefresher
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        enablePullDown: true, // Habilitar pull-down
+        enablePullUp: false, // Deshabilitar pull-up si no es necesario
+        header: WaterDropHeader(
+          complete: Icon(Icons.check, color: Colors.blue[400]),
+          waterDropColor: Colors.blue[400]!,
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              StudentHeader(
+                student: widget.info.user,
+                course: widget.info.course,
+              ),
 
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            BlocConsumer<TrackingBloc, TrackingState>(
-              listener: (context, state) {
-                if (state is TrackingError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.message),
-                      backgroundColor: Colors.red,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                }
-              },
-              builder: (context, state) {
-                if (state is TrackingLoading) {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 32.0),
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
+              BlocConsumer<TrackingBloc, TrackingState>(
+                listener: (context, state) {
+                  if (state is TrackingError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.message),
+                        backgroundColor: Colors.red,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
 
-                if (state is TrackingError) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 32.0),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.error_outline,
-                            size: 64,
-                            color: Colors.grey[400],
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Failed to load progress data',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              color: Colors.grey[600],
+                  // Si se completó la carga, resetear el refresh controller si está refrescando
+                  if (state is TrackingLoaded || state is TrackingError) {
+                    if (_refreshController.isRefresh) {
+                      _refreshController.refreshCompleted();
+                    }
+                  }
+                },
+                builder: (context, state) {
+                  if (state is TrackingLoading &&
+                      !_refreshController.isRefresh) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 32.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
+                  if (state is TrackingError) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 32.0),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              size: 64,
+                              color: Colors.grey[400],
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          ElevatedButton(
-                            onPressed: () {
-                              context.read<TrackingBloc>().add(
-                                LoadTrackingEvent(
-                                  userId: widget.info.user.id,
-                                  courseId: widget.info.course.id,
-                                ),
-                              );
-                            },
-                            child: const Text('Retry'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-
-                if (state is TrackingLoaded) {
-                  final trackingData = state.trackingData;
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _SummaryCards(
-                        total: trackingData.statistics.total,
-                        completed: trackingData.statistics.completed,
-                        avgScore: trackingData.statistics.averageScore,
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      Text(
-                        "Activity Details",
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
+                            const SizedBox(height: 16),
+                            Text(
+                              'Failed to load progress data',
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            ElevatedButton(
+                              onPressed: () {
+                                context.read<TrackingBloc>().add(
+                                  LoadTrackingEvent(
+                                    userId: widget.info.user.id,
+                                    courseId: widget.info.course.id,
+                                  ),
+                                );
+                              },
+                              child: const Text('Retry'),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 8),
+                    );
+                  }
 
-                      ...trackingData.progresses.map(
-                        (progress) => ActivityTrackingTile(
-                          activity: progress,
-                          userEntity: widget.info.user,
-                          courseEntity: widget.info.course,
+                  if (state is TrackingLoaded) {
+                    final trackingData = state.trackingData;
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _SummaryCards(
+                          total: trackingData.statistics.total,
+                          completed: trackingData.statistics.completed,
+                          avgScore: trackingData.statistics.averageScore,
                         ),
-                      ),
-                    ],
-                  );
-                }
 
-                return _buildStatisticsWithNoData();
-              },
-            ),
-          ],
+                        const SizedBox(height: 32),
+
+                        Text(
+                          "Activity Details",
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        ...trackingData.progresses.map(
+                          (progress) => ActivityTrackingTile(
+                            activity: progress,
+                            userEntity: widget.info.user,
+                            courseEntity: widget.info.course,
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+
+                  return _buildStatisticsWithNoData();
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -244,7 +288,7 @@ class _StatCard extends StatelessWidget {
         height: 90,
         margin: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
+          color: color.withOpacity(0.1), // Corregí withValues por withOpacity
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -262,7 +306,9 @@ class _StatCard extends StatelessWidget {
               title,
               style: GoogleFonts.poppins(
                 fontSize: 14,
-                color: color.withValues(alpha: 0.9),
+                color: color.withOpacity(
+                  0.9,
+                ), // Corregí withValues por withOpacity
               ),
             ),
           ],
