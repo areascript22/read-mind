@@ -63,9 +63,9 @@ android {
         }
         create("prod") {
             dimension = "env"
-            applicationId = "com.readmind"
+            applicationId = "com.readmind.ai"
             versionNameSuffix = "-prod"
-            resValue("string", "app_name", "ReadMind")
+            resValue("string", "app_name", "ReadMind AI")
             signingConfig = signingConfigs.getByName("release")
         }
     }

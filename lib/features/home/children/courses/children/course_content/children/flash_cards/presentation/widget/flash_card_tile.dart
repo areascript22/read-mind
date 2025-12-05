@@ -51,155 +51,322 @@ class FlashCardTileContent extends StatelessWidget {
       },
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 3,
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BlocConsumer<FlashCardBloc, FlashCardState>(
-                builder: (context, state) {
-                  final isItOurs =
-                      flashCardActivityId == state.currentFlashCardActivity;
-                  if (state.isGettingAllCards && isItOurs) {
-                    return LoaderIndicator(spinnerSize: 20);
-                  }
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 0,
+        color: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade200, width: 1),
+            // Diferenciador: fondo sutil con gradiente para flashcards
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.purple.shade50.withOpacity(0.1),
+                Colors.blue.shade50.withOpacity(0.1),
+              ],
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Estado de carga
+                BlocConsumer<FlashCardBloc, FlashCardState>(
+                  builder: (context, state) {
+                    final isItOurs =
+                        flashCardActivityId == state.currentFlashCardActivity;
+                    if (state.isGettingAllCards && isItOurs) {
+                      return Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.purple.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: Colors.purple.shade100,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            LoaderIndicator(spinnerSize: 15),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Cargando tarjetas...',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.purple.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                  listener: (context, state) {
+                    final cardsReady =
+                        state.isCardsLoaded &&
+                        state.flashCardAction == FlashCardAction.loadAll;
+                    final isOurActivity =
+                        flashCardActivityId == state.currentFlashCardActivity;
 
-                  return SizedBox(height: 20, width: 20);
-                },
-                listener: (context, state) {
-                  final cardsReady =
-                      state.isCardsLoaded &&
-                      state.flashCardAction == FlashCardAction.loadAll;
-                  final isOurActivity =
-                      flashCardActivityId == state.currentFlashCardActivity;
+                    if (cardsReady && isOurActivity) {
+                      if (state.cards.length < maxCards) {
+                        showNotEnoughTranslations(context, maxCards);
+                        return;
+                      }
 
-                  if (cardsReady && isOurActivity) {
-                    if (state.cards.length < maxCards) {
-                      showNotEnoughTranslations(context, maxCards);
-                      return;
+                      context.read<FlashCardBloc>().add(
+                        FlashCardCreateInitialSession(activityId: activityId),
+                      );
                     }
 
-                    context.read<FlashCardBloc>().add(
-                      FlashCardCreateInitialSession(activityId: activityId),
-                    );
-                  }
+                    final initialSessionError =
+                        state.errorInitialSession.isNotEmpty &&
+                        state.flashCardAction == FlashCardAction.initSession &&
+                        isOurActivity &&
+                        !state.isCreatingInitialSession;
 
-                  final initialSessionError =
-                      state.errorInitialSession.isNotEmpty &&
-                      state.flashCardAction == FlashCardAction.initSession &&
-                      isOurActivity &&
-                      !state.isCreatingInitialSession;
+                    if (initialSessionError) {
+                      ToastMessageUtil.showToast(
+                        state.errorInitialSession ?? '',
+                        context,
+                      );
+                    }
 
-                  if (initialSessionError) {
-                    ToastMessageUtil.showToast(
-                      state.errorInitialSession ?? '',
-                      context,
-                    );
-                  }
+                    if (state.currentFlashcardSession.id != 0 &&
+                        state.flashCardAction == FlashCardAction.initSession &&
+                        isOurActivity &&
+                        !state.isCreatingInitialSession) {
+                      context.push(
+                        RouteNames.activityFlashCard,
+                        extra: ParamFlashCardEntity(
+                          translations: state.cards,
+                          activityId: activityId,
+                        ),
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(height: 4),
 
-                  if (state.currentFlashcardSession.id != 0 &&
-                      state.flashCardAction == FlashCardAction.initSession &&
-                      isOurActivity &&
-                      !state.isCreatingInitialSession) {
-                    context.push(
-                      RouteNames.activityFlashCard,
-                      extra: ParamFlashCardEntity(
-                        translations: state.cards,
-                        activityId: activityId,
-                      ),
-                    );
-                  }
-                },
-              ),
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/svg/flashcards.svg',
-                    height: 48,
-                    width: 48,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                // Header con título y score
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Mantengo el SVG original
+                    SvgPicture.asset(
+                      'assets/images/svg/flashcards.svg',
+                      height: 48,
+                      width: 48,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              // Indicador visual de tipo de actividad (flashcards)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.purple.shade100,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  'FLASHCARDS',
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.purple.shade800,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: Colors.black87,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            description,
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 13,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  if (bestScore != null)
-                    Text(
-                      "Score: $bestScore/100",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                    if (bestScore != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _getScoreColor(bestScore!),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _getScoreColor(
+                                bestScore!,
+                              ).withOpacity(0.3),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "${bestScore!.toInt()}/100",
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'MEJOR',
+                              style: TextStyle(
+                                fontSize: 8,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white.withOpacity(0.9),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Chips de información específicos para flashcards
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    _buildInfoChip(
+                      Icons.collections,
+                      "$maxCards tarjetas",
+                      Colors.purple.shade600,
                     ),
-                ],
-              ),
-              const SizedBox(height: 6),
+                    _buildInfoChip(
+                      Icons.sort,
+                      "Orden: $cardOrder",
+                      Colors.blue.shade600,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
 
-              Text(
-                description,
-                style: TextStyle(color: Colors.grey[700], fontSize: 14),
-              ),
-              const SizedBox(height: 10),
-
-              Wrap(
-                spacing: 8,
-                runSpacing: 6,
-                children: [
-                  _buildInfoChip(
-                    Icons.collections,
-                    "$maxCards tarjetas",
-                    Colors.green,
+                // Fecha límite con estilo diferenciado
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
                   ),
-                  _buildInfoChip(
-                    Icons.sort,
-                    "Orden: $cardOrder",
-                    Colors.blueAccent,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-
-              Row(
-                children: [
-                  const Icon(
-                    Icons.calendar_today,
-                    size: 14,
-                    color: Colors.redAccent,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    "Fecha límite: ${DateUtil.formatDate(dueDate.toString())}",
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.redAccent,
+                  decoration: BoxDecoration(
+                    color: _getDueDateColor(dueDate).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: _getDueDateColor(dueDate).withOpacity(0.3),
+                      width: 1,
                     ),
                   ),
-                ],
-              ),
-            ],
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        size: 12,
+                        color: _getDueDateColor(dueDate),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        "Fecha límite: ${DateUtil.formatDate(dueDate.toString())}",
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: _getDueDateColor(dueDate),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  Color _getDueDateColor(DateTime dueDate) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final due = DateTime(dueDate.year, dueDate.month, dueDate.day);
+
+    if (due.isBefore(today)) {
+      return Colors.red.shade600;
+    } else if (due.isAtSameMomentAs(today)) {
+      return Colors.orange.shade600;
+    } else {
+      return Colors.green.shade600;
+    }
+  }
+
+  Color _getScoreColor(double score) {
+    if (score >= 80) return Colors.green.shade500;
+    if (score >= 60) return Colors.orange.shade500;
+    return Colors.red.shade500;
+  }
+
   Widget _buildInfoChip(IconData icon, String label, Color color) {
-    return Chip(
-      avatar: Icon(icon, size: 16, color: Colors.white),
-      label: Text(
-        label,
-        style: const TextStyle(color: Colors.white, fontSize: 12),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withOpacity(0.2), width: 1),
       ),
-      backgroundColor: color,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

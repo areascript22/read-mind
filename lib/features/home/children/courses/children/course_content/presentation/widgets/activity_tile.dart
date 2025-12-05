@@ -173,125 +173,188 @@ class _AIReadingTileContent extends StatelessWidget {
       },
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 3,
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
-                builder: (context, state) {
-                  if (state is ProgressLoading &&
-                      state.operation == ProgressActOperation.create &&
-                      activityId == state.activityId) {
-                    return Row(
-                      children: [
-                        LoaderIndicator(spinnerSize: 15),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Preparando actividad...',
-                          style: TextStyle(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 0,
+        color: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade200, width: 1),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Estado de carga
+                BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
+                  builder: (context, state) {
+                    if (state is ProgressLoading &&
+                        state.operation == ProgressActOperation.create &&
+                        activityId == state.activityId) {
+                      return Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            LoaderIndicator(spinnerSize: 15),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Preparando actividad...',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.blue.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                  listener: (context, state) {
+                    if (state is ProgressError &&
+                        state.operation == ProgressActOperation.create &&
+                        activityId == state.activityId) {
+                      ToastMessageUtil.showToast(state.message, context);
+                    }
+
+                    if (state is ProgressCreated &&
+                        activityId == state.activityId) {
+                      context.push(
+                        RouteNames.readingActivitiesContainer,
+                        extra: activity,
+                      );
+                    }
+                  },
+                ),
+
+                // Header con título y score
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Mantengo el SVG original sin cambios
+                    SvgPicture.asset(
+                      'assets/images/svg/reading.svg',
+                      height: 48,
+                      width: 48,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: Colors.black87,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            description,
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 13,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (totalScore != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _getScoreColor(totalScore!),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          "${totalScore!.toInt()}/100",
+                          style: const TextStyle(
                             fontSize: 12,
-                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
                           ),
                         ),
-                      ],
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-                listener: (context, state) {
-                  if (state is ProgressError &&
-                      state.operation == ProgressActOperation.create &&
-                      activityId == state.activityId) {
-                    ToastMessageUtil.showToast(state.message, context);
-                  }
-
-                  if (state is ProgressCreated &&
-                      activityId == state.activityId) {
-                    //  context.push(RouteNames.activityAIReading, extra: activity);
-                    context.push(
-                      RouteNames.readingActivitiesContainer,
-                      extra: activity,
-                    );
-                  }
-                },
-              ),
-
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/svg/reading.svg',
-                    height: 48,
-                    width: 48,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Chips de información
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    _buildInfoChip(
+                      Icons.schedule,
+                      length,
+                      Colors.blue.shade600,
+                    ),
+                    _buildInfoChip(
+                      Icons.trending_up,
+                      complexity,
+                      Colors.orange.shade600,
+                    ),
+                    _buildInfoChip(
+                      Icons.text_fields,
+                      style,
+                      Colors.purple.shade600,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Fecha límite
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _getDueDateColor(dueDate).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: _getDueDateColor(dueDate).withOpacity(0.3),
+                      width: 1,
                     ),
                   ),
-                  if (totalScore != null)
-                    Text(
-                      "Score: $totalScore/100",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        size: 12,
+                        color: _getDueDateColor(dueDate),
                       ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 6),
-
-              Text(
-                description,
-                style: TextStyle(color: Colors.grey[700], fontSize: 14),
-              ),
-              const SizedBox(height: 10),
-
-              Wrap(
-                spacing: 8,
-                runSpacing: 6,
-                children: [
-                  _buildInfoChip(Icons.timer, length, Colors.blueAccent),
-                  _buildInfoChip(
-                    Icons.bar_chart,
-                    complexity,
-                    Colors.orangeAccent,
+                      const SizedBox(width: 6),
+                      Text(
+                        "Fecha límite: ${DateUtil.formatDate(dueDate.toString())}",
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: _getDueDateColor(dueDate),
+                        ),
+                      ),
+                    ],
                   ),
-                  _buildInfoChip(Icons.style, style, Colors.purpleAccent),
-                ],
-              ),
-              const SizedBox(height: 10),
-
-              Row(
-                children: [
-                  Icon(
-                    Icons.calendar_today,
-                    size: 14,
-                    color: _getDueDateColor(
-                      dueDate,
-                    ), // También puedes hacer este color dinámico
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    "Fecha límite: ${DateUtil.formatDate(dueDate.toString())}",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: _getDueDateColor(dueDate),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -304,23 +367,43 @@ class _AIReadingTileContent extends StatelessWidget {
     final due = DateTime(dueDate.year, dueDate.month, dueDate.day);
 
     if (due.isBefore(today)) {
-      return Colors.red; // Fecha vencida
+      return Colors.red.shade600;
     } else if (due.isAtSameMomentAs(today)) {
-      return Colors.orangeAccent; // Fecha es hoy
+      return Colors.orange.shade600;
     } else {
-      return Colors.green; // Fecha futura
+      return Colors.green.shade600;
     }
   }
 
+  Color _getScoreColor(double score) {
+    if (score >= 80) return Colors.green.shade500;
+    if (score >= 60) return Colors.orange.shade500;
+    return Colors.red.shade500;
+  }
+
   Widget _buildInfoChip(IconData icon, String label, Color color) {
-    return Chip(
-      avatar: Icon(icon, size: 16, color: Colors.white),
-      label: Text(
-        label,
-        style: const TextStyle(color: Colors.white, fontSize: 12),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withOpacity(0.2), width: 1),
       ),
-      backgroundColor: color,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
