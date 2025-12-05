@@ -158,19 +158,26 @@ class _SignUpPageState extends State<SignUpPage> {
                             state is AuthLoadingState
                                 ? () {}
                                 : () {
-                                  context.read<AuthBloc>().add(
-                                    AuthSignUpEvent(
-                                      email:
-                                          emailTextController.text
-                                              .trim()
-                                              .toLowerCase(),
-                                      password:
-                                          passwordTextController.text.trim(),
-                                      name: nameTextController.text.trim(),
-                                      lastName:
-                                          lastnameTectController.text.trim(),
-                                    ),
-                                  );
+                                  if (formKey.currentState?.validate() ??
+                                      false) {
+                                    if (mounted) {
+                                      context.read<AuthBloc>().add(
+                                        AuthSignUpEvent(
+                                          email:
+                                              emailTextController.text
+                                                  .trim()
+                                                  .toLowerCase(),
+                                          password:
+                                              passwordTextController.text
+                                                  .trim(),
+                                          name: nameTextController.text.trim(),
+                                          lastName:
+                                              lastnameTectController.text
+                                                  .trim(),
+                                        ),
+                                      );
+                                    }
+                                  }
                                 },
                         child:
                             state is AuthLoadingState
