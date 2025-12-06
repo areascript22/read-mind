@@ -75,7 +75,7 @@ class _SignInPageState extends State<SignInPage> {
                         children: [
                           const Text(
                             "¿Aun no tienes una cuenta? ",
-                            style: TextStyle(fontSize: 15),
+                            style: TextStyle(fontSize: 17),
                           ),
                           GestureDetector(
                             onTap: () {
@@ -83,7 +83,13 @@ class _SignInPageState extends State<SignInPage> {
                             },
                             child: const Text(
                               "Crear cuenta",
-                              style: TextStyle(color: Colors.blue),
+                              style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.blue,
+                                decorationThickness: 0.8,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                         ],
@@ -160,6 +166,7 @@ class _SignInPageState extends State<SignInPage> {
               decoration: TextDecoration.underline,
               decorationColor: Colors.blue,
               decorationThickness: 0.8,
+              fontSize: 16,
             ),
           ),
         ),
