@@ -11,6 +11,7 @@ import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.d
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import '../cubit/attempts_cubit/attempts_cubit.dart';
 import '../cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
+import '../widgets/blus/blur_loader.dart';
 
 class SummaryPage extends StatefulWidget {
   final AIReadingEntity aiReadingEntity;
@@ -330,11 +331,7 @@ class _SummaryPageState extends State<SummaryPage> {
                     },
                   ),
                 ),
-                if (isLoading)
-                  Container(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    child: const Center(child: CircularProgressIndicator()),
-                  ),
+                if (isLoading) BlurLoader(),
               ],
             ),
             floatingActionButton: _buildFloatingActionButton(context),
