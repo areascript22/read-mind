@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class LoaderIndicator extends StatelessWidget {
   final String? message;
@@ -21,34 +22,10 @@ class LoaderIndicator extends StatelessWidget {
     return SizedBox(
       width: spinnerSize,
       height: spinnerSize,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: spinnerSize,
-              height: spinnerSize,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  spinnerColor ?? Theme.of(context).colorScheme.primary,
-                ),
-                strokeWidth: 3.0,
-              ),
-            ),
-            if (message != null) ...[
-              const SizedBox(height: 16),
-              Text(
-                message!,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ],
-        ),
+      child: Lottie.asset(
+        'assets/images/animations/loading_dots.json',
+        fit: BoxFit.contain,
+        repeat: true,
       ),
     );
   }
