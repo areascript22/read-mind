@@ -1,4 +1,5 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:client_app/core/common/widget/lottie_loader.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/notifications/presentation/bloc/notifications_bloc/notifications_bloc.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';

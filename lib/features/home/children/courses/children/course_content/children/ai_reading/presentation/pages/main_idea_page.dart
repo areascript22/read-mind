@@ -1,5 +1,4 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
-import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback_main_idea.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_main_idea_attempts.dart';
@@ -8,11 +7,11 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import '../../../../../../../../../../shared/widgets/loader_indicator.dart';
 import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.dart';
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import '../cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
+import '../widgets/blus/blur_loader.dart';
 
 class MainIdeaPage extends StatefulWidget {
   final AIReadingEntity aiReadingEntity;
@@ -340,11 +339,7 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                     },
                   ),
                 ),
-                if (isLoading)
-                  Container(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    child: const Center(child: CircularProgressIndicator()),
-                  ),
+                if (isLoading) BlurLoader(),
               ],
             ),
             floatingActionButton: _buildFloatingActionButton(context),

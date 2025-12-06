@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
+import '../../../../../../../../../../core/services/tts_service.dart';
+
 class BottomSheetTranslateBody extends StatefulWidget {
   final String word;
   final int readingId;
@@ -21,12 +23,9 @@ class BottomSheetTranslateBody extends StatefulWidget {
 }
 
 class _BottomSheetTranslateBodyState extends State<BottomSheetTranslateBody> {
-  late FlutterTts _flutterTts;
-
   @override
   void initState() {
     super.initState();
-    _initializeTts();
 
     // Trigger translation when the bottom sheet opens
     context.read<TranslationCubit>().translateWord(
@@ -41,23 +40,9 @@ class _BottomSheetTranslateBodyState extends State<BottomSheetTranslateBody> {
     super.dispose();
   }
 
-  Future<void> _initializeTts() async {
-    _flutterTts = FlutterTts();
-    try {
-      await _flutterTts.setLanguage("en-US");
-      await _flutterTts.setSpeechRate(0.25);
-      await _flutterTts.setPitch(1.0);
-    } catch (e) {
-      debugPrint("TTS initialization error: $e");
-    }
-  }
-
   Future<void> _speakWord(BuildContext context, String word) async {
     try {
-      await _flutterTts.setLanguage("en-US");
-      await _flutterTts.setSpeechRate(0.25);
-      await _flutterTts.setPitch(1.0);
-      await _flutterTts.speak(word);
+      await TtsService.instance.flutterTts.speak(word);
     } catch (e) {
       debugPrint("TTS speak error: $e");
       if (context.mounted) {
@@ -67,7 +52,7 @@ class _BottomSheetTranslateBodyState extends State<BottomSheetTranslateBody> {
   }
 
   void _disposeTts() {
-    _flutterTts.stop();
+    TtsService.instance.flutterTts.stop();
   }
 
   @override
