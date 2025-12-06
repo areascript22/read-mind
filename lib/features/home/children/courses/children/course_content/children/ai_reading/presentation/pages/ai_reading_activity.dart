@@ -1,6 +1,4 @@
-import 'package:client_app/core/common/utils/toast_util.dart';
-import 'package:client_app/core/routing/route_names.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
+import 'package:client_app/core/services/tts_service.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/bs_translate_word.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
@@ -10,8 +8,6 @@ import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tts/flutter_tts.dart';
-import 'package:go_router/go_router.dart';
 import '../widgets/bs_settings.dart';
 
 class AiReadingActivity extends StatefulWidget {
@@ -28,7 +24,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   List<String> sentences = [];
   List<int> sentenceStartIndices = [];
 
-  late final FlutterTts _flutterTts;
   bool isPlaying = false;
   bool isSeeking = false;
   int _tempCurrentCharIndex = -1;
@@ -62,7 +57,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
                 ) ??
                 "")
             .trim();
-    _flutterTts = FlutterTts();
     _prepareSentences();
     initializeTts();
   }
@@ -85,11 +79,11 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
 
   Future<void> initializeTts() async {
     try {
-      await _flutterTts.setLanguage("en-US");
-      await _flutterTts.setPitch(ttsPitch);
-      await _flutterTts.setSpeechRate(ttsRate);
+      await TtsService.instance.flutterTts.setLanguage("en-US");
+      await TtsService.instance.flutterTts.setPitch(ttsPitch);
+      await TtsService.instance.flutterTts.setSpeechRate(ttsRate);
 
-      _flutterTts.setProgressHandler((
+      TtsService.instance.flutterTts.setProgressHandler((
         String text,
         int start,
         int end,
@@ -105,7 +99,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
         }
       });
 
-      _flutterTts.setCompletionHandler(() {
+      TtsService.instance.flutterTts.setCompletionHandler(() {
         if (!mounted) return;
         currentSentenceIndex = -1;
         currentCharIndex = 0;
@@ -128,7 +122,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
         }
       });
 
-      _flutterTts.setStartHandler(() {});
+      TtsService.instance.flutterTts.setStartHandler(() {});
     } catch (e) {
       debugPrint("TTS init error: $e");
     }
@@ -136,11 +130,13 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
 
   Future<void> _teardownTts() async {
     try {
-      await _flutterTts.stop();
+      await TtsService.instance.flutterTts.stop();
       try {
-        _flutterTts.setProgressHandler((_, __, ___, ____) {});
-        _flutterTts.setCompletionHandler(() {});
-        _flutterTts.setStartHandler(() {});
+        TtsService.instance.flutterTts.setProgressHandler(
+          (_, __, ___, ____) {},
+        );
+        TtsService.instance.flutterTts.setCompletionHandler(() {});
+        TtsService.instance.flutterTts.setStartHandler(() {});
       } catch (_) {}
     } catch (_) {}
   }
@@ -212,10 +208,10 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
   void togglePlayPause() async {
     if (isPlaying) {
       try {
-        await _flutterTts.pause();
+        await TtsService.instance.flutterTts.pause();
       } catch (_) {
         try {
-          await _flutterTts.stop();
+          await TtsService.instance.flutterTts.stop();
         } catch (_) {}
       }
       isPlaying = false;
@@ -239,11 +235,11 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     index = index.clamp(0, paragraph.length);
     _tempCurrentCharIndex = index;
     try {
-      await _flutterTts.stop();
+      await TtsService.instance.flutterTts.stop();
     } catch (_) {}
     final sub = paragraph.substring(index);
     try {
-      await _flutterTts.speak(sub);
+      await TtsService.instance.flutterTts.speak(sub);
     } catch (e) {
       debugPrint("TTS speak error: $e");
     }
@@ -331,45 +327,6 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
     );
   }
 
-  Widget _buildButton(BuildContext context) {
-    return BlocListener<AttemptsCubit, AttemptsState>(
-      listener: (context, state) {
-        if (state is AttemptsError &&
-            state.attemptOperation == AttemptOperation.arReading) {
-          ToastMessageUtil.showToast(state.message, context);
-        }
-        if (state is AttemptReadingCreated) {}
-      },
-      child: ElevatedButton.icon(
-        onPressed: () {
-          timerAttemptCubit.setCompleteTime(DateTime.now());
-          final readingEntity = widget.activityModel.toAIReadingEntity();
-          final timeSpentSec = timerAttemptCubit.totalTimeSec;
-          if (readingEntity != null) {
-            context.read<AttemptsCubit>().createReadingAttempt(
-              aiReadingId: readingEntity.aiReadingId,
-              playCount: timerAttemptCubit.playCount,
-              timeSpentSec: timeSpentSec,
-            );
-            timerAttemptCubit.setPlayCount(0);
-            timerAttemptCubit.setStartTime(DateTime.now());
-          }
-
-          context.push(
-            RouteNames.activityParaphrase,
-            extra: widget.activityModel.toAIReadingEntity(),
-          );
-        },
-        icon: const Icon(Icons.arrow_forward),
-        label: const Text('Continuar'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green,
-          minimumSize: const Size(double.infinity, 45),
-        ),
-      ),
-    );
-  }
-
   Widget _buildPlayerControls() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -390,7 +347,7 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
               ElevatedButton.icon(
                 onPressed: () async {
                   try {
-                    await _flutterTts.stop();
+                    await TtsService.instance.flutterTts.stop();
                   } catch (_) {}
                   isPlaying = false;
                   currentCharIndex = 0;
@@ -562,10 +519,10 @@ class _AiReadingActivityState extends State<AiReadingActivity> {
         });
 
         try {
-          await _flutterTts.setSpeechRate(ttsRate);
+          await TtsService.instance.flutterTts.setSpeechRate(ttsRate);
         } catch (_) {}
         try {
-          await _flutterTts.setPitch(ttsPitch);
+          await TtsService.instance.flutterTts.setPitch(ttsPitch);
         } catch (_) {}
         _prepareSentences(); // re-compute indices (not strictly necessary, but safe)
       },
