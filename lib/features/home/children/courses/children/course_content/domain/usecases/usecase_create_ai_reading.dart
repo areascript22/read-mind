@@ -1,0 +1,48 @@
+import 'package:client_app/core/common/usecase/usecase.dart';
+import 'package:client_app/core/error/failure.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/course_content_repository.dart';
+import 'package:fpdart/fpdart.dart';
+import '../entities/ai_reading_entity.dart';
+
+class UseCaseCreateAIReading
+    implements Usecase<AIReadingEntity, CreateAIReadingParams> {
+  final CourseContentRepository courseContentRepository;
+  const UseCaseCreateAIReading(this.courseContentRepository);
+  @override
+  Future<Either<Failure, AIReadingEntity>> call(
+    CreateAIReadingParams params,
+  ) async {
+    return await courseContentRepository.createAiReading(
+      courseId: params.courseId,
+      title: params.title,
+      description: params.description,
+      content: params.content,
+      dueDate: params.dueDate,
+      length: params.length,
+      complexity: params.complexity,
+      style: params.style,
+    );
+  }
+}
+
+final class CreateAIReadingParams {
+  final String courseId;
+  final String title;
+  final String description;
+  final String content;
+  final String dueDate;
+  final String length;
+  final String complexity;
+  final String style;
+
+  CreateAIReadingParams(
+    this.courseId,
+    this.title,
+    this.description,
+    this.content,
+    this.dueDate,
+    this.length,
+    this.complexity,
+    this.style,
+  );
+}

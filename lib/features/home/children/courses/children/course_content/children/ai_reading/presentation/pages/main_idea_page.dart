@@ -1,0 +1,408 @@
+import 'package:client_app/core/common/utils/toast_util.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback_main_idea.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_main_idea_attempts.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_main_idea_tip.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../../../../../../shared/widgets/loader_indicator.dart';
+import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.dart';
+import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
+import '../cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
+import '../widgets/blus/blur_loader.dart';
+
+class MainIdeaPage extends StatefulWidget {
+  final AIReadingEntity aiReadingEntity;
+
+  const MainIdeaPage({super.key, required this.aiReadingEntity});
+
+  @override
+  State<MainIdeaPage> createState() => _MainIdeaPageState();
+}
+
+class _MainIdeaPageState extends State<MainIdeaPage> {
+  final TextEditingController _controller = TextEditingController();
+  bool _isExpanded = false;
+  late TimerAttemptCubit timerAttemptCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _initValues();
+  }
+
+  void _initValues() {
+    timerAttemptCubit = context.read<TimerAttemptCubit>();
+    //timerAttemptCubit.setStartTime(DateTime.now());
+  }
+
+  void _submitMainIdea(BuildContext context) {
+    FocusScope.of(context).unfocus();
+    if (_controller.text.trim().isEmpty) {
+      ToastMessageUtil.showToast("Escribe algo para continuar", context);
+      return;
+    }
+    timerAttemptCubit.setCompleteTime(DateTime.now());
+    context.read<AiReadingBloc>().add(
+      EvaluateMainIdeaEvent(
+        paragraph: widget.aiReadingEntity.content,
+        mainIdea: _controller.text,
+        activityId: widget.aiReadingEntity.id,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return BlocConsumer<AiReadingBloc, AiReadingState>(
+      listener: (context, state) {
+        if (state is AiReadingError &&
+            state.actionType == AiActionType.mainIdea) {
+          ToastMessageUtil.showToast(state.message, context);
+        }
+        if (state is MainIdeaSuccess) {
+          showFeedbackMainIdeaDialog(context, state.feedbackEntity);
+
+          final timeSpentSec = timerAttemptCubit.totalTimeSec;
+          context.read<AttemptsCubit>().createMainIdeaAttempt(
+            aiReadingId: widget.aiReadingEntity.aiReadingId,
+            accuracyScore: state.feedbackEntity.accuracyScore,
+            clarityScore: state.feedbackEntity.clarityScore,
+            concisenessScore: state.feedbackEntity.concisenessScore,
+            feedback: state.feedbackEntity.feedback,
+            timeSpentSec: timeSpentSec,
+          );
+        }
+      },
+      builder: (context, state) {
+        final isLoading =
+            state is AiReadingLoading &&
+            state.actionType == AiActionType.mainIdea;
+
+        return PopScope(
+          canPop: false,
+          child: Scaffold(
+            // appBar: AppBar(
+            //   title: const Text("Actividad de idea principal"),
+            //   centerTitle: true,
+            //   leading: IconButton(
+            //     onPressed: () {
+            //       timerAttemptCubit.setStartTime(DateTime.now());
+            //       context.pop();
+            //     },
+            //     icon: const Icon(Icons.arrow_back),
+            //   ),
+            //   actions: [
+            //
+            //   ],
+            // ),
+            body: Stack(
+              children: [
+                SafeArea(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        padding: const EdgeInsets.all(16),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
+                          ),
+                          child: IntrinsicHeight(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Actividad de idea principal",
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        BlocConsumer<
+                                          AttemptsCubit,
+                                          AttemptsState
+                                        >(
+                                          builder: (context, state) {
+                                            if (state is AttemptsLoading &&
+                                                state.attemptOperation ==
+                                                    AttemptOperation.mainIdea) {
+                                              return LoaderIndicator(
+                                                spinnerSize: 20,
+                                              );
+                                            }
+                                            if (state
+                                                is AttemptMainIdeaCreated) {
+                                              return IconButton(
+                                                onPressed: () {
+                                                  showMainIdeaAttemptsDialog(
+                                                    context,
+                                                    widget.aiReadingEntity,
+                                                  );
+                                                },
+                                                icon: Icon(Icons.book),
+                                              );
+                                            }
+                                            return IconButton(
+                                              onPressed: () {
+                                                showMainIdeaAttemptsDialog(
+                                                  context,
+                                                  widget.aiReadingEntity,
+                                                );
+                                              },
+                                              icon: Icon(Icons.book),
+                                            );
+                                          },
+                                          listener: (context, state) {
+                                            if (state is AttemptsError &&
+                                                state.attemptOperation ==
+                                                    AttemptOperation.mainIdea) {
+                                              timerAttemptCubit.setStartTime(
+                                                DateTime.now(),
+                                              );
+                                              ToastMessageUtil.showToast(
+                                                state.message,
+                                                context,
+                                              );
+                                            }
+                                            if (state
+                                                is AttemptMainIdeaCreated) {
+                                              context
+                                                  .read<ActivityProgressBloc>()
+                                                  .add(
+                                                    UpdateProgressEvent(
+                                                      aiReadingId:
+                                                          widget
+                                                              .aiReadingEntity
+                                                              .aiReadingId,
+                                                      dataToUpdate: {
+                                                        "mainIdeaCompleted":
+                                                            true,
+                                                      },
+                                                    ),
+                                                  );
+                                              timerAttemptCubit.setStartTime(
+                                                DateTime.now(),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                        BlocBuilder<
+                                          ActivityProgressBloc,
+                                          ActivityProgressState
+                                        >(
+                                          builder: (context, state) {
+                                            if (state is ProgressLoading) {
+                                              return LoaderIndicator(
+                                                spinnerSize: 20,
+                                                spinnerColor: Colors.white,
+                                              );
+                                            }
+                                            if (state is ProgressCreated &&
+                                                state.createdProgress
+                                                    .toReadingProgressEntity()!
+                                                    .subactivitiesCompleted
+                                                    .mainIdea) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(
+                                                  right: 20,
+                                                ),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                ),
+                                              );
+                                            }
+
+                                            if (state is ProgressUpdated &&
+                                                state.updatedProgress
+                                                    .toReadingProgressEntity()!
+                                                    .subactivitiesCompleted
+                                                    .mainIdea) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(
+                                                  right: 20,
+                                                ),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                ),
+                                              );
+                                            }
+                                            return SizedBox.shrink();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                GestureDetector(
+                                  onTap:
+                                      () => setState(
+                                        () => _isExpanded = !_isExpanded,
+                                      ),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(14),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.shade50,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: Colors.blueAccent,
+                                        width: 0.6,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          "Ver párrafo original",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Icon(
+                                          _isExpanded
+                                              ? Icons.expand_less
+                                              : Icons.expand_more,
+                                          color: Colors.blueAccent,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                AnimatedCrossFade(
+                                  firstChild: const SizedBox.shrink(),
+                                  secondChild: Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.only(
+                                      top: 8,
+                                      bottom: 16,
+                                    ),
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade100,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      widget.aiReadingEntity.content,
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        height: 1.5,
+                                      ),
+                                    ),
+                                  ),
+                                  crossFadeState:
+                                      _isExpanded
+                                          ? CrossFadeState.showSecond
+                                          : CrossFadeState.showFirst,
+                                  duration: const Duration(milliseconds: 250),
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                Text(
+                                  "Ahora trata de encontrar la idea principal:",
+                                  style: theme.textTheme.titleMedium!.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                _buildRichTextField(),
+                                const SizedBox(height: 20),
+                                _buildSubmitButton(isLoading, context),
+                                const SizedBox(height: 15),
+                                // CustomButton(
+                                //   color: Colors.green,
+                                //   onTap:
+                                //       () => context.push(
+                                //         RouteNames.activitySummary,
+                                //         extra: widget.originalParagraph,
+                                //       ),
+                                //   child: Text("Siguiente actividad"),
+                                // ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                if (isLoading) BlurLoader(),
+              ],
+            ),
+            floatingActionButton: _buildFloatingActionButton(context),
+          ),
+        );
+      },
+    );
+  }
+
+  SizedBox _buildSubmitButton(bool isLoading, BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: ElevatedButton(
+        onPressed: isLoading ? null : () => _submitMainIdea(context),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blueAccent,
+          disabledBackgroundColor: Colors.grey.shade400,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: const Text(
+          "Evaluar idea principal",
+          style: TextStyle(fontSize: 16),
+        ),
+      ),
+    );
+  }
+
+  Flexible _buildRichTextField() {
+    return Flexible(
+      child: TextField(
+        controller: _controller,
+        maxLines: 8,
+        keyboardType: TextInputType.multiline,
+        textAlignVertical: TextAlignVertical.top,
+        decoration: InputDecoration(
+          hintText: "Escribe tu respuesta aquí...",
+          filled: true,
+          fillColor: Colors.grey.shade100,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.blueAccent, width: 1),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding _buildFloatingActionButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 60),
+      child: FloatingActionButton.extended(
+        onPressed: () => showMainIdeaTipDialog(context),
+        icon: const Icon(Icons.lightbulb),
+        label: SizedBox(),
+        backgroundColor: Colors.amber,
+      ),
+    );
+  }
+}

@@ -1,0 +1,69 @@
+name: 🚀 Deploy ReadMind (Production)
+
+on:
+  push:
+    branches:
+      - main   # Se ejecuta cuando haces merge de 'qa' a 'main'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Descarga el código
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Configura Flutter
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'
+          channel: 'stable'
+
+      # 3️⃣ Instala dependencias
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 4️⃣ Decodifica Keystore
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_FILE_BASE64 }}" | base64 --decode > android/app/my-release-key.jks
+
+      # 5️⃣ Crea key.properties
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=my-release-key.jks" >> android/key.properties
+
+      # 6️⃣ Decodifica .env.prod
+      - name: Decode .env.prod
+        run: |
+          mkdir -p assets/env
+          echo "${{ secrets.ENV_PROD_BASE64 }}" | base64 --decode > assets/env/.env.prod
+
+      # 🟢 6.1️⃣ Decodifica google-services.json (prod)
+      - name: Decode google-services.json (prod)
+        run: |
+          mkdir -p android/app/src/prod
+          echo "${{ secrets.GOOGLE_SERVICES_PROD_BASE64 }}" | base64 --decode > android/app/src/prod/google-services.json
+
+      # 7️⃣ Compila el .aab del flavor prod
+      - name: Build appbundle (prod)
+        run: flutter build appbundle --flavor prod --release --dart-define=FLAVOR=prod
+
+      # 8️⃣ Decodifica Play Store JSON key
+      - name: Decode Play Store JSON key
+        run: echo "${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}" | base64 --decode > /tmp/playstore_key.json
+
+      # 9️⃣ Sube a Google Play (Producción)
+      - name: Upload to Google Play (Production)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: /tmp/playstore_key.json
+          packageName: com.readmind.ai
+          releaseFiles: build/app/outputs/bundle/prodRelease/app-prod-release.aab
+          track: production
+          status: completed

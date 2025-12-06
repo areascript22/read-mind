@@ -1,5 +1,71 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
-import 'package:client_app/features/auth/data/datasources/auth_local_datasource.dart';
+import 'package:client_app/core/common/features/preferences/data/repository/preferences_repository_impl.dart';
+import 'package:client_app/core/common/features/preferences/domian/repository/preferences_repository.dart';
+import 'package:client_app/core/common/features/preferences/presentation/cubit/preferences_cubit/preferences_cubit.dart';
+import 'package:client_app/core/services/firebase_service.dart';
+import 'package:client_app/features/auth/data/repositories/initial_values_repository_impl.dart';
+import 'package:client_app/features/auth/domain/repositories/initial_values_repository.dart';
+import 'package:client_app/features/auth/helper/app_version_helper.dart';
+import 'package:client_app/features/auth/presentation/cubit/app_version_cubit/app_version_cubit.dart';
+import 'package:client_app/features/auth/presentation/cubit/notifications_cubit/notifications_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/datasource/local_datasource/local_reading_progress_datasource%20.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_local_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/data/repository/ai_reading_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/data/repository/flash_card_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/repository/flash_card_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/data/repository/notifications_history_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/domain/repository/notifications_history_repository.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/presentation/bloc/notifications_bloc/notifications_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/notifications/service/socket_service.dart';
+import 'package:client_app/features/home/children/courses/data/repository/attempts_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_local_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_repository.dart';
+import 'package:client_app/features/home/children/courses/domain/repository/attempts_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/bloc/ai_reading_bloc/ai_reading_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/translation_cubit/translation_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/data/datasources/coursecontent_remote_datasource.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/data/repositories/activity_progress_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/data/repositories/coursecontent_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/activity_progress_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/course_content_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_create_ai_reading.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_generate_paragraph.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_get_user.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_getall_activitiies.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/usecases/usecase_getall_students.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/activity_progress/activity_progress_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/students/students_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/data/repository/progress_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/domian/repository/progress_repository.dart';
+import 'package:client_app/features/home/children/courses/children/student_tracking/presentation/bloc/progress_bloc/tracking_bloc.dart';
+import 'package:client_app/features/home/children/courses/data/datasources/courses_remote_datasource.dart';
+import 'package:client_app/features/home/children/courses/data/repository/courses_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/domain/repository/courses_repositories.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/courses_create_new.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/courses_get_all.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/courses_get_all_enrolled.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/usecase_enroll_course.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/usecase_remove_course.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/usecase_unenroll_course.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/usecase_update_courseinfo.dart';
+import 'package:client_app/features/home/children/courses/domain/usecases/usecase_update_invitecode.dart';
+import 'package:client_app/features/home/children/courses/presentation/bloc/course_share_invitecode/share_invitecode_cubit.dart';
+import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc/courses_bloc.dart';
+import 'package:client_app/features/home/children/courses/presentation/services/share_service.dart';
+import 'package:client_app/features/home/children/profile/data/repository/profile_repository_impl.dart';
+import 'package:client_app/features/home/children/profile/domain/repository/profile_repository.dart';
+import 'package:client_app/features/home/children/profile/presentation/bloc/profile_bloc.dart';
+import 'package:client_app/features/home/children/users/data/repositores/user_manager_repository_impl.dart';
+import 'package:client_app/features/home/children/users/domain/repositories/user_manager_repository.dart';
+import 'package:client_app/features/home/children/users/presentation/bloc/user_manager_bloc.dart';
+import 'package:client_app/features/home/children/vocabulary/data/repository/vocabulary_repository_impl.dart';
+import 'package:client_app/features/home/children/vocabulary/domain/repository/vocabulary_repository.dart';
+import 'package:client_app/features/home/children/vocabulary/presentation/bloc/vocabulary_bloc/vocabulary_bloc.dart';
+import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:client_app/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:client_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:client_app/features/auth/domain/repositories/auth_repository.dart';
@@ -10,18 +76,42 @@ import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'features/home/children/courses/children/course_content/presentation/bloc/course_content/course_content_bloc.dart';
+
 final serviceLocator = GetIt.instance;
 
 Future<void> initDependencies() async {
-  serviceLocator.registerLazySingleton(() => AppUserCubit());
-
   await _initSharedPreferences();
   _initAuth();
+  _initNotificationsHistory();
+  _initUserPreferences();
+  _initCourses();
+  _initCourseContent();
+  _initUserManger();
+  _initProfile();
+  _initCourseActivities();
+  _initVocabulary();
+  _initActivityProgress();
+  _initActivityAttempts();
+  _initFlashCards();
+
+  serviceLocator.registerLazySingleton(
+    () => AppUserCubit(authLocalDataSource: serviceLocator()),
+  );
 }
 
 Future<void> _initSharedPreferences() async {
   final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-  serviceLocator.registerFactory<SharedPreferences>(() => sharedPrefs);
+  serviceLocator.registerLazySingleton(() => sharedPrefs);
+}
+
+void _initUserPreferences() {
+  serviceLocator.registerFactory<PreferencesRepository>(
+    () => PreferencesRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+  serviceLocator.registerLazySingleton(
+    () => PreferencesCubit(preferencesRepository: serviceLocator()),
+  );
 }
 
 void _initAuth() {
@@ -43,6 +133,229 @@ void _initAuth() {
       serviceLocator(),
       serviceLocator(),
       serviceLocator(),
+      authRepository: serviceLocator(),
     ),
+  );
+
+  serviceLocator.registerFactory<InitialValuesRepository>(
+    () => InitialValuesRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+  serviceLocator.registerFactory(() => AppVersionHelper());
+
+  serviceLocator.registerLazySingleton(
+    () => AppVersionCubit(
+      appVersionRepository: serviceLocator(),
+      appVersionHelper: serviceLocator(),
+    ),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => NotificationsCubit(
+      initialValuesRepository: serviceLocator(),
+      firebaseNotifications: FirebaseNotifications(),
+    ),
+  );
+}
+
+void _initNotificationsHistory() {
+  serviceLocator.registerFactory(() => SocketService());
+
+  serviceLocator.registerFactory<NotificationsHistoryRepository>(
+    () => NotificationsHistoryRepositoryImpl(
+      authLocalDataSource: serviceLocator(),
+      socketService: serviceLocator(),
+    ),
+  );
+  serviceLocator.registerLazySingleton(
+    () => NotificationsBloc(notificationsHistoryRepository: serviceLocator()),
+  );
+}
+
+void _initCourses() {
+  //Repositories
+  serviceLocator.registerFactory<CoursesRemoteDatasource>(
+    () => CoursesRemoteDatasourceImpl(),
+  );
+  serviceLocator.registerFactory<CoursesRepository>(
+    () => CoursesRepositoryImpl(serviceLocator(), serviceLocator()),
+  );
+
+  //UseCases
+  serviceLocator.registerFactory(() => GetAllCourses(serviceLocator()));
+  serviceLocator.registerFactory(
+    () => CoursesCreateNewUsecase(serviceLocator()),
+  );
+  serviceLocator.registerFactory(() => GetAllEnrolledCourses(serviceLocator()));
+  serviceLocator.registerFactory(() => UseCaseRemoveCourse(serviceLocator()));
+  serviceLocator.registerFactory(
+    () => UseCaseUpdateInviteCode(serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => UseCaseUpdateCourseInfo(serviceLocator()),
+  );
+
+  serviceLocator.registerFactory(() => UseCaseEnrollCourse(serviceLocator()));
+  serviceLocator.registerFactory(() => UseCaseUnEnrollCourse(serviceLocator()));
+
+  //Services
+  serviceLocator.registerFactory<ShareService>(() => ShareServiceImpl());
+
+  serviceLocator.registerLazySingleton(
+    () => ShareInvitecodeCubit(serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => CoursesBloc(
+      serviceLocator(),
+      serviceLocator(),
+      serviceLocator(),
+      serviceLocator(),
+      serviceLocator(),
+      serviceLocator(),
+      serviceLocator(),
+      serviceLocator(),
+    ),
+  );
+}
+
+void _initCourseContent() {
+  //Repositories
+  serviceLocator.registerFactory<CourseContentRemoteDataSource>(
+    () => CourseContentRemoteDataSourceImpl(),
+  );
+
+  serviceLocator.registerFactory<CourseContentRepository>(
+    () => CourseContentRepositoryImpl(serviceLocator(), serviceLocator()),
+  );
+  //UseCases
+  serviceLocator.registerFactory(() => UseCaseGetAllStudents(serviceLocator()));
+  serviceLocator.registerFactory(
+    () => UseCaseGenerateParagraph(serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => UseCaseCreateAIReading(serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => UseCaseGetAllActivities(serviceLocator()),
+  );
+
+  serviceLocator.registerFactory(() => UseCaseGetUser(serviceLocator()));
+  //Boc/Cubit
+  serviceLocator.registerLazySingleton(() => CourseCubit());
+
+  serviceLocator.registerLazySingleton(
+    () => CourseContentBloc(
+      useCaseGetAllStudents: serviceLocator(),
+      useCaseGenerateParagraph: serviceLocator(),
+      useCaseCreateAIReading: serviceLocator(),
+      useCaseGetAllActivities: serviceLocator(),
+      useCaseGetUser: serviceLocator(),
+    ),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => StudentsBloc(courseContentRepository: serviceLocator()),
+  );
+}
+
+void _initUserManger() {
+  serviceLocator.registerFactory<UserManagerRepository>(
+    () => UserManagerRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => UserManagerBloc(userManagerRepository: serviceLocator()),
+  );
+}
+
+void _initProfile() {
+  serviceLocator.registerFactory<ProfileRepository>(
+    () => ProfileRepositoryImpl(serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => ProfileBloc(profileRepository: serviceLocator()),
+  );
+}
+
+void _initCourseActivities() {
+  serviceLocator.registerFactory<AiReadingRepository>(
+    () => AiReadingRepositoryImpl(
+      authLocalDataSource: serviceLocator(),
+      aiReadingProgress: serviceLocator(),
+    ),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => AiReadingBloc(aiReadingRepository: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => TranslationCubit(aiReadingRepository: serviceLocator()),
+  );
+}
+
+void _initVocabulary() {
+  serviceLocator.registerFactory<VocabularyRepository>(
+    () => VocabularyRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => VocabularyBloc(vocabularyRepository: serviceLocator()),
+  );
+}
+
+void _initActivityAttempts() {
+  serviceLocator.registerFactory<AttemptsRepository>(
+    () => AttemptsRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => AttemptsCubit(attemptsRepository: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(() => TimerAttemptCubit());
+}
+
+void _initActivityProgress() {
+  serviceLocator.registerFactory(
+    () => LocalReadingProgressDataSource(sharedPreferences: serviceLocator()),
+  );
+
+  serviceLocator.registerFactory<ProgressRepository>(
+    () => ProgressRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerFactory<ActivityProgressRepository>(
+    () => ActivityProgressRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerFactory<AiReadingLocalRepository>(
+    () => AiReadingLocalRepositoryImpl(
+      localReadingProgressDatasource: serviceLocator(),
+    ),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => TrackingBloc(
+      progressRepository: serviceLocator(),
+      attemptsRepository: AttemptsRepositoryImpl(
+        authLocalDataSource: serviceLocator(),
+      ),
+    ),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => ActivityProgressBloc(activityProgressRepository: serviceLocator()),
+  );
+}
+
+void _initFlashCards() {
+  serviceLocator.registerFactory<FlashCardRepository>(
+    () => FlashCardRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => FlashCardBloc(flashCardRepository: serviceLocator()),
   );
 }

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/common/entities/user_entity.dart';
+import 'package:client_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:client_app/features/auth/domain/usecases/current_user.dart';
 import 'package:client_app/features/auth/domain/usecases/user_sign_in.dart';
 import 'package:client_app/features/auth/domain/usecases/user_sign_up.dart';
@@ -16,15 +17,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final CurrentUser currentUser;
   final AppUserCubit appUserCubit;
 
+  final AuthRepository authRepository;
+
   AuthBloc(
     this.userSignIn,
     this.userSignUp,
     this.currentUser,
-    this.appUserCubit,
-  ) : super(AuthInitialState()) {
+    this.appUserCubit, {
+    required this.authRepository,
+  }) : super(AuthInitialState()) {
     on<AuthEvent>((event, emit) => emit(AuthLoadingState()));
     on<AuthSignInEvent>(_onAuthSignIn);
     on<AuthIsUserLoggedIn>(_onAuthUserIsLoggedIn);
+    on<AuthSignUpEvent>(_onAuthSignUp);
+    on<AuthUserForgotPassword>(_userForgotPassword);
+    on<AuthResendVerificationLink>(_resendVerificationLink);
   }
 
   void _onAuthSignIn(AuthSignInEvent event, Emitter<AuthState> emit) async {
@@ -32,8 +39,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       UserSignInParams(email: event.email, password: event.password),
     );
     response.fold(
-      (l) => emit(AuthFailureState(l.message)),
-      (r) => emit(AuthSuccessState()),
+      (l) => _emitAuthFailure(emit, l.message),
+      (r) => _emitAuthSuccess(emit, r),
     );
   }
 
@@ -43,13 +50,57 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     final response = await currentUser(Noparams());
     response.fold(
-      (l) => emit(AuthFailureState(l.message)),
+      (l) => _emitAuthFailure(emit, l.message),
       (r) => _emitAuthSuccess(emit, r),
     );
   }
 
+  void _onAuthSignUp(AuthSignUpEvent event, Emitter<AuthState> emit) async {
+    final response = await userSignUp(
+      UserSignUpParams(
+        email: event.email,
+        password: event.password,
+        name: event.name,
+        lastName: event.lastName,
+      ),
+    );
+    response.fold(
+      (l) => _emitAuthFailure(emit, l.message),
+      (r) => _emitAuthSuccess(emit, r),
+    );
+  }
+
+  void _emitAuthFailure(Emitter<AuthState> emit, String message) {
+    appUserCubit.updateUserFailure(message);
+    emit(AuthFailureState(message));
+  }
+
   void _emitAuthSuccess(Emitter<AuthState> emit, UserEntity userEntity) {
     appUserCubit.updateUser(userEntity);
-    emit(AuthSuccessState());
+    emit(AuthSuccessState(userEntity));
+  }
+
+  void _userForgotPassword(
+    AuthUserForgotPassword event,
+    Emitter<AuthState> emit,
+  ) async {
+    final response = await authRepository.forgotPassword(email: event.email);
+    response.fold(
+      (l) => emit(AuthFailureState(l.message)),
+      (r) => emit(AuthResetPasswordLinkSent(message: r)),
+    );
+  }
+
+  void _resendVerificationLink(
+    AuthResendVerificationLink event,
+    Emitter<AuthState> emit,
+  ) async {
+    final response = await authRepository.resendVerificationLink(
+      email: event.email,
+    );
+    response.fold(
+      (l) => emit(AuthFailureState(l.message)),
+      (r) => emit(AuthVerificationLinkSent(message: r)),
+    );
   }
 }

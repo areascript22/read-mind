@@ -24,6 +24,16 @@ final class AuthSignUpEvent extends AuthEvent {
   });
 }
 
-final class AuthIsUserLoggedIn extends AuthEvent{
+final class AuthIsUserLoggedIn extends AuthEvent {}
 
+final class AuthUserForgotPassword extends AuthEvent {
+  final String email;
+
+  AuthUserForgotPassword({required this.email});
+}
+
+final class AuthResendVerificationLink extends AuthEvent {
+  final String email;
+
+  AuthResendVerificationLink({required this.email});
 }

@@ -11,6 +11,16 @@ final class AppUserLoggedIn extends AppUserState {
   final UserEntity userEntity;
   AppUserLoggedIn(this.userEntity);
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [userEntity];
+}
+
+final class AppUserFailure extends AppUserState{
+  final String message;
+
+   AppUserFailure(this.message);
+
+  @override
+  List<Object?> get props => [message];
+
 }
 

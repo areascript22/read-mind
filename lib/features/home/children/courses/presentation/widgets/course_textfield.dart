@@ -3,38 +3,30 @@ import 'package:flutter/material.dart';
 class CourseTextField extends StatefulWidget {
   final String hintText;
   final TextEditingController controller;
-
+  final FocusNode focusNode;
 
   const CourseTextField({
     super.key,
     required this.hintText,
     required this.controller,
+    required this.focusNode,
   });
 
   @override
-  _CustomTextFieldState createState() => _CustomTextFieldState();
+  _CourseTextFieldState createState() => _CourseTextFieldState();
 }
 
-class _CustomTextFieldState extends State<CourseTextField> {
+class _CourseTextFieldState extends State<CourseTextField> {
   bool _isFocused = false;
-
-  late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode();
-    _focusNode.addListener(() {
+    widget.focusNode.addListener(() {
       setState(() {
-        _isFocused = _focusNode.hasFocus;
+        _isFocused = widget.focusNode.hasFocus;
       });
     });
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
   }
 
   @override
@@ -42,23 +34,23 @@ class _CustomTextFieldState extends State<CourseTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Hint como etiqueta superior cuando está enfocado
         if (_isFocused) const SizedBox(height: 25),
         TextField(
           controller: widget.controller,
-          focusNode: _focusNode,
+          focusNode: widget.focusNode,
           decoration: InputDecoration(
             label: Text(widget.hintText),
             labelStyle: _isFocused ? const TextStyle(color: Colors.blue) : null,
-            suffixIcon: widget.controller.text.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear, color: Colors.grey),
-                    onPressed: () {
-                      widget.controller.clear();
-                      setState(() {});
-                    },
-                  )
-                : null,
+            suffixIcon:
+                widget.controller.text.isNotEmpty
+                    ? IconButton(
+                      icon: const Icon(Icons.clear, color: Colors.grey),
+                      onPressed: () {
+                        widget.controller.clear();
+                        setState(() {});
+                      },
+                    )
+                    : null,
             focusedBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.blue, width: 2.0),
             ),
@@ -67,7 +59,7 @@ class _CustomTextFieldState extends State<CourseTextField> {
             ),
           ),
           onChanged: (value) {
-            setState(() {}); // Actualizar la UI cuando cambia el texto
+            setState(() {});
           },
         ),
       ],

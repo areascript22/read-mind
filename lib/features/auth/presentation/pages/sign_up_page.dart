@@ -1,9 +1,13 @@
+import 'package:client_app/core/common/widget/app_version.dart';
 import 'package:client_app/core/common/widget/custom_button.dart';
 import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_in_page.dart';
+import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
+import '../../../../core/common/utils/toast_util.dart';
 import '../widgets/auth_password_textfield.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/background1.dart';
@@ -25,29 +29,26 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
+    return Scaffold(
       body: SingleChildScrollView(
-          child: Column(
-            children: [
-              ClipPath(
-                clipper: TrueInverseRoundedClipper(verticalPosition: 100),
-                child: Container(
-                  // padding: EdgeInsets.all(10),
-                  color: Colors.green,
-                  child: SizedBox(height: 300, child: Background1()),
-                ),
+        child: Column(
+          children: [
+            ClipPath(
+              clipper: TrueInverseRoundedClipper(verticalPosition: 100),
+              child: Container(
+                // padding: EdgeInsets.all(10),
+                color: Colors.green,
+                child: SizedBox(height: 300, child: Background1()),
               ),
-              _buildForm(context),
-            ],
-          ),
+            ),
+            _buildForm(context),
+          ],
         ),
+      ),
     );
-
   }
 
-  Form _buildForm(
-      BuildContext context,
-      ) {
+  Form _buildForm(BuildContext context) {
     return Form(
       key: formKey,
       child: Padding(
@@ -65,7 +66,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       children: [
                         const Text(
                           "¿Yá tienes una cuenta? ",
-                          style: TextStyle(fontSize: 15),
+                          style: TextStyle(fontSize: 17),
                         ),
                         GestureDetector(
                           onTap: () {
@@ -73,7 +74,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           },
                           child: const Text(
                             "Iniciar sesión",
-                            style: TextStyle(color: Colors.blue),
+                            style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.blue,
+                              decorationThickness: 0.8,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ],
@@ -112,7 +119,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   const SizedBox(height: 15),
                   AuthTextField(
                     textInputType: TextInputType.emailAddress,
-                    // scrollController: scrollController,
                     textEditingController: emailTextController,
                     hintText: 'Correo electrónico',
                     validator: (value) {
@@ -151,32 +157,59 @@ class _SignUpPageState extends State<SignUpPage> {
                     },
                   ),
                   const SizedBox(height: 15),
-                  CustomButton(
-                    onTap:
-                    true
-                        ? () async {
+                  BlocConsumer<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      return CustomButton(
+                        onTap:
+                            state is AuthLoadingState
+                                ? () {}
+                                : () {
+                                  if (formKey.currentState?.validate() ??
+                                      false) {
+                                    if (mounted) {
+                                      context.read<AuthBloc>().add(
+                                        AuthSignUpEvent(
+                                          email:
+                                              emailTextController.text
+                                                  .trim()
+                                                  .toLowerCase(),
+                                          password:
+                                              passwordTextController.text
+                                                  .trim(),
+                                          name: nameTextController.text.trim(),
+                                          lastName:
+                                              lastnameTectController.text
+                                                  .trim(),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                },
+                        child:
+                            state is AuthLoadingState
+                                ? const LoaderIndicator(
+                                  spinnerColor: Colors.blueAccent,
+                                )
+                                : const Text("Continuar"),
+                      );
+                    },
+                    listener: (context, state) {
+                      if (state is AuthFailureState) {
+                        ToastMessageUtil.showToast(state.message, context);
+                      }
 
-                    }
-                        : () {},
-                    child:
-                    true
-                        ? const Text(
-                      'Continuar',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ) : const CircularProgressIndicator(),
+                      if (state is AuthSuccessState) {
+                        context.go(RouteNames.authWrapper);
+                      }
+                    },
                   ),
                 ],
               ),
-              _buildVersionInfoSection(),
+              AppVersion(),
             ],
           ),
         ),
       ),
     );
   }
-
-  Column _buildVersionInfoSection() => Column(children: [Divider(), Text("sharedViewModel.version")]);
 }

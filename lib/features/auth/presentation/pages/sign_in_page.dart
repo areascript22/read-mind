@@ -75,7 +75,7 @@ class _SignInPageState extends State<SignInPage> {
                         children: [
                           const Text(
                             "¿Aun no tienes una cuenta? ",
-                            style: TextStyle(fontSize: 15),
+                            style: TextStyle(fontSize: 17),
                           ),
                           GestureDetector(
                             onTap: () {
@@ -83,7 +83,13 @@ class _SignInPageState extends State<SignInPage> {
                             },
                             child: const Text(
                               "Crear cuenta",
-                              style: TextStyle(color: Colors.blue),
+                              style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.blue,
+                                decorationThickness: 0.8,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                         ],
@@ -130,87 +136,86 @@ class _SignInPageState extends State<SignInPage> {
                       },
                     ),
 
-                    //Forgot password
                     const SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            //Navigate to Password recovery Page
-                          },
-                          child: const Text(
-                            "¿Olvidaste tu contraseña?",
-                            style: TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                              decorationColor: Colors.blue,
-                              decorationThickness: 0.8,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    //Sign In Button
+                    _buildForgotPassword(context),
                     const SizedBox(height: 15),
-                    BlocConsumer<AuthBloc, AuthState>(
-                      listener: (context, state) {
-                        if (state is AuthFailureState) {
-                          ToastMessageUtil.showToast(state.message, context);
-                        }
-                      },
-                      builder: (context, state) {
-                        return CustomButton(
-                          onTap:
-                              state is AuthLoadingState
-                                  ? () {}
-
-                                  : () {
-                                    if (formKey.currentState?.validate() ??
-                                        false) {
-                                     if(mounted){
-                                       context.read<AuthBloc>().add(
-                                         AuthSignInEvent(
-                                           email:
-                                           emailTextController.text.trim(),
-                                           password:
-                                           passwordTextController.text
-                                               .trim(),
-                                         ),
-                                       );
-                                     }
-                                    }
-                                  },
-                          child:
-                              state is AuthLoadingState
-                                  ? SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.blue,
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                  : Text("Iniciar sesión"),
-                        );
-                      },
-                    ),
+                    _buildSignInButton(),
                   ],
                 ),
 
                 //Bottom part
-                Column(
-                  children: [
-                    Divider(),
-                    AppVersion(),
-                  ],
-                ),
+                Column(children: [Divider(), AppVersion()]),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Row _buildForgotPassword(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        GestureDetector(
+          onTap: () => context.go(RouteNames.recoverPassword),
+          child: const Text(
+            "¿Olvidaste tu contraseña?",
+            style: TextStyle(
+              color: Colors.blue,
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.blue,
+              decorationThickness: 0.8,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  BlocConsumer<AuthBloc, AuthState> _buildSignInButton() {
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthFailureState) {
+          ToastMessageUtil.showToast(state.message, context);
+        }
+
+        if (state is AuthSuccessState) {
+          context.go(RouteNames.authWrapper);
+        }
+      },
+      builder: (context, state) {
+        return CustomButton(
+          onTap:
+              state is AuthLoadingState
+                  ? () {}
+                  : () {
+                    if (formKey.currentState?.validate() ?? false) {
+                      if (mounted) {
+                        context.read<AuthBloc>().add(
+                          AuthSignInEvent(
+                            email:
+                                emailTextController.text.trim().toLowerCase(),
+                            password: passwordTextController.text.trim(),
+                          ),
+                        );
+                      }
+                    }
+                  },
+          child:
+              state is AuthLoadingState
+                  ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.blue,
+                      strokeWidth: 2,
+                    ),
+                  )
+                  : Text("Iniciar sesión"),
+        );
+      },
     );
   }
 }

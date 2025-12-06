@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- int get id; String get name; String get lastName; String get email; String get passwordHash; RoleModel get role; DateTime get createdAt;
+ int get id; String get name; String get lastName; String get email; String get passwordHash; RoleModel get role; DateTime get createdAt; bool get emailVerified;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.passwordHash, passwordHash) || other.passwordHash == passwordHash)&&(identical(other.role, role) || other.role == role)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.passwordHash, passwordHash) || other.passwordHash == passwordHash)&&(identical(other.role, role) || other.role == role)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.emailVerified, emailVerified) || other.emailVerified == emailVerified));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,lastName,email,passwordHash,role,createdAt);
+int get hashCode => Object.hash(runtimeType,id,name,lastName,email,passwordHash,role,createdAt,emailVerified);
 
 @override
 String toString() {
-  return 'UserModel(id: $id, name: $name, lastName: $lastName, email: $email, passwordHash: $passwordHash, role: $role, createdAt: $createdAt)';
+  return 'UserModel(id: $id, name: $name, lastName: $lastName, email: $email, passwordHash: $passwordHash, role: $role, createdAt: $createdAt, emailVerified: $emailVerified)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, String lastName, String email, String passwordHash, RoleModel role, DateTime createdAt
+ int id, String name, String lastName, String email, String passwordHash, RoleModel role, DateTime createdAt, bool emailVerified
 });
 
 
@@ -65,7 +65,7 @@ class _$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? lastName = null,Object? email = null,Object? passwordHash = null,Object? role = null,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? lastName = null,Object? email = null,Object? passwordHash = null,Object? role = null,Object? createdAt = null,Object? emailVerified = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,8 @@ as String,email: null == email ? _self.email : email // ignore: cast_nullable_to
 as String,passwordHash: null == passwordHash ? _self.passwordHash : passwordHash // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as RoleModel,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,emailVerified: null == emailVerified ? _self.emailVerified : emailVerified // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of UserModel
@@ -168,10 +169,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  String lastName,  String email,  String passwordHash,  RoleModel role,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  String lastName,  String email,  String passwordHash,  RoleModel role,  DateTime createdAt,  bool emailVerified)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.name,_that.lastName,_that.email,_that.passwordHash,_that.role,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.lastName,_that.email,_that.passwordHash,_that.role,_that.createdAt,_that.emailVerified);case _:
   return orElse();
 
 }
@@ -189,10 +190,10 @@ return $default(_that.id,_that.name,_that.lastName,_that.email,_that.passwordHas
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  String lastName,  String email,  String passwordHash,  RoleModel role,  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  String lastName,  String email,  String passwordHash,  RoleModel role,  DateTime createdAt,  bool emailVerified)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
-return $default(_that.id,_that.name,_that.lastName,_that.email,_that.passwordHash,_that.role,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.lastName,_that.email,_that.passwordHash,_that.role,_that.createdAt,_that.emailVerified);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +210,10 @@ return $default(_that.id,_that.name,_that.lastName,_that.email,_that.passwordHas
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  String lastName,  String email,  String passwordHash,  RoleModel role,  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  String lastName,  String email,  String passwordHash,  RoleModel role,  DateTime createdAt,  bool emailVerified)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.name,_that.lastName,_that.email,_that.passwordHash,_that.role,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.lastName,_that.email,_that.passwordHash,_that.role,_that.createdAt,_that.emailVerified);case _:
   return null;
 
 }
@@ -224,7 +225,7 @@ return $default(_that.id,_that.name,_that.lastName,_that.email,_that.passwordHas
 @JsonSerializable()
 
 class _UserModel implements UserModel {
-  const _UserModel({required this.id, required this.name, required this.lastName, required this.email, required this.passwordHash, required this.role, required this.createdAt});
+  const _UserModel({required this.id, required this.name, required this.lastName, required this.email, required this.passwordHash, required this.role, required this.createdAt, this.emailVerified = false});
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  int id;
@@ -234,6 +235,7 @@ class _UserModel implements UserModel {
 @override final  String passwordHash;
 @override final  RoleModel role;
 @override final  DateTime createdAt;
+@override@JsonKey() final  bool emailVerified;
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
@@ -248,16 +250,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.passwordHash, passwordHash) || other.passwordHash == passwordHash)&&(identical(other.role, role) || other.role == role)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.passwordHash, passwordHash) || other.passwordHash == passwordHash)&&(identical(other.role, role) || other.role == role)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.emailVerified, emailVerified) || other.emailVerified == emailVerified));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,lastName,email,passwordHash,role,createdAt);
+int get hashCode => Object.hash(runtimeType,id,name,lastName,email,passwordHash,role,createdAt,emailVerified);
 
 @override
 String toString() {
-  return 'UserModel(id: $id, name: $name, lastName: $lastName, email: $email, passwordHash: $passwordHash, role: $role, createdAt: $createdAt)';
+  return 'UserModel(id: $id, name: $name, lastName: $lastName, email: $email, passwordHash: $passwordHash, role: $role, createdAt: $createdAt, emailVerified: $emailVerified)';
 }
 
 
@@ -268,7 +270,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, String lastName, String email, String passwordHash, RoleModel role, DateTime createdAt
+ int id, String name, String lastName, String email, String passwordHash, RoleModel role, DateTime createdAt, bool emailVerified
 });
 
 
@@ -285,7 +287,7 @@ class __$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? lastName = null,Object? email = null,Object? passwordHash = null,Object? role = null,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? lastName = null,Object? email = null,Object? passwordHash = null,Object? role = null,Object? createdAt = null,Object? emailVerified = null,}) {
   return _then(_UserModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -294,7 +296,8 @@ as String,email: null == email ? _self.email : email // ignore: cast_nullable_to
 as String,passwordHash: null == passwordHash ? _self.passwordHash : passwordHash // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as RoleModel,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,emailVerified: null == emailVerified ? _self.emailVerified : emailVerified // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

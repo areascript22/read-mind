@@ -1,13 +1,12 @@
 import 'dart:convert';
+import 'package:client_app/core/constants/app_environment.dart';
 import 'package:client_app/features/auth/data/models/auth_response.dart';
 import 'package:http/http.dart' as http;
-
-import '../../../../core/constants/environment.dart';
 import '../../../../core/error/server_exception.dart';
 import '../models/user_model/user_model.dart';
 
 abstract interface class AuthRemoteDatasource {
-  Future<UserModel> signUpWithEmailPassword({
+  Future<AuthResponse> signUpWithEmailPassword({
     required String email,
     required String password,
     required String name,
@@ -29,14 +28,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDatasource {
     required String password,
   }) async {
     try {
-      final url = Uri.parse("${Environments.authUrl}/sign_in");
+      final url = Uri.parse("${AppEnvironment().baseUrl}/auth/sign_in");
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email, "password": password}),
       );
       final data = jsonDecode(response.body);
-      print("sign in email pass: ${data}");
       if (response.statusCode != 200) {
         throw ServerException(data['message']);
       }
@@ -49,14 +47,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDatasource {
   }
 
   @override
-  Future<UserModel> signUpWithEmailPassword({
+  Future<AuthResponse> signUpWithEmailPassword({
     required String email,
     required String password,
     required String name,
     required String lastName,
   }) async {
     try {
-      final url = Uri.parse("${Environments.authUrl}/sign_up");
+      final url = Uri.parse("${AppEnvironment().baseUrl}/auth/sign_up");
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
@@ -68,11 +66,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDatasource {
         }),
       );
       final data = jsonDecode(response.body);
-      if (response.statusCode != 200) {
+      if (response.statusCode != 201) {
         throw ServerException(data['message']);
       }
       final userJson = data['user'];
-      return UserModel.fromJson(userJson);
+      final userModel = UserModel.fromJson(userJson);
+      final token = data['token'];
+      return AuthResponse(userModel: userModel, token: token);
     } catch (e) {
       throw ServerException(e is ServerException ? e.message : e.toString());
     }
@@ -81,10 +81,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDatasource {
   @override
   Future<AuthResponse> getCurrentUser({required String jwt}) async {
     try {
-      final response = await http.get(
-        Uri.parse('${Environments.authUrl}/renew'),
-        headers: {'Content-Type': 'application/json', 'x-token': jwt},
-      );
+      final response = await http
+          .get(
+            Uri.parse('${AppEnvironment().baseUrl}/auth/renew'),
+            headers: {'Content-Type': 'application/json', 'x-token': jwt},
+          )
+          .timeout(Duration(seconds: 5));
       final data = jsonDecode(response.body);
       if (response.statusCode != 200) {
         throw ServerException(data['message']);
