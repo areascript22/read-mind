@@ -82,42 +82,4 @@ class ActivityProgressRepositoryImpl implements ActivityProgressRepository {
       return left(Failure("No se pudo actualizar el recurso"));
     }
   }
-
-  @override
-  Future<Either<Failure, bool>> isActivityOverdue({
-    required int activityId,
-  }) async {
-    final url = Uri.parse(
-      "${AppEnvironment().baseUrl}/courseActivity/$activityId/overdue",
-    );
-
-    try {
-      final token = await authLocalDataSource.getJwt();
-      if (token == null) {
-        return left(Failure("No autenticado. Inicia sesión de nuevo"));
-      }
-
-      final response = await http.get(
-        url,
-        headers: {"Content-Type": "application/json", "x-token": token},
-      );
-
-      final data = jsonDecode(response.body);
-
-      if (response.statusCode != 200) {
-        throw ServerException(data['message'] ?? "Error al consultar fecha");
-      }
-
-      final overdue = data['isOverdue'];
-
-      return Right(overdue);
-    } catch (e) {
-      debugPrint("Error al consultar fecha: $e");
-      if (e is ServerException) {
-        debugPrint("Error al consultar fecha: ${e.message}");
-        return left(Failure(e.message));
-      }
-      return left(Failure("Error al consultar fecha"));
-    }
-  }
 }

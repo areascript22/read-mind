@@ -16,6 +16,8 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/repository/flash_card_repository.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flash_card_creation/flashcard_creation_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/data/repositories/activity_date_repository_impl.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/activity_date_repository.dart';
 import 'package:client_app/features/home/children/courses/children/notifications/data/repository/notifications_history_repository_impl.dart';
 import 'package:client_app/features/home/children/courses/children/notifications/domain/repository/notifications_history_repository.dart';
 import 'package:client_app/features/home/children/courses/children/notifications/presentation/bloc/notifications_bloc/notifications_bloc.dart';
@@ -92,6 +94,7 @@ Future<void> initDependencies() async {
   _initProfile();
   _initCourseActivities();
   _initVocabulary();
+  _initActivityDate();
   _initActivityProgress();
   _initActivityAttempts();
   _initFlashCards();
@@ -318,6 +321,12 @@ void _initActivityAttempts() {
   serviceLocator.registerLazySingleton(() => TimerAttemptCubit());
 }
 
+void _initActivityDate() {
+  serviceLocator.registerFactory<ActivityDateRepository>(
+    () => ActivityDateRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+}
+
 void _initActivityProgress() {
   serviceLocator.registerFactory(
     () => LocalReadingProgressDataSource(sharedPreferences: serviceLocator()),
@@ -347,7 +356,10 @@ void _initActivityProgress() {
   );
 
   serviceLocator.registerLazySingleton(
-    () => ActivityProgressBloc(activityProgressRepository: serviceLocator()),
+    () => ActivityProgressBloc(
+      activityProgressRepository: serviceLocator(),
+      activityDateRepository: serviceLocator(),
+    ),
   );
 }
 
