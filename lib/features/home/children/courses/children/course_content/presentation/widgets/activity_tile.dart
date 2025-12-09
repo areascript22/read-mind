@@ -16,8 +16,13 @@ import '../bloc/activity_progress/activity_progress_bloc.dart';
 
 class ActivityTile extends StatelessWidget {
   final ActivityModel activity;
+  final bool hasModifyPermission;
 
-  const ActivityTile({super.key, required this.activity});
+  const ActivityTile({
+    super.key,
+    required this.activity,
+    required this.hasModifyPermission,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +53,7 @@ class ActivityTile extends StatelessWidget {
           complexity: complexity,
           style: style,
           totalScore: totalScore,
+          hasModifyPermission: hasModifyPermission,
         );
       },
 
@@ -76,6 +82,7 @@ class ActivityTile extends StatelessWidget {
           cardOrder: cardOrder,
           hasScoring: hasScoring,
           bestScore: bestScore,
+          hasModifyPermission: hasModifyPermission,
         );
       },
     );
@@ -93,6 +100,7 @@ class ActivityTile extends StatelessWidget {
     required String complexity,
     required String style,
     required double? totalScore,
+    required bool hasModifyPermission,
   }) {
     return BlocProvider.value(
       value: serviceLocator<ActivityProgressBloc>(),
@@ -109,6 +117,7 @@ class ActivityTile extends StatelessWidget {
         style: style,
         activity: activity,
         totalScore: totalScore,
+        hasModifyPermissions: hasModifyPermission,
       ),
     );
   }
@@ -124,6 +133,7 @@ class ActivityTile extends StatelessWidget {
     required String cardOrder,
     required bool hasScoring,
     required double? bestScore,
+    required bool hasModifyPermission,
   }) {
     return BlocProvider.value(
       value: serviceLocator<FlashCardBloc>(),
@@ -138,6 +148,7 @@ class ActivityTile extends StatelessWidget {
         hasScoring: hasScoring,
         activity: activity,
         bestScore: bestScore,
+        hasModifyPermission: hasModifyPermission,
       ),
     );
   }
@@ -156,6 +167,7 @@ class _AIReadingTileContent extends StatelessWidget {
   final String style;
   final ActivityModel activity;
   final double? totalScore;
+  final bool hasModifyPermissions;
 
   const _AIReadingTileContent({
     required this.id,
@@ -170,6 +182,7 @@ class _AIReadingTileContent extends StatelessWidget {
     required this.style,
     required this.activity,
     required this.totalScore,
+    required this.hasModifyPermissions,
   });
 
   @override
@@ -298,47 +311,49 @@ class _AIReadingTileContent extends StatelessWidget {
                           ),
                         ),
                       ),
-                    PopupMenuButton<String>(
-                      onSelected: (String value) {
-                        switch (value) {
-                          case 'opcion1':
-                            context.push(
-                              RouteNames.aiReadingUpdateParams,
-                              extra: AiReadingUpdateParamsEntity(
-                                aiReadingEntity: activity.toAIReadingEntity()!,
-                                activityId: activityId,
+                    if (hasModifyPermissions)
+                      PopupMenuButton<String>(
+                        onSelected: (String value) {
+                          switch (value) {
+                            case 'opcion1':
+                              context.push(
+                                RouteNames.aiReadingUpdateParams,
+                                extra: AiReadingUpdateParamsEntity(
+                                  aiReadingEntity:
+                                      activity.toAIReadingEntity()!,
+                                  activityId: activityId,
+                                ),
+                              );
+                              break;
+                            case 'opcion2':
+                              break;
+                          }
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            PopupMenuItem<String>(
+                              value: 'opcion1',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit, color: Colors.blue),
+                                  SizedBox(width: 10),
+                                  Text('Editar'),
+                                ],
                               ),
-                            );
-                            break;
-                          case 'opcion2':
-                            break;
-                        }
-                      },
-                      itemBuilder: (BuildContext context) {
-                        return [
-                          PopupMenuItem<String>(
-                            value: 'opcion1',
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit, color: Colors.blue),
-                                SizedBox(width: 10),
-                                Text('Editar'),
-                              ],
                             ),
-                          ),
-                          // PopupMenuItem<String>(
-                          //   value: 'opcion2',
-                          //   child: Row(
-                          //     children: [
-                          //       Icon(Icons.delete, color: Colors.red),
-                          //       SizedBox(width: 10),
-                          //       Text('Eliminar'),
-                          //     ],
-                          //   ),
-                          // ),
-                        ];
-                      },
-                    ),
+                            // PopupMenuItem<String>(
+                            //   value: 'opcion2',
+                            //   child: Row(
+                            //     children: [
+                            //       Icon(Icons.delete, color: Colors.red),
+                            //       SizedBox(width: 10),
+                            //       Text('Eliminar'),
+                            //     ],
+                            //   ),
+                            // ),
+                          ];
+                        },
+                      ),
                   ],
                 ),
                 const SizedBox(height: 16),
