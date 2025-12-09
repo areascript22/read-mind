@@ -4,12 +4,14 @@ class CourseTextField extends StatefulWidget {
   final String hintText;
   final TextEditingController controller;
   final FocusNode focusNode;
+  final TextInputType textInputType;
 
   const CourseTextField({
     super.key,
     required this.hintText,
     required this.controller,
     required this.focusNode,
+    this.textInputType = TextInputType.text,
   });
 
   @override
@@ -38,6 +40,7 @@ class _CourseTextFieldState extends State<CourseTextField> {
         TextField(
           controller: widget.controller,
           focusNode: widget.focusNode,
+          keyboardType: widget.textInputType,
           decoration: InputDecoration(
             label: Text(widget.hintText),
             labelStyle: _isFocused ? const TextStyle(color: Colors.blue) : null,

@@ -18,10 +18,13 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/reading_activities_container.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/summary_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/update_aireading_params.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/flashcard_update_params.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/param_flashcard_entity.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flash_card_creation/flashcard_creation_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/page/create_flash_card_activity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/page/flash_card_activity_page.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/page/update_flashcard_params.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/paragraph_metadata.dart';
@@ -217,6 +220,20 @@ class AppRouter {
                   state.extra as AiReadingUpdateParamsEntity;
               return UpdateAiReadingParamsPage(
                 aiReadingUpdateParams: aiReadingEntity1,
+              );
+            },
+          ),
+
+          GoRoute(
+            path: RouteNames.flashCardsUpdateParams,
+            builder: (context, state) {
+              final aiReadingEntity1 =
+                  state.extra as FlashCardUpdateParamsEntity;
+              return BlocProvider.value(
+                value: serviceLocator<FlashcardCreationCubit>(),
+                child: UpdateFlashCardParamsPage(
+                  flashCardUpdateParams: aiReadingEntity1,
+                ),
               );
             },
           ),

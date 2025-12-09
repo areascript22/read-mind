@@ -1,5 +1,6 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/flashcard_update_params.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/param_flashcard_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/widget/dialog_enough_translations.dart';
@@ -259,6 +260,48 @@ class FlashCardTileContent extends StatelessWidget {
                           ],
                         ),
                       ),
+
+                    PopupMenuButton<String>(
+                      onSelected: (String value) {
+                        switch (value) {
+                          case 'opcion1':
+                            context.push(
+                              RouteNames.flashCardsUpdateParams,
+                              extra: FlashCardUpdateParamsEntity(
+                                flashCardentity: activity.toFlashCardEntity()!,
+                                activityId: activityId,
+                              ),
+                            );
+                            break;
+                          case 'opcion2':
+                            break;
+                        }
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return [
+                          PopupMenuItem<String>(
+                            value: 'opcion1',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit, color: Colors.blue),
+                                SizedBox(width: 10),
+                                Text('Editar'),
+                              ],
+                            ),
+                          ),
+                          // PopupMenuItem<String>(
+                          //   value: 'opcion2',
+                          //   child: Row(
+                          //     children: [
+                          //       Icon(Icons.delete, color: Colors.red),
+                          //       SizedBox(width: 10),
+                          //       Text('Eliminar'),
+                          //     ],
+                          //   ),
+                          // ),
+                        ];
+                      },
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
