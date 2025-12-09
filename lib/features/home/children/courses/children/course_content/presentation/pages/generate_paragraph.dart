@@ -3,6 +3,7 @@ import 'package:client_app/core/common/widget/custom_button.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/paragraph_metadata.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/course_content/course_content_bloc.dart';
+import 'package:client_app/features/home/children/courses/presentation/widgets/buttons/create_button.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -92,15 +93,20 @@ class _GenerateParagraphPageState extends State<GenerateParagraphPage> {
             final loading =
                 state is CourseContentLoading &&
                 state.actions == CCActions.generateParagraph;
-            return CustomButton(
+
+            return CreateButton(
               onTap: loading ? () {} : () => _handleGenerateParagraph(context),
               child:
                   loading
-                      ? LoaderIndicator(
-                        spinnerSize: 20,
-                        spinnerColor: Colors.blueAccent,
+                      ? SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(color: Colors.white),
                       )
-                      : const Text("Generar"),
+                      : const Text(
+                        "Generar",
+                        style: TextStyle(color: Colors.white),
+                      ),
             );
           },
           listener: (context, state) {},

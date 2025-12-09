@@ -1,6 +1,12 @@
 part of 'ai_reading_bloc.dart';
 
-enum AiActionType { paraphrase, mainIdea, summary, aiReading }
+enum AiActionType {
+  paraphrase,
+  mainIdea,
+  summary,
+  aiReading,
+  aiReadingUpdateParams,
+}
 
 @immutable
 sealed class AiReadingState extends Equatable {}
@@ -53,4 +59,12 @@ final class SummarySuccess extends AiReadingState {
 
   @override
   List<Object?> get props => [feedbackEntity];
+}
+
+final class AiReadingParamsUpdated extends AiReadingState {
+  final AIReadingEntity aiReadingUpdated;
+  AiReadingParamsUpdated({required this.aiReadingUpdated});
+
+  @override
+  List<Object?> get props => [aiReadingUpdated];
 }

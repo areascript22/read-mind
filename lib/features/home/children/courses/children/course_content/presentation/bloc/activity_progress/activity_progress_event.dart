@@ -5,8 +5,12 @@ sealed class ActivityProgressEvent {}
 
 class CreateInitialProgressEvent extends ActivityProgressEvent {
   final int aiReadingId;
+  final int activityId;
 
-  CreateInitialProgressEvent({required this.aiReadingId});
+  CreateInitialProgressEvent({
+    required this.aiReadingId,
+    required this.activityId,
+  });
 }
 
 class UpdateProgressEvent extends ActivityProgressEvent {

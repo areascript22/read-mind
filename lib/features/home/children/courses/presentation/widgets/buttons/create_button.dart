@@ -10,10 +10,11 @@ class CreateButton extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Material(
-        color: Colors.transparent,
+        color: Colors.white.withValues(alpha: 0.25),
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(20),
+          splashColor: Colors.blue[100],
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             child: child,

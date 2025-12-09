@@ -2,6 +2,7 @@ import 'package:client_app/core/error/failure.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_mainidea_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_summary_entity.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:client_app/features/home/domain/entity/translation_entity.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -27,5 +28,12 @@ abstract interface class AiReadingRepository {
   Future<Either<Failure, TranslationEntity>> translateWord({
     required String text,
     required int readingId,
+  });
+
+  Future<Either<Failure, AIReadingEntity>> updateAiReadingParams({
+    required int activityId,
+    required String title,
+    required String description,
+    required DateTime dueDate,
   });
 }

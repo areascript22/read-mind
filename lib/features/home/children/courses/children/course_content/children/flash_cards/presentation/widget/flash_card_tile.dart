@@ -1,6 +1,8 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/flashcard_update_params.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/param_flashcard_entity.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/date_cubit/flashcard_date_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/widget/dialog_enough_translations.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
@@ -22,6 +24,8 @@ class FlashCardTileContent extends StatelessWidget {
   final bool hasScoring;
   final ActivityModel activity;
   final double? bestScore;
+  final bool hasModifyPermission;
+  final int courseId;
 
   const FlashCardTileContent({
     super.key,
@@ -35,18 +39,17 @@ class FlashCardTileContent extends StatelessWidget {
     required this.hasScoring,
     required this.activity,
     required this.bestScore,
+    required this.hasModifyPermission,
+    required this.courseId,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<FlashCardBloc>().add(
-          FlashCardLoadAll(
-            limit: maxCards,
-            order: cardOrder,
-            currentFlashCardActivity: flashCardActivityId,
-          ),
+        context.read<FlashCardDateCubit>().checkActivityOverdue(
+          activityId: activityId,
+          flashCardActivity: flashCardActivityId,
         );
       },
       child: Card(
@@ -74,6 +77,29 @@ class FlashCardTileContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                BlocListener<FlashCardDateCubit, DateState>(
+                  listener: (context, state) {
+                    if (state is DateSuccess &&
+                        state.isOverdue &&
+                        flashCardActivityId == state.currentFlashCardActivity) {
+                      ToastMessageUtil.showToast('Actividad vencida', context);
+                      return;
+                    }
+
+                    if (state is DateSuccess &&
+                        !state.isOverdue &&
+                        flashCardActivityId == state.currentFlashCardActivity) {
+                      context.read<FlashCardBloc>().add(
+                        FlashCardLoadAll(
+                          limit: maxCards,
+                          order: cardOrder,
+                          currentFlashCardActivity: flashCardActivityId,
+                        ),
+                      );
+                    }
+                  },
+                  child: SizedBox(),
+                ),
                 // Estado de carga
                 BlocConsumer<FlashCardBloc, FlashCardState>(
                   builder: (context, state) {
@@ -258,6 +284,50 @@ class FlashCardTileContent extends StatelessWidget {
                             ),
                           ],
                         ),
+                      ),
+                    if (hasModifyPermission)
+                      PopupMenuButton<String>(
+                        onSelected: (String value) {
+                          switch (value) {
+                            case 'opcion1':
+                              context.push(
+                                RouteNames.flashCardsUpdateParams,
+                                extra: FlashCardUpdateParamsEntity(
+                                  flashCardentity:
+                                      activity.toFlashCardEntity()!,
+                                  activityId: activityId,
+                                  courseId: courseId,
+                                ),
+                              );
+                              break;
+                            case 'opcion2':
+                              break;
+                          }
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            PopupMenuItem<String>(
+                              value: 'opcion1',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit, color: Colors.blue),
+                                  SizedBox(width: 10),
+                                  Text('Editar'),
+                                ],
+                              ),
+                            ),
+                            // PopupMenuItem<String>(
+                            //   value: 'opcion2',
+                            //   child: Row(
+                            //     children: [
+                            //       Icon(Icons.delete, color: Colors.red),
+                            //       SizedBox(width: 10),
+                            //       Text('Eliminar'),
+                            //     ],
+                            //   ),
+                            // ),
+                          ];
+                        },
                       ),
                   ],
                 ),

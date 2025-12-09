@@ -1,6 +1,7 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/common/widget/custom_button.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/paragraph_metadata.dart';
+import 'package:client_app/features/home/children/courses/presentation/widgets/buttons/create_button.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -102,15 +103,19 @@ class _CreateAiReadingPageState extends State<CreateAiReadingPage> {
               final isLoading =
                   state is CourseContentLoading &&
                   state.actions == CCActions.createAiReading;
-              return CustomButton(
+              return CreateButton(
                 onTap: isLoading ? () {} : () => _saveAiReading(),
                 child:
                     isLoading
-                        ? LoaderIndicator(
-                          spinnerSize: 20,
-                          spinnerColor: Colors.blueAccent,
+                        ? SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(color: Colors.white),
                         )
-                        : const Text("Guardar"),
+                        : const Text(
+                          "Guardar",
+                          style: TextStyle(color: Colors.white),
+                        ),
               );
             },
             listener: (context, state) {
