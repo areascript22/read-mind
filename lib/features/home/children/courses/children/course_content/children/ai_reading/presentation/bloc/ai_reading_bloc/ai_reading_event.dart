@@ -52,3 +52,20 @@ final class AiReadingCompletionEvent extends AiReadingEvent {
   @override
   List<Object?> get props => [completed];
 }
+
+final class AiReadingUpdateParams extends AiReadingEvent {
+  final int activityId;
+  final String title;
+  final String description;
+  final DateTime dueDate;
+
+  AiReadingUpdateParams({
+    required this.activityId,
+    required this.title,
+    required this.description,
+    required this.dueDate,
+  });
+
+  @override
+  List<Object?> get props => [activityId, title, description, dueDate];
+}

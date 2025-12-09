@@ -8,6 +8,7 @@ import 'package:client_app/features/auth/presentation/pages/recover_password_pag
 import 'package:client_app/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:client_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:client_app/features/auth/presentation/pages/splash_screen.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/aireading_update_params_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
@@ -16,6 +17,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/paraphrase_page.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/reading_activities_container.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/summary_page.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/update_aireading_params.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/param_flashcard_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/page/create_flash_card_activity.dart';
@@ -205,6 +207,17 @@ class AppRouter {
             builder: (context, state) {
               final activityModel = state.extra as ActivityModel;
               return ReadingActivitiesContainer(activityModel: activityModel);
+            },
+          ),
+
+          GoRoute(
+            path: RouteNames.aiReadingUpdateParams,
+            builder: (context, state) {
+              final aiReadingEntity1 =
+                  state.extra as AiReadingUpdateParamsEntity;
+              return UpdateAiReadingParamsPage(
+                aiReadingUpdateParams: aiReadingEntity1,
+              );
             },
           ),
 

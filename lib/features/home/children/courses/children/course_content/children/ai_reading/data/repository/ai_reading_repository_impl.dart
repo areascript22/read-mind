@@ -8,6 +8,8 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_mainidea_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_summary_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/data/models/activity_model/activity_model.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:client_app/features/home/data/model/translation_model/translation_model.dart';
 import 'package:client_app/features/home/domain/entity/translation_entity.dart';
 import 'package:client_app/shared/datasources/auth_local_datasource.dart';
@@ -175,6 +177,53 @@ class AiReadingRepositoryImpl implements AiReadingRepository {
         return left(Failure(e.message));
       }
       return left(Failure("No se pudo traducir esta palabra $text"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, AIReadingEntity>> updateAiReadingParams({
+    required int activityId,
+    required String title,
+    required String description,
+    required DateTime dueDate,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/courseActivity/$activityId/aiReading",
+    );
+
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesión de nuevo"));
+      }
+
+      final response = await http.put(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+        body: jsonEncode({
+          "activityId": activityId,
+          "title": title,
+          "description": description,
+          "dueDate": dueDate.toString(),
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw ServerException(data['message'] ?? "Error al actualizar datos");
+      }
+
+      final aiReadingEntity =
+          ActivityModel.fromJson(data['data']).toAIReadingEntity();
+      return Right(aiReadingEntity!);
+    } catch (e) {
+      debugPrint("Error udpateing ai reading params $e");
+      if (e is ServerException) {
+        debugPrint("Error udpateing ai reading params ${e.message}");
+        return left(Failure(e.message));
+      }
+      return left(Failure("Error al actualizar esta actividad"));
     }
   }
 }

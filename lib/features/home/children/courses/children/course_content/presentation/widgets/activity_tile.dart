@@ -1,5 +1,6 @@
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/reading_activities_container.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/aireading_update_params_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -36,6 +37,7 @@ class ActivityTile extends StatelessWidget {
         totalScore,
       ) {
         return _buildAIReadingTile(
+          aiReadingId: aiReadingId,
           context,
           id: aiReadingId,
           title: title,
@@ -82,6 +84,7 @@ class ActivityTile extends StatelessWidget {
   Widget _buildAIReadingTile(
     BuildContext context, {
     required int id,
+    required int aiReadingId,
     required String title,
     required String description,
     required DateTime dueDate,
@@ -94,6 +97,8 @@ class ActivityTile extends StatelessWidget {
     return BlocProvider.value(
       value: serviceLocator<ActivityProgressBloc>(),
       child: _AIReadingTileContent(
+        aiReadingId: aiReadingId,
+        id: id,
         activityId: id,
         title: title,
         description: description,
@@ -139,6 +144,8 @@ class ActivityTile extends StatelessWidget {
 }
 
 class _AIReadingTileContent extends StatelessWidget {
+  final int id;
+  final int aiReadingId;
   final int activityId;
   final String title;
   final String description;
@@ -151,6 +158,8 @@ class _AIReadingTileContent extends StatelessWidget {
   final double? totalScore;
 
   const _AIReadingTileContent({
+    required this.id,
+    required this.aiReadingId,
     required this.activityId,
     required this.title,
     required this.description,
@@ -187,7 +196,6 @@ class _AIReadingTileContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Estado de carga
                 BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
                   builder: (context, state) {
                     if (state is ProgressLoading &&
@@ -238,7 +246,6 @@ class _AIReadingTileContent extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Mantengo el SVG original sin cambios
                     SvgPicture.asset(
                       'assets/images/svg/reading.svg',
                       height: 48,
@@ -291,11 +298,51 @@ class _AIReadingTileContent extends StatelessWidget {
                           ),
                         ),
                       ),
+                    PopupMenuButton<String>(
+                      onSelected: (String value) {
+                        switch (value) {
+                          case 'opcion1':
+                            context.push(
+                              RouteNames.aiReadingUpdateParams,
+                              extra: AiReadingUpdateParamsEntity(
+                                aiReadingEntity: activity.toAIReadingEntity()!,
+                                activityId: activityId,
+                              ),
+                            );
+                            break;
+                          case 'opcion2':
+                            break;
+                        }
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return [
+                          PopupMenuItem<String>(
+                            value: 'opcion1',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit, color: Colors.blue),
+                                SizedBox(width: 10),
+                                Text('Editar'),
+                              ],
+                            ),
+                          ),
+                          // PopupMenuItem<String>(
+                          //   value: 'opcion2',
+                          //   child: Row(
+                          //     children: [
+                          //       Icon(Icons.delete, color: Colors.red),
+                          //       SizedBox(width: 10),
+                          //       Text('Eliminar'),
+                          //     ],
+                          //   ),
+                          // ),
+                        ];
+                      },
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
 
-                // Chips de información
                 Wrap(
                   spacing: 6,
                   runSpacing: 6,
@@ -319,17 +366,16 @@ class _AIReadingTileContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
 
-                // Fecha límite
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: _getDueDateColor(dueDate).withOpacity(0.1),
+                    color: _getDueDateColor(dueDate).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: _getDueDateColor(dueDate).withOpacity(0.3),
+                      color: _getDueDateColor(dueDate).withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -385,9 +431,9 @@ class _AIReadingTileContent extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.2), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
