@@ -3,6 +3,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_mainidea_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/feedback_summary_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/repository/ai_reading_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class AiReadingBloc extends Bloc<AiReadingEvent, AiReadingState> {
     on<EvaluateMainIdeaEvent>(_onEvaluateMainIdea);
     on<EvaluateSummaryEvent>(_onEvaluateSummary);
     on<AiReadingCompletionEvent>(_onAiReadingCompletion);
+    on<AiReadingUpdateParams>(_updateAiReadingParams);
   }
 
   void _onEvaluateParaphrase(
@@ -71,4 +73,22 @@ class AiReadingBloc extends Bloc<AiReadingEvent, AiReadingState> {
     AiReadingCompletionEvent event,
     Emitter<AiReadingState> emit,
   ) {}
+
+  void _updateAiReadingParams(
+    AiReadingUpdateParams event,
+    Emitter<AiReadingState> emit,
+  ) async {
+    emit(AiReadingLoading(AiActionType.aiReadingUpdateParams));
+    final response = await aiReadingRepository.updateAiReadingParams(
+      activityId: event.activityId,
+      title: event.title,
+      description: event.description,
+      dueDate: event.dueDate,
+    );
+    response.fold(
+      (l) =>
+          emit(AiReadingError(l.message, AiActionType.aiReadingUpdateParams)),
+      (r) => emit(AiReadingParamsUpdated(aiReadingUpdated: r)),
+    );
+  }
 }

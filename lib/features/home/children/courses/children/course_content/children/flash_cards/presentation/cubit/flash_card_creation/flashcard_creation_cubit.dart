@@ -36,4 +36,26 @@ class FlashcardCreationCubit extends Cubit<FlashcardCreationState> {
       (r) => emit(FlashcardCreationSuccess(flashCardEntity: r)),
     );
   }
+
+  void updateFlashCardActivity({
+    required int activityId,
+    required String title,
+    required String description,
+    required DateTime dueDate,
+    required int maxCards,
+  }) async {
+    emit(FlashcardCreationLoading());
+    final response = await flashCardRepository.updateFlashCardActivity(
+      activityId: activityId,
+      title: title,
+      description: description,
+      dueDate: dueDate,
+      maxCards: maxCards,
+    );
+
+    response.fold(
+      (l) => emit(FlashcardCreationError(message: l.message)),
+      (r) => emit(FlashcardCreationUpdated(flashCardEntity: r)),
+    );
+  }
 }

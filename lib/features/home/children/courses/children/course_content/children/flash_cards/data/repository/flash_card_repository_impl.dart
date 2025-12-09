@@ -234,4 +234,54 @@ class FlashCardRepositoryImpl implements FlashCardRepository {
       return left(Failure("No se pudo crear la actividad"));
     }
   }
+
+  @override
+  Future<Either<Failure, FlashCardEntity>> updateFlashCardActivity({
+    required int activityId,
+    required String title,
+    required String description,
+    required DateTime dueDate,
+    required int maxCards,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/courseActivity/$activityId/flashcards",
+    );
+
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesión de nuevo"));
+      }
+
+      final response = await http.put(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+        body: jsonEncode({
+          "title": title,
+          "description": description,
+          "dueDate": dueDate.toIso8601String(),
+          "maxCards": maxCards,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw ServerException(
+          data['message'] ?? "Error al actualizar actividad",
+        );
+      }
+
+      final flashCard = ActivityModel.fromJson(data['data']);
+
+      return Right(flashCard.toFlashCardEntity()!);
+    } catch (e) {
+      debugPrint("Error al actualizar actividad: $e");
+      if (e is ServerException) {
+        debugPrint("Error al actualizar actividad: ${e.message}");
+        return left(Failure(e.message));
+      }
+      return left(Failure("Error al actualizar actividad"));
+    }
+  }
 }

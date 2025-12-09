@@ -22,17 +22,20 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
   RefreshController refreshController = RefreshController();
   bool courseOwner = false;
   late UserEntity? user;
+  late AppUserCubit userBloc;
 
   @override
   void initState() {
     super.initState();
+    user = context.read<AppUserCubit>().user;
+    courseOwner = user != null && user!.id == widget.course.teacherId;
+    userBloc = context.read<AppUserCubit>();
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<CourseContentBloc>().add(
         EventGetAllActivities(widget.course.id.toString()),
       );
     });
-    user = context.read<AppUserCubit>().user;
-    courseOwner = user != null && user!.id == widget.course.teacherId;
   }
 
   @override
@@ -43,7 +46,6 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final userBloc = context.read<AppUserCubit>();
     return Scaffold(
       body: Column(
         children: [
@@ -117,7 +119,12 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
       itemCount: activities.length,
       itemBuilder: (context, index) {
         final activity = activities[index];
-        return ActivityTile(activity: activity);
+        return ActivityTile(
+          courseId: widget.course.id,
+          activity: activity,
+          hasModifyPermission:
+              (courseOwner || userBloc.isAdmin || userBloc.isSuperUser),
+        );
       },
     );
   }

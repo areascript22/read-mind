@@ -37,4 +37,12 @@ abstract interface class FlashCardRepository {
     required int timeSpentSec,
     required bool isCorrect,
   });
+
+  Future<Either<Failure, FlashCardEntity>> updateFlashCardActivity({
+    required int activityId,
+    required String title,
+    required String description,
+    required DateTime dueDate,
+    required int maxCards,
+  });
 }

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/activity_date_repository.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/repositories/activity_progress_repository.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +10,11 @@ part 'activity_progress_state.dart';
 class ActivityProgressBloc
     extends Bloc<ActivityProgressEvent, ActivityProgressState> {
   final ActivityProgressRepository activityProgressRepository;
-  ActivityProgressBloc({required this.activityProgressRepository})
-    : super(ActivityProgressInitial()) {
+  final ActivityDateRepository activityDateRepository;
+  ActivityProgressBloc({
+    required this.activityProgressRepository,
+    required this.activityDateRepository,
+  }) : super(ActivityProgressInitial()) {
     on<CreateInitialProgressEvent>(_createInitialProgress);
     on<UpdateProgressEvent>(_updateProgress);
   }
@@ -21,9 +25,39 @@ class ActivityProgressBloc
     emit(
       ProgressLoading(
         operation: ProgressActOperation.create,
-        activityId: event.aiReadingId,
+        aiReadingId: event.aiReadingId,
       ),
     );
+
+    final isOverdue = await activityDateRepository.isActivityOverdue(
+      activityId: event.activityId,
+    );
+    bool isOverdueTemp = false;
+    isOverdue.fold(
+      (l) {
+        emit(
+          ProgressError(
+            message: l.message,
+            operation: ProgressActOperation.create,
+            aiReadingId: event.aiReadingId,
+          ),
+        );
+      },
+      (r) {
+        isOverdueTemp = r;
+        if (isOverdueTemp) {
+          emit(ProgressActivityOverdue(aiReadingId: event.aiReadingId));
+        }
+      },
+    );
+
+    if (isOverdue.isLeft()) {
+      return;
+    }
+
+    if (isOverdueTemp) {
+      return;
+    }
 
     final result = await activityProgressRepository
         .createInitialActivityProgress(aiReadingId: event.aiReadingId);
@@ -34,13 +68,13 @@ class ActivityProgressBloc
           ProgressError(
             message: f.message,
             operation: ProgressActOperation.create,
-            activityId: event.aiReadingId,
+            aiReadingId: event.aiReadingId,
           ),
         );
       },
       (r) {
         emit(
-          ProgressCreated(createdProgress: r, activityId: event.aiReadingId),
+          ProgressCreated(createdProgress: r, aiReadingId: event.aiReadingId),
         );
       },
     );
@@ -53,7 +87,7 @@ class ActivityProgressBloc
     emit(
       ProgressLoading(
         operation: ProgressActOperation.update,
-        activityId: event.aiReadingId,
+        aiReadingId: event.aiReadingId,
       ),
     );
 
@@ -68,13 +102,13 @@ class ActivityProgressBloc
           ProgressError(
             message: f.message,
             operation: ProgressActOperation.update,
-            activityId: event.aiReadingId,
+            aiReadingId: event.aiReadingId,
           ),
         );
       },
       (r) {
         emit(
-          ProgressUpdated(updatedProgress: r, activityId: event.aiReadingId),
+          ProgressUpdated(updatedProgress: r, aiReadingId: event.aiReadingId),
         );
       },
     );
