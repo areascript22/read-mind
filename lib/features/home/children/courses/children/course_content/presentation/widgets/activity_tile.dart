@@ -46,7 +46,7 @@ class ActivityTile extends StatelessWidget {
         return _buildAIReadingTile(
           aiReadingId: aiReadingId,
           context,
-          id: aiReadingId,
+          id: activity.id,
           title: title,
           description: description,
           dueDate: dueDate,
@@ -195,7 +195,10 @@ class _AIReadingTileContent extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.read<ActivityProgressBloc>().add(
-          CreateInitialProgressEvent(aiReadingId: activityId),
+          CreateInitialProgressEvent(
+            aiReadingId: aiReadingId, //TODO: check
+            activityId: activityId,
+          ),
         );
       },
       child: Card(
@@ -218,7 +221,7 @@ class _AIReadingTileContent extends StatelessWidget {
                   builder: (context, state) {
                     if (state is ProgressLoading &&
                         state.operation == ProgressActOperation.create &&
-                        activityId == state.activityId) {
+                        aiReadingId == state.aiReadingId) {
                       return Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -246,16 +249,21 @@ class _AIReadingTileContent extends StatelessWidget {
                   listener: (context, state) {
                     if (state is ProgressError &&
                         state.operation == ProgressActOperation.create &&
-                        activityId == state.activityId) {
+                        aiReadingId == state.aiReadingId) {
                       ToastMessageUtil.showToast(state.message, context);
                     }
 
                     if (state is ProgressCreated &&
-                        activityId == state.activityId) {
+                        aiReadingId == state.aiReadingId) {
                       context.push(
                         RouteNames.readingActivitiesContainer,
                         extra: activity,
                       );
+                    }
+
+                    if (state is ProgressActivityOverdue &&
+                        aiReadingId == state.aiReadingId) {
+                      ToastMessageUtil.showToast("Actividad vencida", context);
                     }
                   },
                 ),

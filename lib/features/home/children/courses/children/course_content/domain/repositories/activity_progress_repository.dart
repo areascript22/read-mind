@@ -10,4 +10,5 @@ abstract interface class ActivityProgressRepository {
     required int aiReadingId,
     required Map dataToUpdate,
   });
+  Future<Either<Failure, bool>> isActivityOverdue({required int activityId});
 }
