@@ -1,5 +1,7 @@
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/pages/reading_activities_container.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/aireading_update_params_entity.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/date_cubit/flashcard_date_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,8 +17,15 @@ import '../bloc/activity_progress/activity_progress_bloc.dart';
 
 class ActivityTile extends StatelessWidget {
   final ActivityModel activity;
+  final bool hasModifyPermission;
+  final int courseId;
 
-  const ActivityTile({super.key, required this.activity});
+  const ActivityTile({
+    super.key,
+    required this.activity,
+    required this.hasModifyPermission,
+    required this.courseId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +45,9 @@ class ActivityTile extends StatelessWidget {
         totalScore,
       ) {
         return _buildAIReadingTile(
+          aiReadingId: aiReadingId,
           context,
-          id: aiReadingId,
+          id: activity.id,
           title: title,
           description: description,
           dueDate: dueDate,
@@ -46,6 +56,7 @@ class ActivityTile extends StatelessWidget {
           complexity: complexity,
           style: style,
           totalScore: totalScore,
+          hasModifyPermission: hasModifyPermission,
         );
       },
 
@@ -74,6 +85,8 @@ class ActivityTile extends StatelessWidget {
           cardOrder: cardOrder,
           hasScoring: hasScoring,
           bestScore: bestScore,
+          hasModifyPermission: hasModifyPermission,
+          courseId: courseId,
         );
       },
     );
@@ -82,6 +95,7 @@ class ActivityTile extends StatelessWidget {
   Widget _buildAIReadingTile(
     BuildContext context, {
     required int id,
+    required int aiReadingId,
     required String title,
     required String description,
     required DateTime dueDate,
@@ -90,10 +104,13 @@ class ActivityTile extends StatelessWidget {
     required String complexity,
     required String style,
     required double? totalScore,
+    required bool hasModifyPermission,
   }) {
     return BlocProvider.value(
       value: serviceLocator<ActivityProgressBloc>(),
       child: _AIReadingTileContent(
+        aiReadingId: aiReadingId,
+        id: id,
         activityId: id,
         title: title,
         description: description,
@@ -104,6 +121,7 @@ class ActivityTile extends StatelessWidget {
         style: style,
         activity: activity,
         totalScore: totalScore,
+        hasModifyPermissions: hasModifyPermission,
       ),
     );
   }
@@ -119,9 +137,14 @@ class ActivityTile extends StatelessWidget {
     required String cardOrder,
     required bool hasScoring,
     required double? bestScore,
+    required bool hasModifyPermission,
+    required int courseId,
   }) {
-    return BlocProvider.value(
-      value: serviceLocator<FlashCardBloc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: serviceLocator<FlashCardBloc>()),
+        BlocProvider.value(value: serviceLocator<FlashCardDateCubit>()),
+      ],
       child: FlashCardTileContent(
         activityId: activityId,
         flashCardActivityId: flashCardActivityId,
@@ -133,12 +156,16 @@ class ActivityTile extends StatelessWidget {
         hasScoring: hasScoring,
         activity: activity,
         bestScore: bestScore,
+        hasModifyPermission: hasModifyPermission,
+        courseId: courseId,
       ),
     );
   }
 }
 
 class _AIReadingTileContent extends StatelessWidget {
+  final int id;
+  final int aiReadingId;
   final int activityId;
   final String title;
   final String description;
@@ -149,8 +176,11 @@ class _AIReadingTileContent extends StatelessWidget {
   final String style;
   final ActivityModel activity;
   final double? totalScore;
+  final bool hasModifyPermissions;
 
   const _AIReadingTileContent({
+    required this.id,
+    required this.aiReadingId,
     required this.activityId,
     required this.title,
     required this.description,
@@ -161,6 +191,7 @@ class _AIReadingTileContent extends StatelessWidget {
     required this.style,
     required this.activity,
     required this.totalScore,
+    required this.hasModifyPermissions,
   });
 
   @override
@@ -168,7 +199,10 @@ class _AIReadingTileContent extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.read<ActivityProgressBloc>().add(
-          CreateInitialProgressEvent(aiReadingId: activityId),
+          CreateInitialProgressEvent(
+            aiReadingId: aiReadingId, //TODO: check
+            activityId: activityId,
+          ),
         );
       },
       child: Card(
@@ -187,12 +221,11 @@ class _AIReadingTileContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Estado de carga
                 BlocConsumer<ActivityProgressBloc, ActivityProgressState>(
                   builder: (context, state) {
                     if (state is ProgressLoading &&
                         state.operation == ProgressActOperation.create &&
-                        activityId == state.activityId) {
+                        aiReadingId == state.aiReadingId) {
                       return Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -220,16 +253,21 @@ class _AIReadingTileContent extends StatelessWidget {
                   listener: (context, state) {
                     if (state is ProgressError &&
                         state.operation == ProgressActOperation.create &&
-                        activityId == state.activityId) {
+                        aiReadingId == state.aiReadingId) {
                       ToastMessageUtil.showToast(state.message, context);
                     }
 
                     if (state is ProgressCreated &&
-                        activityId == state.activityId) {
+                        aiReadingId == state.aiReadingId) {
                       context.push(
                         RouteNames.readingActivitiesContainer,
                         extra: activity,
                       );
+                    }
+
+                    if (state is ProgressActivityOverdue &&
+                        aiReadingId == state.aiReadingId) {
+                      ToastMessageUtil.showToast("Actividad vencida", context);
                     }
                   },
                 ),
@@ -238,7 +276,6 @@ class _AIReadingTileContent extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Mantengo el SVG original sin cambios
                     SvgPicture.asset(
                       'assets/images/svg/reading.svg',
                       height: 48,
@@ -291,11 +328,53 @@ class _AIReadingTileContent extends StatelessWidget {
                           ),
                         ),
                       ),
+                    if (hasModifyPermissions)
+                      PopupMenuButton<String>(
+                        onSelected: (String value) {
+                          switch (value) {
+                            case 'opcion1':
+                              context.push(
+                                RouteNames.aiReadingUpdateParams,
+                                extra: AiReadingUpdateParamsEntity(
+                                  aiReadingEntity:
+                                      activity.toAIReadingEntity()!,
+                                  activityId: activityId,
+                                ),
+                              );
+                              break;
+                            case 'opcion2':
+                              break;
+                          }
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            PopupMenuItem<String>(
+                              value: 'opcion1',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit, color: Colors.blue),
+                                  SizedBox(width: 10),
+                                  Text('Editar'),
+                                ],
+                              ),
+                            ),
+                            // PopupMenuItem<String>(
+                            //   value: 'opcion2',
+                            //   child: Row(
+                            //     children: [
+                            //       Icon(Icons.delete, color: Colors.red),
+                            //       SizedBox(width: 10),
+                            //       Text('Eliminar'),
+                            //     ],
+                            //   ),
+                            // ),
+                          ];
+                        },
+                      ),
                   ],
                 ),
                 const SizedBox(height: 16),
 
-                // Chips de información
                 Wrap(
                   spacing: 6,
                   runSpacing: 6,
@@ -319,17 +398,16 @@ class _AIReadingTileContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
 
-                // Fecha límite
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: _getDueDateColor(dueDate).withOpacity(0.1),
+                    color: _getDueDateColor(dueDate).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: _getDueDateColor(dueDate).withOpacity(0.3),
+                      color: _getDueDateColor(dueDate).withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -385,9 +463,9 @@ class _AIReadingTileContent extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.2), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

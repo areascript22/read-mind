@@ -7,35 +7,41 @@ final class ActivityProgressInitial extends ActivityProgressState {}
 
 final class ProgressLoading extends ActivityProgressState {
   final ProgressActOperation operation;
-  final int activityId;
+  final int aiReadingId;
 
-  ProgressLoading({required this.operation, required this.activityId});
+  ProgressLoading({required this.operation, required this.aiReadingId});
 }
 
 final class ProgressError extends ActivityProgressState {
   final ProgressActOperation operation;
   final String message;
-  final int activityId;
+  final int aiReadingId;
 
   ProgressError({
     required this.operation,
     required this.message,
-    required this.activityId,
+    required this.aiReadingId,
   });
 }
 
 final class ProgressCreated extends ActivityProgressState {
   final ProgressModel createdProgress;
-  final int activityId;
+  final int aiReadingId;
 
-  ProgressCreated({required this.createdProgress, required this.activityId});
+  ProgressCreated({required this.createdProgress, required this.aiReadingId});
 }
 
 final class ProgressUpdated extends ActivityProgressState {
   final ProgressModel updatedProgress;
-  final int activityId;
+  final int aiReadingId;
 
-  ProgressUpdated({required this.updatedProgress, required this.activityId});
+  ProgressUpdated({required this.updatedProgress, required this.aiReadingId});
+}
+
+final class ProgressActivityOverdue extends ActivityProgressState {
+  final int aiReadingId;
+
+  ProgressActivityOverdue({required this.aiReadingId});
 }
 
 enum ProgressActOperation { create, update }

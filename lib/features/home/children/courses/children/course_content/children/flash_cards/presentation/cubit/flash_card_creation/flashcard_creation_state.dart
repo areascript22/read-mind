@@ -18,3 +18,9 @@ final class FlashcardCreationSuccess extends FlashcardCreationState {
 
   FlashcardCreationSuccess({required this.flashCardEntity});
 }
+
+final class FlashcardCreationUpdated extends FlashcardCreationState {
+  final FlashCardEntity flashCardEntity;
+
+  FlashcardCreationUpdated({required this.flashCardEntity});
+}

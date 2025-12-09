@@ -20,6 +20,8 @@ class RouteNames {
   static const courseContentCreateFlashCards = '/courseContentCreateFlashCards';
 
   static const readingActivitiesContainer = '/readingActivitiesContainer';
+  static const aiReadingUpdateParams = '/aiReadingUpdateParams';
+  static const flashCardsUpdateParams = '/flashCardsUpdateParams';
 
   static const activityAIReading = '/activityAIReading';
   static const activityParaphrase = '/activityParaphrase';

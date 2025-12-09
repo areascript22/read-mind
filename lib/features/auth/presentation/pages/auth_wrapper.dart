@@ -110,7 +110,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
             },
           ),
         ],
-        child: Center(child: LoaderIndicator()),
+        child: Center(child: LoaderIndicator(spinnerSize: 100)),
       ),
     );
   }
