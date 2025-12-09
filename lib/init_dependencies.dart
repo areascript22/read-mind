@@ -14,6 +14,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/data/repository/flash_card_repository_impl.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/repository/flash_card_repository.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/date_cubit/flashcard_date_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flash_card_creation/flashcard_creation_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/data/repositories/activity_date_repository_impl.dart';
@@ -324,6 +325,10 @@ void _initActivityAttempts() {
 void _initActivityDate() {
   serviceLocator.registerFactory<ActivityDateRepository>(
     () => ActivityDateRepositoryImpl(authLocalDataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => FlashCardDateCubit(activityDateRepository: serviceLocator()),
   );
 }
 

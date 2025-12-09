@@ -1,4 +1,5 @@
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/aireading_update_params_entity.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/date_cubit/flashcard_date_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:flutter/material.dart';
@@ -139,8 +140,11 @@ class ActivityTile extends StatelessWidget {
     required bool hasModifyPermission,
     required int courseId,
   }) {
-    return BlocProvider.value(
-      value: serviceLocator<FlashCardBloc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: serviceLocator<FlashCardBloc>()),
+        BlocProvider.value(value: serviceLocator<FlashCardDateCubit>()),
+      ],
       child: FlashCardTileContent(
         activityId: activityId,
         flashCardActivityId: flashCardActivityId,

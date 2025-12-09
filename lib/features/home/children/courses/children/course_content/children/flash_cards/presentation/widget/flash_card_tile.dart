@@ -2,6 +2,7 @@ import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/routing/route_names.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/flashcard_update_params.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/param_flashcard_entity.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/date_cubit/flashcard_date_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/widget/dialog_enough_translations.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
@@ -46,12 +47,9 @@ class FlashCardTileContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<FlashCardBloc>().add(
-          FlashCardLoadAll(
-            limit: maxCards,
-            order: cardOrder,
-            currentFlashCardActivity: flashCardActivityId,
-          ),
+        context.read<FlashCardDateCubit>().checkActivityOverdue(
+          activityId: activityId,
+          flashCardActivity: flashCardActivityId,
         );
       },
       child: Card(
@@ -79,6 +77,29 @@ class FlashCardTileContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                BlocListener<FlashCardDateCubit, DateState>(
+                  listener: (context, state) {
+                    if (state is DateSuccess &&
+                        state.isOverdue &&
+                        flashCardActivityId == state.currentFlashCardActivity) {
+                      ToastMessageUtil.showToast('Actividad vencida', context);
+                      return;
+                    }
+
+                    if (state is DateSuccess &&
+                        !state.isOverdue &&
+                        flashCardActivityId == state.currentFlashCardActivity) {
+                      context.read<FlashCardBloc>().add(
+                        FlashCardLoadAll(
+                          limit: maxCards,
+                          order: cardOrder,
+                          currentFlashCardActivity: flashCardActivityId,
+                        ),
+                      );
+                    }
+                  },
+                  child: SizedBox(),
+                ),
                 // Estado de carga
                 BlocConsumer<FlashCardBloc, FlashCardState>(
                   builder: (context, state) {
