@@ -24,6 +24,7 @@ class FlashCardTileContent extends StatelessWidget {
   final ActivityModel activity;
   final double? bestScore;
   final bool hasModifyPermission;
+  final int courseId;
 
   const FlashCardTileContent({
     super.key,
@@ -38,6 +39,7 @@ class FlashCardTileContent extends StatelessWidget {
     required this.activity,
     required this.bestScore,
     required this.hasModifyPermission,
+    required this.courseId,
   });
 
   @override
@@ -273,6 +275,7 @@ class FlashCardTileContent extends StatelessWidget {
                                   flashCardentity:
                                       activity.toFlashCardEntity()!,
                                   activityId: activityId,
+                                  courseId: courseId,
                                 ),
                               );
                               break;

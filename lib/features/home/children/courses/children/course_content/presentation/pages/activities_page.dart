@@ -120,6 +120,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
       itemBuilder: (context, index) {
         final activity = activities[index];
         return ActivityTile(
+          courseId: widget.course.id,
           activity: activity,
           hasModifyPermission:
               (courseOwner || userBloc.isAdmin || userBloc.isSuperUser),

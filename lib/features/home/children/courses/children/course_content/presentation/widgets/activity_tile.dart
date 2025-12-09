@@ -17,11 +17,13 @@ import '../bloc/activity_progress/activity_progress_bloc.dart';
 class ActivityTile extends StatelessWidget {
   final ActivityModel activity;
   final bool hasModifyPermission;
+  final int courseId;
 
   const ActivityTile({
     super.key,
     required this.activity,
     required this.hasModifyPermission,
+    required this.courseId,
   });
 
   @override
@@ -83,6 +85,7 @@ class ActivityTile extends StatelessWidget {
           hasScoring: hasScoring,
           bestScore: bestScore,
           hasModifyPermission: hasModifyPermission,
+          courseId: courseId,
         );
       },
     );
@@ -134,6 +137,7 @@ class ActivityTile extends StatelessWidget {
     required bool hasScoring,
     required double? bestScore,
     required bool hasModifyPermission,
+    required int courseId,
   }) {
     return BlocProvider.value(
       value: serviceLocator<FlashCardBloc>(),
@@ -149,6 +153,7 @@ class ActivityTile extends StatelessWidget {
         activity: activity,
         bestScore: bestScore,
         hasModifyPermission: hasModifyPermission,
+        courseId: courseId,
       ),
     );
   }

@@ -1,11 +1,13 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/aireading_update_params_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/bloc/ai_reading_bloc/ai_reading_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../presentation/widgets/buttons/create_button.dart';
 import '../../../../../../presentation/widgets/course_textfield.dart';
+import '../../../../presentation/bloc/course_content/course_content_bloc.dart';
 
 class UpdateAiReadingParamsPage extends StatefulWidget {
   final AiReadingUpdateParamsEntity aiReadingUpdateParams;
@@ -111,6 +113,12 @@ class _CreateCoursePageState extends State<UpdateAiReadingParamsPage> {
                     if (state is AiReadingParamsUpdated) {
                       Navigator.pop(context);
                       ToastMessageUtil.showToast("Datos actualizados", context);
+                      final course = context.read<CourseCubit>().state;
+                      if (course != null) {
+                        context.read<CourseContentBloc>().add(
+                          EventGetAllActivities(course.id.toString()),
+                        );
+                      }
                     }
 
                     if (state is AiReadingError &&

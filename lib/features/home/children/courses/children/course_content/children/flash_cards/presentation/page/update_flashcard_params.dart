@@ -1,6 +1,4 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/aireading_update_params_entity.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/flashcard_update_params.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flash_card_creation/flashcard_creation_cubit.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../presentation/widgets/buttons/create_button.dart';
 import '../../../../../../presentation/widgets/course_textfield.dart';
+import '../../../../presentation/bloc/course_content/course_content_bloc.dart';
 
 class UpdateFlashCardParamsPage extends StatefulWidget {
   final FlashCardUpdateParamsEntity flashCardUpdateParams;
@@ -126,6 +125,11 @@ class _CreateCoursePageState extends State<UpdateFlashCardParamsPage> {
                     if (state is FlashcardCreationUpdated) {
                       Navigator.pop(context);
                       ToastMessageUtil.showToast("Datos actualizados", context);
+                      context.read<CourseContentBloc>().add(
+                        EventGetAllActivities(
+                          widget.flashCardUpdateParams.courseId.toString(),
+                        ),
+                      );
                     }
 
                     if (state is FlashcardCreationError) {
