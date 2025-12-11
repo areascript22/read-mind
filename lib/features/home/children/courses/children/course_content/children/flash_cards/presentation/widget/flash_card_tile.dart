@@ -376,7 +376,7 @@ class FlashCardTileContent extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        "Fecha límite: ${DateUtil.formatDate(dueDate.toString())}",
+                        "Fecha límite: ${DateUtil.formatDateWithTime(dueDate.toString())}",
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w500,

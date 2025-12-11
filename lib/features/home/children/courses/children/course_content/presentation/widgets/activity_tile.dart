@@ -200,7 +200,7 @@ class _AIReadingTileContent extends StatelessWidget {
       onTap: () {
         context.read<ActivityProgressBloc>().add(
           CreateInitialProgressEvent(
-            aiReadingId: aiReadingId, //TODO: check
+            aiReadingId: aiReadingId,
             activityId: activityId,
           ),
         );
@@ -421,7 +421,7 @@ class _AIReadingTileContent extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        "Fecha límite: ${DateUtil.formatDate(dueDate.toString())}",
+                        "Fecha límite: ${DateUtil.formatDateWithTime(dueDate.toString())}",
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w500,
