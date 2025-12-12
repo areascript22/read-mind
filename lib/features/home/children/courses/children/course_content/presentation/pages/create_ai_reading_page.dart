@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../../../../core/common/utils/date_util.dart';
 import '../bloc/course_content/course_content_bloc.dart';
 import '../cubit/course_cubit.dart';
 
@@ -27,19 +28,45 @@ class _CreateAiReadingPageState extends State<CreateAiReadingPage> {
 
   DateTime? _dueDate;
 
-  void _pickDueDate() async {
+  void _pickDueDateTime() async {
+    FocusScope.of(context).unfocus();
+
     final now = DateTime.now();
-    final picked = await showDatePicker(
+    final initialDate = _dueDate?.isBefore(now) ?? true ? now : _dueDate;
+
+    final pickedDate = await showDatePicker(
       context: context,
-      initialDate: now,
+      initialDate: initialDate,
       firstDate: now,
       lastDate: DateTime(now.year + 5),
     );
-    if (picked != null) {
-      setState(() {
-        _dueDate = picked;
-      });
-    }
+
+    if (pickedDate == null) return;
+    if (!mounted) return;
+
+    final initialTime =
+        _dueDate?.isBefore(now) ?? true
+            ? TimeOfDay.now()
+            : TimeOfDay.fromDateTime(_dueDate!);
+
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: initialTime,
+    );
+
+    if (pickedTime == null) return;
+
+    final newDueDate = DateTime(
+      pickedDate.year,
+      pickedDate.month,
+      pickedDate.day,
+      pickedTime.hour,
+      pickedTime.minute,
+    );
+
+    setState(() {
+      _dueDate = newDueDate;
+    });
   }
 
   void _saveAiReading() {
@@ -59,11 +86,7 @@ class _CreateAiReadingPageState extends State<CreateAiReadingPage> {
     }
 
     if (_dueDate == null) {
-      ToastMessageUtil.showToast(
-        'Debes seleccionar una fecha de entrega',
-        context,
-      );
-      _pickDueDate();
+      _pickDueDateTime();
       return;
     }
     final course = context.read<CourseCubit>().state;
@@ -171,13 +194,20 @@ class _CreateAiReadingPageState extends State<CreateAiReadingPage> {
                   Expanded(
                     child: Text(
                       _dueDate == null
-                          ? "Sin fecha de entrega"
-                          : "Entrega: ${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}",
-                      style: Theme.of(context).textTheme.bodyLarge,
+                          ? 'Seleccionar fecha'
+                          : DateUtil.formatDateWithTime(
+                            _dueDate!.toIso8601String(),
+                          ),
+                      style: TextStyle(
+                        color:
+                            _dueDate == null
+                                ? Colors.grey.shade600
+                                : Colors.black87,
+                      ),
                     ),
                   ),
                   ElevatedButton.icon(
-                    onPressed: _pickDueDate,
+                    onPressed: () => _pickDueDateTime(),
                     icon: const Icon(Icons.calendar_today),
                     label: const Text("Fecha entrega"),
                   ),
