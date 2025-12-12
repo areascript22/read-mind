@@ -58,4 +58,15 @@ class FlashcardCreationCubit extends Cubit<FlashcardCreationState> {
       (r) => emit(FlashcardCreationUpdated(flashCardEntity: r)),
     );
   }
+
+  void deleteFlashCardActivity({required int activityId}) async {
+    emit(FlashcardCreationLoading());
+    final response = await flashCardRepository.deleteFlashCardActivity(
+      activityId: activityId,
+    );
+    response.fold(
+      (l) => emit(FlashcardCreationError(message: l.message)),
+      (r) => emit(FlashcardCreationDeleted(message: r)),
+    );
+  }
 }

@@ -6,6 +6,7 @@ enum AiActionType {
   summary,
   aiReading,
   aiReadingUpdateParams,
+  aiReadingDeleteAct,
 }
 
 @immutable
@@ -67,4 +68,12 @@ final class AiReadingParamsUpdated extends AiReadingState {
 
   @override
   List<Object?> get props => [aiReadingUpdated];
+}
+
+final class AiReadingDeleted extends AiReadingState {
+  final String message;
+  AiReadingDeleted({required this.message});
+
+  @override
+  List<Object?> get props => [this.message];
 }
