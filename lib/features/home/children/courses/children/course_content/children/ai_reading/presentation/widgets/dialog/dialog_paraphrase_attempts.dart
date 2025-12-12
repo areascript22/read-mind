@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:client_app/features/home/children/courses/domain/entities/paraphrase_attempt_entity.dart';
-import '../../../../../../../../../../core/common/cubits/app_user/app_user_cubit.dart';
-import '../cubit/attempts_cubit/attempts_cubit.dart';
+
+import '../../../../../../../../../../../core/common/cubits/app_user/app_user_cubit.dart';
+import '../../cubit/attempts_cubit/attempts_cubit.dart';
 
 Future<void> showParaphraseAttemptsDialog(
   BuildContext context,

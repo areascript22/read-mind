@@ -1,11 +1,6 @@
-import 'dart:ui';
-
 import 'package:client_app/core/common/utils/toast_util.dart';
-import 'package:client_app/core/common/widget/lottie_loader.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_attempts.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_paraphrase_tip.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog/dialog_feedback.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +10,8 @@ import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.d
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import '../cubit/attempts_cubit/attempts_cubit.dart';
 import '../widgets/blus/blur_loader.dart';
+import '../widgets/dialog/dialog_paraphrase_attempts.dart';
+import '../widgets/dialog/dialog_paraphrase_tip.dart';
 
 class ParaphrasePage extends StatefulWidget {
   final AIReadingEntity aiReadingEntity;

@@ -24,3 +24,9 @@ final class FlashcardCreationUpdated extends FlashcardCreationState {
 
   FlashcardCreationUpdated({required this.flashCardEntity});
 }
+
+final class FlashcardCreationDeleted extends FlashcardCreationState {
+  final String message;
+
+  FlashcardCreationDeleted({required this.message});
+}
