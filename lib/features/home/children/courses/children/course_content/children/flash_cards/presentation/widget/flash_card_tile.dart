@@ -4,6 +4,7 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/domain/entity/param_flashcard_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/date_cubit/flashcard_date_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flashcard_bloc/flash_card_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/widget/dialog_delete_activity_flashcard.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/widget/dialog_enough_translations.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
@@ -301,6 +302,10 @@ class FlashCardTileContent extends StatelessWidget {
                               );
                               break;
                             case 'opcion2':
+                              showDeleteActivityAlertFlashCard(
+                                context: context,
+                                activityId: activityId,
+                              );
                               break;
                           }
                         },
@@ -316,16 +321,16 @@ class FlashCardTileContent extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            // PopupMenuItem<String>(
-                            //   value: 'opcion2',
-                            //   child: Row(
-                            //     children: [
-                            //       Icon(Icons.delete, color: Colors.red),
-                            //       SizedBox(width: 10),
-                            //       Text('Eliminar'),
-                            //     ],
-                            //   ),
-                            // ),
+                            PopupMenuItem<String>(
+                              value: 'opcion2',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.delete, color: Colors.red),
+                                  SizedBox(width: 10),
+                                  Text('Eliminar'),
+                                ],
+                              ),
+                            ),
                           ];
                         },
                       ),
