@@ -97,7 +97,7 @@ class _CreateAiReadingPageState extends State<CreateAiReadingPage> {
         title,
         description,
         widget.paragraphMetadata.content,
-        _dueDate!.toIso8601String(),
+        _dueDate!.toUtc().toIso8601String(),
         widget.paragraphMetadata.length,
         widget.paragraphMetadata.complexity,
         widget.paragraphMetadata.style,

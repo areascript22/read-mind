@@ -293,20 +293,6 @@ class _CreateFlashCardsPageBodyState extends State<_CreateFlashCardsPageBody> {
     );
   }
 
-  void _selectDueDate() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != _dueDate) {
-      setState(() {
-        _dueDate = picked;
-      });
-    }
-  }
-
   void _pickDueDateTime() async {
     FocusScope.of(context).unfocus();
 
@@ -393,7 +379,7 @@ class _CreateFlashCardsPageBodyState extends State<_CreateFlashCardsPageBody> {
         courseId: widget.courseId,
         title: _titleController.text.trim(),
         description: _descriptionController.text.trim(),
-        dueDate: _dueDate!.toIso8601String(),
+        dueDate: _dueDate!.toUtc().toIso8601String(),
         hasScoring: true,
         maxScore: 100,
         maxCards: maxCards,
