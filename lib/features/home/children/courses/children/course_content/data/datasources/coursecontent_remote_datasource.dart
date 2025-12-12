@@ -123,7 +123,6 @@ class CourseContentRemoteDataSourceImpl
     required String style,
   }) async {
     try {
-      await Future.delayed(Duration(seconds: 3));
       final url = Uri.parse(
         "${AppEnvironment().baseUrl}/courseActivity/$courseId/aiReading",
       );

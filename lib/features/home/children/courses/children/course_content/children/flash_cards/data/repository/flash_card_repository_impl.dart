@@ -259,7 +259,7 @@ class FlashCardRepositoryImpl implements FlashCardRepository {
         body: jsonEncode({
           "title": title,
           "description": description,
-          "dueDate": dueDate.toIso8601String(),
+          "dueDate": dueDate.toUtc().toIso8601String(),
           "maxCards": maxCards,
         }),
       );
