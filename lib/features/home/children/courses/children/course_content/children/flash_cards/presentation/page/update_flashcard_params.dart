@@ -75,22 +75,6 @@ class _CreateCoursePageState extends State<UpdateFlashCardParamsPage> {
         widget.flashCardUpdateParams.flashCardentity.maxCards.toString();
   }
 
-  void _pickDueDate() async {
-    FocusScope.of(context).unfocus();
-    final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: now,
-      firstDate: now,
-      lastDate: DateTime(now.year + 5),
-    );
-    if (picked != null) {
-      setState(() {
-        _dueDate = picked;
-      });
-    }
-  }
-
   void _pickDueDateTime() async {
     FocusScope.of(context).unfocus();
     final now = DateTime.now();
@@ -109,7 +93,7 @@ class _CreateCoursePageState extends State<UpdateFlashCardParamsPage> {
     final initialTime =
         _dueDate.isBefore(now)
             ? TimeOfDay.now()
-            : TimeOfDay.fromDateTime(_dueDate);
+            : TimeOfDay.fromDateTime(_dueDate.toLocal());
 
     final pickedTime = await showTimePicker(
       context: context,

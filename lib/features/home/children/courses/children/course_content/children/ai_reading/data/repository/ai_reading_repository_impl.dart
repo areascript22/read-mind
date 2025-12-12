@@ -203,7 +203,7 @@ class AiReadingRepositoryImpl implements AiReadingRepository {
           "activityId": activityId,
           "title": title,
           "description": description,
-          "dueDate": dueDate.toString(),
+          "dueDate": dueDate.toUtc().toIso8601String(),
         }),
       );
 

@@ -84,7 +84,7 @@ class _CreateCoursePageState extends State<UpdateAiReadingParamsPage> {
     final initialTime =
         _dueDate.isBefore(now)
             ? TimeOfDay.now()
-            : TimeOfDay.fromDateTime(_dueDate);
+            : TimeOfDay.fromDateTime(_dueDate.toLocal());
 
     final pickedTime = await showTimePicker(
       context: context,
