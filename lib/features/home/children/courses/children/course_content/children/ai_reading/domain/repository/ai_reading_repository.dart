@@ -36,4 +36,8 @@ abstract interface class AiReadingRepository {
     required String description,
     required DateTime dueDate,
   });
+
+  Future<Either<Failure, String>> deleteAiReadingActivity({
+    required int activityId,
+  });
 }

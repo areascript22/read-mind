@@ -45,4 +45,8 @@ abstract interface class FlashCardRepository {
     required DateTime dueDate,
     required int maxCards,
   });
+
+  Future<Either<Failure, String>> deleteFlashCardActivity({
+    required int activityId,
+  });
 }

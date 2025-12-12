@@ -1,3 +1,4 @@
+import 'package:client_app/core/common/utils/date_util.dart';
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/domain/entities/aireading_update_params_entity.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/bloc/ai_reading_bloc/ai_reading_bloc.dart';
@@ -65,20 +66,44 @@ class _CreateCoursePageState extends State<UpdateAiReadingParamsPage> {
         widget.aiReadingUpdateParams.aiReadingEntity.description;
   }
 
-  void _pickDueDate() async {
+  void _pickDueDateTime() async {
     FocusScope.of(context).unfocus();
     final now = DateTime.now();
-    final picked = await showDatePicker(
+    final initialDate = _dueDate.isBefore(now) ? now : _dueDate;
+
+    final pickedDate = await showDatePicker(
       context: context,
-      initialDate: now,
+      initialDate: initialDate,
       firstDate: now,
       lastDate: DateTime(now.year + 5),
     );
-    if (picked != null) {
-      setState(() {
-        _dueDate = picked;
-      });
-    }
+
+    if (pickedDate == null) return;
+    if (!mounted) return;
+
+    final initialTime =
+        _dueDate.isBefore(now)
+            ? TimeOfDay.now()
+            : TimeOfDay.fromDateTime(_dueDate.toLocal());
+
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: initialTime,
+    );
+
+    if (pickedTime == null) return;
+
+    final newDueDate = DateTime(
+      pickedDate.year,
+      pickedDate.month,
+      pickedDate.day,
+      pickedTime.hour,
+      pickedTime.minute,
+    );
+
+    setState(() {
+      _dueDate = newDueDate;
+    });
   }
 
   @override
@@ -180,14 +205,12 @@ class _CreateCoursePageState extends State<UpdateAiReadingParamsPage> {
                 children: [
                   Expanded(
                     child: Text(
-                      _dueDate == null
-                          ? "Sin fecha de entrega"
-                          : "Entrega: ${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}",
-                      style: Theme.of(context).textTheme.bodySmall,
+                      DateUtil.formatDateWithTime(_dueDate.toIso8601String()),
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
                   ElevatedButton.icon(
-                    onPressed: _pickDueDate,
+                    onPressed: _pickDueDateTime,
                     icon: const Icon(Icons.calendar_today),
                     label: const Text("Fecha entrega"),
                   ),

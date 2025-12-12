@@ -259,7 +259,7 @@ class FlashCardRepositoryImpl implements FlashCardRepository {
         body: jsonEncode({
           "title": title,
           "description": description,
-          "dueDate": dueDate.toIso8601String(),
+          "dueDate": dueDate.toUtc().toIso8601String(),
           "maxCards": maxCards,
         }),
       );
@@ -282,6 +282,44 @@ class FlashCardRepositoryImpl implements FlashCardRepository {
         return left(Failure(e.message));
       }
       return left(Failure("Error al actualizar actividad"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> deleteFlashCardActivity({
+    required int activityId,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/courseActivity/$activityId/flashcards",
+    );
+
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesión de nuevo"));
+      }
+
+      final response = await http.delete(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw ServerException(data['message'] ?? "Error al eliminar actividad");
+      }
+
+      final message = data["message"];
+
+      return Right(message);
+    } catch (e) {
+      debugPrint("Error al eliminar actividad: $e");
+      if (e is ServerException) {
+        debugPrint("Error al eliminar actividad: ${e.message}");
+        return left(Failure(e.message));
+      }
+      return left(Failure("Error al eliminar actividad"));
     }
   }
 }

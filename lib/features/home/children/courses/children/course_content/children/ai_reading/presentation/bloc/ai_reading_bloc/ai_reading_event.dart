@@ -69,3 +69,12 @@ final class AiReadingUpdateParams extends AiReadingEvent {
   @override
   List<Object?> get props => [activityId, title, description, dueDate];
 }
+
+final class AiReadingDeleteActivity extends AiReadingEvent {
+  final int activityId;
+
+  AiReadingDeleteActivity({required this.activityId});
+
+  @override
+  List<Object?> get props => [activityId];
+}

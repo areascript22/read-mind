@@ -16,7 +16,6 @@ import 'package:client_app/shared/datasources/auth_local_datasource.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
-
 import '../../../../../../../../../../core/constants/app_environment.dart';
 import '../../../../../../../../../../core/error/server_exception.dart';
 
@@ -204,7 +203,7 @@ class AiReadingRepositoryImpl implements AiReadingRepository {
           "activityId": activityId,
           "title": title,
           "description": description,
-          "dueDate": dueDate.toString(),
+          "dueDate": dueDate.toUtc().toIso8601String(),
         }),
       );
 
@@ -224,6 +223,43 @@ class AiReadingRepositoryImpl implements AiReadingRepository {
         return left(Failure(e.message));
       }
       return left(Failure("Error al actualizar esta actividad"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> deleteAiReadingActivity({
+    required int activityId,
+  }) async {
+    final url = Uri.parse(
+      "${AppEnvironment().baseUrl}/courseActivity/$activityId/aireading",
+    );
+
+    try {
+      final token = await authLocalDataSource.getJwt();
+      if (token == null) {
+        return left(Failure("No autenticado. Inicia sesión de nuevo"));
+      }
+
+      final response = await http.delete(
+        url,
+        headers: {"Content-Type": "application/json", "x-token": token},
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw ServerException(data['message'] ?? "Error al eliminar actividad");
+      }
+
+      final message = data['message'];
+      return Right(message);
+    } catch (e) {
+      debugPrint("Error deleting ai reading activity $e");
+      if (e is ServerException) {
+        debugPrint("Error deleting ai reading activity  ${e.message}");
+        return left(Failure(e.message));
+      }
+      return left(Failure("Error al eliminar actividad"));
     }
   }
 }

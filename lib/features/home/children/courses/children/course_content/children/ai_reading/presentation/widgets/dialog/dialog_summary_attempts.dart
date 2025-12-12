@@ -1,15 +1,15 @@
-import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/common/utils/toast_util.dart';
-import 'package:client_app/features/home/children/courses/domain/entities/main_idea_attempt_entity.dart';
+import 'package:client_app/features/home/children/courses/domain/entities/summary_attempt_entity.dart';
 import 'package:client_app/init_dependencies.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import '../../../../domain/entities/ai_reading_entity.dart';
-import '../cubit/attempts_cubit/attempts_cubit.dart';
+import '../../../../../../../../../../../core/common/cubits/app_user/app_user_cubit.dart';
+import '../../../../../domain/entities/ai_reading_entity.dart';
+import '../../cubit/attempts_cubit/attempts_cubit.dart';
 
-Future<void> showMainIdeaAttemptsDialog(
+Future<void> showSummaryAttemptsDialog(
   BuildContext context,
   AIReadingEntity aiReadingEntity,
 ) async {
@@ -18,34 +18,32 @@ Future<void> showMainIdeaAttemptsDialog(
     builder:
         (_) => BlocProvider.value(
           value: serviceLocator<AttemptsCubit>(),
-          child: _MainIdeaAttemptsDialogBody(aiReadingEntity: aiReadingEntity),
+          child: _SummaryAttemptsDialogBody(aiReadingEntity: aiReadingEntity),
         ),
   );
 }
 
-class _MainIdeaAttemptsDialogBody extends StatefulWidget {
+class _SummaryAttemptsDialogBody extends StatefulWidget {
   final AIReadingEntity aiReadingEntity;
-  const _MainIdeaAttemptsDialogBody({super.key, required this.aiReadingEntity});
+  const _SummaryAttemptsDialogBody({super.key, required this.aiReadingEntity});
 
   @override
-  State<_MainIdeaAttemptsDialogBody> createState() =>
-      _MainIdeaAttemptsDialogBodyState();
+  State<_SummaryAttemptsDialogBody> createState() =>
+      _SummaryAttemptsDialogBodyState();
 }
 
-class _MainIdeaAttemptsDialogBodyState
-    extends State<_MainIdeaAttemptsDialogBody> {
+class _SummaryAttemptsDialogBodyState
+    extends State<_SummaryAttemptsDialogBody> {
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
-  late AppUserCubit appUserCubit;
 
   @override
   void initState() {
     super.initState();
-    appUserCubit = context.read<AppUserCubit>();
-    context.read<AttemptsCubit>().getAllMainIdeaAttempts(
+    context.read<AttemptsCubit>().getAllSummaryAttempts(
       widget.aiReadingEntity.aiReadingId,
-      appUserCubit.user?.id ?? -1,
+      context.read<AppUserCubit>().user?.id ?? -1,
     );
   }
 
@@ -70,7 +68,7 @@ class _MainIdeaAttemptsDialogBodyState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Intentos de idea principal',
+                    'Resumen Intentos',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   IconButton(
@@ -85,26 +83,23 @@ class _MainIdeaAttemptsDialogBodyState
                 child: BlocConsumer<AttemptsCubit, AttemptsState>(
                   listener: (context, state) {
                     if (state is AttemptsError &&
-                        state.attemptOperation ==
-                            AttemptOperation.mainIdeaAll) {
+                        state.attemptOperation == AttemptOperation.summaryAll) {
                       ToastMessageUtil.showToast(state.message, context);
                       _refreshController.refreshCompleted();
                     }
 
-                    if (state is AttemptMainIdeaAll) {
+                    if (state is AttemptSummaryAll) {
                       _refreshController.refreshCompleted();
                     }
                   },
                   builder: (context, state) {
                     if (state is AttemptsLoading &&
-                        state.attemptOperation ==
-                            AttemptOperation.mainIdeaAll) {
+                        state.attemptOperation == AttemptOperation.summaryAll) {
                       return const Center(child: LoaderIndicator());
                     }
 
                     if (state is AttemptsError &&
-                        state.attemptOperation ==
-                            AttemptOperation.mainIdeaAll) {
+                        state.attemptOperation == AttemptOperation.summaryAll) {
                       return Center(
                         child: Text(
                           state.message,
@@ -114,12 +109,12 @@ class _MainIdeaAttemptsDialogBodyState
                       );
                     }
 
-                    if (state is AttemptMainIdeaAll) {
-                      final paraphrases = state.mainIdeas;
+                    if (state is AttemptSummaryAll) {
+                      final paraphrases = state.summaries;
 
                       if (paraphrases.isEmpty) {
                         return const Center(
-                          child: Text('No se encontraron intentos todavía..'),
+                          child: Text('No se encontraron intentos todavía...'),
                         );
                       }
 
@@ -130,9 +125,9 @@ class _MainIdeaAttemptsDialogBodyState
                         onRefresh:
                             () => context
                                 .read<AttemptsCubit>()
-                                .getAllMainIdeaAttempts(
+                                .getAllSummaryAttempts(
                                   widget.aiReadingEntity.aiReadingId,
-                                  appUserCubit.user?.id ?? -1,
+                                  context.read<AppUserCubit>().user?.id ?? -1,
                                 ),
                         child: ListView.builder(
                           itemCount: paraphrases.length,
@@ -160,7 +155,7 @@ class _MainIdeaAttemptsDialogBodyState
 }
 
 class _ParaphraseAttemptTile extends StatelessWidget {
-  final MainIdeaAttemptEntity attempt;
+  final SummaryAttemptEntity attempt;
   final int order;
 
   const _ParaphraseAttemptTile(this.attempt, this.order, {super.key});
@@ -202,7 +197,7 @@ class _ParaphraseAttemptTile extends StatelessWidget {
               children: [
                 _ScoreChip('Clarity', attempt.clarityScore),
                 _ScoreChip('Accuracy', attempt.accuracyScore),
-                _ScoreChip('Conciseness', attempt.concisenessScore),
+                _ScoreChip('Coverage', attempt.coverageScore),
               ],
             ),
             const SizedBox(height: 8),

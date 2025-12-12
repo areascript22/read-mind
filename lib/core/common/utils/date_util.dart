@@ -11,6 +11,16 @@ class DateUtil {
     }
   }
 
+  static String formatDateWithTime(String isoString) {
+    try {
+      final dateTime = DateTime.parse(isoString).toLocal();
+      final formatter = DateFormat("MMM dd, yyyy – HH:mm");
+      return formatter.format(dateTime);
+    } catch (e) {
+      return isoString;
+    }
+  }
+
   static String formatDateTime(DateTime dateTime) {
     final formatter = DateFormat("MMM dd, yyyy");
     return formatter.format(dateTime);

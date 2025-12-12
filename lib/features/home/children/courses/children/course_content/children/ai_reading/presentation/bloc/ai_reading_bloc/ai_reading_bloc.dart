@@ -19,6 +19,7 @@ class AiReadingBloc extends Bloc<AiReadingEvent, AiReadingState> {
     on<EvaluateSummaryEvent>(_onEvaluateSummary);
     on<AiReadingCompletionEvent>(_onAiReadingCompletion);
     on<AiReadingUpdateParams>(_updateAiReadingParams);
+    on<AiReadingDeleteActivity>(_deleteAIReadingActivity);
   }
 
   void _onEvaluateParaphrase(
@@ -89,6 +90,20 @@ class AiReadingBloc extends Bloc<AiReadingEvent, AiReadingState> {
       (l) =>
           emit(AiReadingError(l.message, AiActionType.aiReadingUpdateParams)),
       (r) => emit(AiReadingParamsUpdated(aiReadingUpdated: r)),
+    );
+  }
+
+  void _deleteAIReadingActivity(
+    AiReadingDeleteActivity event,
+    Emitter<AiReadingState> emit,
+  ) async {
+    emit(AiReadingLoading(AiActionType.aiReadingDeleteAct));
+    final response = await aiReadingRepository.deleteAiReadingActivity(
+      activityId: event.activityId,
+    );
+    response.fold(
+      (l) => emit(AiReadingError(l.message, AiActionType.aiReadingDeleteAct)),
+      (r) => emit(AiReadingDeleted(message: r)),
     );
   }
 }

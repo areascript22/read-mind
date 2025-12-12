@@ -1,8 +1,5 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/attempts_cubit/attempts_cubit.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_feedback_main_idea.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_main_idea_attempts.dart';
-import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog_main_idea_tip.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/domain/entities/ai_reading_entity.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +9,9 @@ import '../../../../presentation/bloc/activity_progress/activity_progress_bloc.d
 import '../bloc/ai_reading_bloc/ai_reading_bloc.dart';
 import '../cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
 import '../widgets/blus/blur_loader.dart';
+import '../widgets/dialog/dialog_feedback_main_idea.dart';
+import '../widgets/dialog/dialog_main_idea_attempts.dart';
+import '../widgets/dialog/dialog_main_idea_tip.dart';
 
 class MainIdeaPage extends StatefulWidget {
   final AIReadingEntity aiReadingEntity;

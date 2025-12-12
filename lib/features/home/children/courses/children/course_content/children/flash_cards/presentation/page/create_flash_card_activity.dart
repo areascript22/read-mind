@@ -1,3 +1,4 @@
+import 'package:client_app/core/common/utils/date_util.dart';
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/flash_cards/presentation/cubit/flash_card_creation/flashcard_creation_cubit.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/presentation/bloc/course_content/course_content_bloc.dart';
@@ -139,7 +140,7 @@ class _CreateFlashCardsPageBodyState extends State<_CreateFlashCardsPageBody> {
             title: Text(
               _dueDate == null
                   ? 'Seleccionar fecha'
-                  : '${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}',
+                  : DateUtil.formatDateWithTime(_dueDate!.toIso8601String()),
               style: TextStyle(
                 color: _dueDate == null ? Colors.grey.shade600 : Colors.black87,
               ),
@@ -151,7 +152,7 @@ class _CreateFlashCardsPageBodyState extends State<_CreateFlashCardsPageBody> {
                       onPressed: _clearDueDate,
                     )
                     : null,
-            onTap: _selectDueDate,
+            onTap: _pickDueDateTime,
           ),
         ),
         if (_dueDate == null) ...[
@@ -292,18 +293,45 @@ class _CreateFlashCardsPageBodyState extends State<_CreateFlashCardsPageBody> {
     );
   }
 
-  void _selectDueDate() async {
-    final DateTime? picked = await showDatePicker(
+  void _pickDueDateTime() async {
+    FocusScope.of(context).unfocus();
+
+    final now = DateTime.now();
+    final initialDate = _dueDate?.isBefore(now) ?? true ? now : _dueDate;
+
+    final pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now().add(const Duration(days: 7)),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
+      initialDate: initialDate,
+      firstDate: now,
+      lastDate: DateTime(now.year + 5),
     );
-    if (picked != null && picked != _dueDate) {
-      setState(() {
-        _dueDate = picked;
-      });
-    }
+
+    if (pickedDate == null) return;
+    if (!mounted) return;
+
+    final initialTime =
+        _dueDate?.isBefore(now) ?? true
+            ? TimeOfDay.now()
+            : TimeOfDay.fromDateTime(_dueDate!);
+
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: initialTime,
+    );
+
+    if (pickedTime == null) return;
+
+    final newDueDate = DateTime(
+      pickedDate.year,
+      pickedDate.month,
+      pickedDate.day,
+      pickedTime.hour,
+      pickedTime.minute,
+    );
+
+    setState(() {
+      _dueDate = newDueDate;
+    });
   }
 
   void _clearDueDate() {
@@ -347,14 +375,11 @@ class _CreateFlashCardsPageBodyState extends State<_CreateFlashCardsPageBody> {
         return;
       }
 
-      String formattedDueDate =
-          "${_dueDate!.year}-${_dueDate!.month.toString().padLeft(2, '0')}-${_dueDate!.day.toString().padLeft(2, '0')}";
-
       context.read<FlashcardCreationCubit>().createFlashCardActivity(
         courseId: widget.courseId,
         title: _titleController.text.trim(),
         description: _descriptionController.text.trim(),
-        dueDate: formattedDueDate,
+        dueDate: _dueDate!.toUtc().toIso8601String(),
         hasScoring: true,
         maxScore: 100,
         maxCards: maxCards,
