@@ -2,22 +2,29 @@ import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/core/common/widget/custom_button.dart';
 import 'package:client_app/core/common/widget/custom_outlined_button.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/bloc/ai_reading_bloc/ai_reading_bloc.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/presentation/cubit/course_cubit.dart';
 import 'package:client_app/init_dependencies.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../presentation/bloc/course_content/course_content_bloc.dart';
 
 Future<bool?> showDeleteActivityAlertReading({
   required BuildContext context,
   required int activityId,
+
   String readingTitle = '',
 }) async {
   return showDialog<bool>(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      return BlocProvider.value(
-        value: serviceLocator<AiReadingBloc>(),
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: serviceLocator<AiReadingBloc>()),
+          BlocProvider.value(value: serviceLocator<CourseContentBloc>()),
+          BlocProvider.value(value: serviceLocator<CourseCubit>()),
+        ],
         child: DeleteActivityAlertDialog(
           readingTitle: readingTitle,
           activityId: activityId,
@@ -139,7 +146,14 @@ class DeleteActivityAlertDialog extends StatelessWidget {
                       "Actividad eliminada....",
                       context,
                     );
+                    final course = context.read<CourseCubit>().state;
+
                     Navigator.of(context).pop(true);
+                    if (course != null) {
+                      context.read<CourseContentBloc>().add(
+                        EventGetAllActivities(course.id.toString()),
+                      );
+                    }
                   }
 
                   if (state is AiReadingError &&
