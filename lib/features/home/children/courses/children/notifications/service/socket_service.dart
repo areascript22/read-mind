@@ -1,3 +1,4 @@
+import 'package:client_app/core/constants/app_environment.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketService {
@@ -13,7 +14,7 @@ class SocketService {
       if (_socket != null && _socket!.connected) return;
 
       _socket = IO.io(
-        'http://192.168.0.107:3000',
+        AppEnvironment().baseUrl.replaceFirst('/api', ''),
         IO.OptionBuilder()
             .setTransports(['websocket'])
             .enableAutoConnect() // 🔥 auto-conecta
