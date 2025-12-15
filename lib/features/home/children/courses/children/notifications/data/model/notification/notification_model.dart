@@ -33,7 +33,8 @@ abstract class NotificationTypeModel with _$NotificationTypeModel {
     required int id,
     required String name,
     required String description,
-    required String template,
+    required String titleTemplate,
+    required String bodyTemplate,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _NotificationTypeModel;
@@ -66,7 +67,8 @@ extension NotificationTypeModelMapper on NotificationTypeModel {
     id: id,
     name: name,
     description: description,
-    template: template,
+    titleTemplate: titleTemplate,
+    bodyTemplate: bodyTemplate,
     createdAt: createdAt,
     updatedAt: updatedAt,
   );
