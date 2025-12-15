@@ -53,7 +53,8 @@ _NotificationTypeModel _$NotificationTypeModelFromJson(
   id: (json['id'] as num).toInt(),
   name: json['name'] as String,
   description: json['description'] as String,
-  template: json['template'] as String,
+  titleTemplate: json['titleTemplate'] as String,
+  bodyTemplate: json['bodyTemplate'] as String,
   createdAt: DateTime.parse(json['createdAt'] as String),
   updatedAt: DateTime.parse(json['updatedAt'] as String),
 );
@@ -64,7 +65,8 @@ Map<String, dynamic> _$NotificationTypeModelToJson(
   'id': instance.id,
   'name': instance.name,
   'description': instance.description,
-  'template': instance.template,
+  'titleTemplate': instance.titleTemplate,
+  'bodyTemplate': instance.bodyTemplate,
   'createdAt': instance.createdAt.toIso8601String(),
   'updatedAt': instance.updatedAt.toIso8601String(),
 };

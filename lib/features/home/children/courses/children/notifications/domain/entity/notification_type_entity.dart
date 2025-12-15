@@ -2,7 +2,8 @@ class NotificationTypeEntity {
   final int id;
   final String name;
   final String description;
-  final String template;
+  final String titleTemplate;
+  final String bodyTemplate;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -10,7 +11,8 @@ class NotificationTypeEntity {
     required this.id,
     required this.name,
     required this.description,
-    required this.template,
+    required this.titleTemplate,
+    required this.bodyTemplate,
     required this.createdAt,
     required this.updatedAt,
   });
