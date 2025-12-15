@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fpdart/fpdart.dart';
-
 import '../error/failure.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -12,15 +11,6 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 class FirebaseNotifications {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-
-  Future<Either<Failure, FirebaseApp>> initializeFirebase() async {
-    try {
-      final firebaseApp = await Firebase.initializeApp();
-      return right(firebaseApp);
-    } catch (e) {
-      return left(Failure("Error initializing Firebase: $e"));
-    }
-  }
 
   Future<Either<Failure, Unit>> setupBackgroundHandler() async {
     try {

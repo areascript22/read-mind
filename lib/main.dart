@@ -1,6 +1,7 @@
 import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/config/init_global_config.dart';
 import 'package:client_app/core/routing/app_router.dart';
+import 'package:client_app/core/services/notification_channel_service.dart';
 import 'package:client_app/core/theme/themes.dart';
 import 'package:client_app/init_dependencies.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,6 +13,7 @@ void main() async {
   await initGlobalConfig();
   await initDependencies();
   await Firebase.initializeApp();
+  await NotificationChannelService.init();
   runApp(
     MultiBlocProvider(
       providers: [
