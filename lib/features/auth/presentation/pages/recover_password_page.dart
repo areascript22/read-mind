@@ -1,6 +1,5 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:client_app/features/auth/presentation/widgets/dialog_reset_pass_link.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/common/widget/app_version.dart';
 import '../../../../core/common/widget/custom_button.dart';
 import '../../../../core/routing/route_names.dart';
+import '../widgets/Dialogs/dialog_reset_pass_link.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/background1.dart';
 
