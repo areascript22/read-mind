@@ -1,16 +1,18 @@
-# client_app
+# 📚 [Nombre de tu App: ej. ReadMaster Flutter]
 
-A new Flutter project.
+## 🎯 Propósito del Proyecto
+ Aplicación móvil desarrollada en Flutter diseñada para mejorar las habilidades de comprensión lectora mediante el análisis de textos y evaluaciones interactivas, aplicando técnicas comoÑ parafraseo, identificación de ideas principales y realización de resumenes. Todo creado y evaluado dinamicamente con la ayuda de la API de Gemini.
 
-## Getting Started
+## 📱 Plataformas Disponibles
 
-This project is a starting point for a Flutter application.
+<a href="https://play.google.com/store/apps/details?id=com.readmind.ai" target="_blank">
+  <img src="https://play-lh.googleusercontent.com/SQ13pPiGESM-VASFH2Vfa580gIWNw5pxSv4NJE3Q3dgB_hbUstTuHJRL4ryaxBXPuiP0LEhPHVA_ab5c6B48vg=w480-h960-rw" alt="Logo ReadMind AI" width="100" style="border-radius: 15px;">
+</a>
 
-A few resources to get you started if this is your first Flutter project:
+*Actualmente disponible exclusivamente para dispositivos **Android**.*
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📸 Demostración Visual
+*(Aquí insertas tus capturas o GIFs)*
+<p align="center">
+  <img src="assets/images/demo.gif" width="300" alt="Demo de la App">
+</p>
