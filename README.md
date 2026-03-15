@@ -12,7 +12,11 @@
 *Actualmente disponible exclusivamente para dispositivos **Android**.*
 
 ## 📸 Demostración Visual
-*(Aquí insertas tus capturas o GIFs)*
-<p align="center">
-  <img src="assets/images/svg/admin.svg" width="300" alt="Demo de la App">
-</p>
+
+| Actividades | Resultado IA | Cursos |
+| :---: | :---: | :---: |
+| <img src="assets/images/readme/activities.jpeg" width="200"> | <img src="assets/images/readme/ai_result.jpeg" width="200"> | <img src="assets/images/readme/courses.jpeg" width="200"> |
+
+| Dashboard | Procesando | Lectura | Vocabulario |
+| :---: | :---: | :---: | :---: |
+| <img src="assets/images/readme/dashboard.jpeg" width="200"> | <img src="assets/images/readme/processing.jpeg" width="200"> | <img src="assets/images/readme/reading.jpeg" width="200"> | <img src="assets/images/readme/vocabulary.jpeg" width="200"> |
