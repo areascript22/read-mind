@@ -2,6 +2,7 @@ import 'package:client_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:client_app/core/common/features/preferences/data/repository/preferences_repository_impl.dart';
 import 'package:client_app/core/common/features/preferences/domian/repository/preferences_repository.dart';
 import 'package:client_app/core/common/features/preferences/presentation/cubit/preferences_cubit/preferences_cubit.dart';
+import 'package:client_app/core/network/dio_client.dart';
 import 'package:client_app/core/services/firebase_service.dart';
 import 'package:client_app/features/auth/data/repositories/initial_values_repository_impl.dart';
 import 'package:client_app/features/auth/domain/repositories/initial_values_repository.dart';
@@ -121,7 +122,7 @@ void _initUserPreferences() {
 
 void _initAuth() {
   serviceLocator.registerFactory<AuthRemoteDatasource>(
-    () => AuthRemoteDataSourceImpl(),
+    () => AuthRemoteDataSourceImpl(DioClient.instance),
   );
   serviceLocator.registerFactory<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(serviceLocator<SharedPreferences>()),

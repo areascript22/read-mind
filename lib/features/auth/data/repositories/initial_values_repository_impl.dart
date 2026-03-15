@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:client_app/core/common/entities/user_entity.dart';
+import 'package:client_app/core/network/dio_client.dart';
 import 'package:client_app/features/auth/data/models/user_model/user_model.dart';
 import 'package:client_app/features/auth/domain/repositories/initial_values_repository.dart';
 import 'package:client_app/shared/datasources/auth_local_datasource.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
@@ -15,20 +17,22 @@ class InitialValuesRepositoryImpl implements InitialValuesRepository {
 
   InitialValuesRepositoryImpl({required this.authLocalDataSource});
 
+  final dioClient = DioClient.instance;
+
   @override
   Future<Either<Failure, int>> getCurrentAppBuildNumber() async {
     try {
-      final url = Uri.parse("${AppEnvironment().baseUrl}/app/version");
-      final response = await http.get(
-        url,
-        headers: {"Content-Type": "application/json"},
-      );
-      final data = jsonDecode(response.body);
+      final response = await dioClient.get('/app/version');
+      final data = response.data;
+
       if (response.statusCode != 200) {
         throw ServerException(data['message']);
       }
+
       final buildNumber = data['buildNumber'] as int;
       return right(buildNumber);
+    } on DioException catch (e) {
+      return left(Failure("Build number not available: ${e.message}"));
     } catch (e) {
       return left(Failure("Build number not available"));
     }
