@@ -1,7 +1,7 @@
-# 📚 [Nombre de tu App: ej. ReadMaster Flutter]
+# 📚 ReadMind AI
 
 ## 🎯 Propósito del Proyecto
- Aplicación móvil desarrollada en Flutter diseñada para mejorar las habilidades de comprensión lectora mediante el análisis de textos y evaluaciones interactivas, aplicando técnicas comoÑ parafraseo, identificación de ideas principales y realización de resumenes. Todo creado y evaluado dinamicamente con la ayuda de la API de Gemini.
+ Aplicación móvil desarrollada en Flutter diseñada para mejorar las habilidades de comprensión lectora mediante el análisis de textos y evaluaciones interactivas, aplicando técnicas como: parafraseo, identificación de ideas principales y realización de resumenes. Todo creado y evaluado dinamicamente con la ayuda de la API de Gemini.
 
 ## 📱 Plataformas Disponibles
 
@@ -14,5 +14,5 @@
 ## 📸 Demostración Visual
 *(Aquí insertas tus capturas o GIFs)*
 <p align="center">
-  <img src="assets/images/demo.gif" width="300" alt="Demo de la App">
+  <img src="assets/images/svg/admin.svg" width="300" alt="Demo de la App">
 </p>
