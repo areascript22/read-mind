@@ -12,6 +12,7 @@ import '../widgets/blus/blur_loader.dart';
 import '../widgets/dialog/dialog_feedback_main_idea.dart';
 import '../widgets/dialog/dialog_main_idea_attempts.dart';
 import '../widgets/dialog/dialog_main_idea_tip.dart';
+import '../widgets/original_paragraph_card.dart';
 
 class MainIdeaPage extends StatefulWidget {
   final AIReadingEntity aiReadingEntity;
@@ -245,68 +246,14 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                                     ),
                                   ],
                                 ),
-                                GestureDetector(
-                                  onTap:
+
+                                OriginalParagraphCard(
+                                  content: widget.aiReadingEntity.content,
+                                  isExpanded: _isExpanded,
+                                  onToggle:
                                       () => setState(
                                         () => _isExpanded = !_isExpanded,
                                       ),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(14),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue.shade50,
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: Colors.blueAccent,
-                                        width: 0.6,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          "Ver párrafo original",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        Icon(
-                                          _isExpanded
-                                              ? Icons.expand_less
-                                              : Icons.expand_more,
-                                          color: Colors.blueAccent,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-
-                                AnimatedCrossFade(
-                                  firstChild: const SizedBox.shrink(),
-                                  secondChild: Container(
-                                    width: double.infinity,
-                                    margin: const EdgeInsets.only(
-                                      top: 8,
-                                      bottom: 16,
-                                    ),
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade100,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text(
-                                      widget.aiReadingEntity.content,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        height: 1.5,
-                                      ),
-                                    ),
-                                  ),
-                                  crossFadeState:
-                                      _isExpanded
-                                          ? CrossFadeState.showSecond
-                                          : CrossFadeState.showFirst,
-                                  duration: const Duration(milliseconds: 250),
                                 ),
 
                                 const SizedBox(height: 10),
@@ -322,15 +269,6 @@ class _MainIdeaPageState extends State<MainIdeaPage> {
                                 const SizedBox(height: 20),
                                 _buildSubmitButton(isLoading, context),
                                 const SizedBox(height: 15),
-                                // CustomButton(
-                                //   color: Colors.green,
-                                //   onTap:
-                                //       () => context.push(
-                                //         RouteNames.activitySummary,
-                                //         extra: widget.originalParagraph,
-                                //       ),
-                                //   child: Text("Siguiente actividad"),
-                                // ),
                               ],
                             ),
                           ),
