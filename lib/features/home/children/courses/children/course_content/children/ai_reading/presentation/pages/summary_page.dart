@@ -1,4 +1,5 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/original_paragraph_card.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -86,20 +87,6 @@ class _SummaryPageState extends State<SummaryPage> {
         return PopScope(
           canPop: false,
           child: Scaffold(
-            // appBar: AppBar(
-            //   title: const Text("Actividad de resumen"),
-            //   centerTitle: true,
-            //   leading: IconButton(
-            //     onPressed: () {
-            //       timerAttemptCubit.setStartTime(DateTime.now());
-            //       Navigator.pop(context);
-            //     },
-            //     icon: const Icon(Icons.arrow_back),
-            //   ),
-            //   actions: [
-            //
-            //   ],
-            // ),
             body: Stack(
               children: [
                 SafeArea(
@@ -247,69 +234,14 @@ class _SummaryPageState extends State<SummaryPage> {
                                     ),
                                   ],
                                 ),
-                                GestureDetector(
-                                  onTap:
-                                      () => setState(
-                                        () => _isExpanded = !_isExpanded,
-                                      ),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(14),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue.shade50,
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: Colors.blueAccent,
-                                        width: 0.6,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          "Ver párrafo original",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        Icon(
-                                          _isExpanded
-                                              ? Icons.expand_less
-                                              : Icons.expand_more,
-                                          color: Colors.blueAccent,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
 
-                                AnimatedCrossFade(
-                                  firstChild: const SizedBox.shrink(),
-                                  secondChild: Container(
-                                    width: double.infinity,
-                                    margin: const EdgeInsets.only(
-                                      top: 8,
-                                      bottom: 16,
-                                    ),
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade100,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text(
-                                      widget.aiReadingEntity.content,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        height: 1.5,
-                                      ),
-                                    ),
-                                  ),
-                                  crossFadeState:
-                                      _isExpanded
-                                          ? CrossFadeState.showSecond
-                                          : CrossFadeState.showFirst,
-                                  duration: const Duration(milliseconds: 250),
-                                ),
+                                OriginalParagraphCard(
+                                    content: widget.aiReadingEntity.content,
+                                    isExpanded: _isExpanded,
+                                    onToggle: () =>
+                                        setState(
+                                              () => _isExpanded = !_isExpanded,
+                                        )),
 
                                 const SizedBox(height: 10),
 

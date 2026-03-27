@@ -5,6 +5,8 @@ import 'package:client_app/features/home/children/courses/children/course_conten
 import 'package:client_app/features/home/children/courses/domain/entities/course_entity.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/course_share_invitecode/share_invitecode_cubit.dart';
 import 'package:client_app/features/home/children/courses/presentation/bloc/courses_bloc/courses_bloc.dart';
+import 'package:client_app/shared/extentions/context/context_clipboard_ext.dart';
+import 'package:client_app/shared/widgets/buttons/copy_clipboard_button.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,20 +97,9 @@ class _CourseSettingsState extends State<CourseSettings> {
                                 ),
                               ),
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.content_copy, size: 22),
-                              onPressed: () async {
-                                await Clipboard.setData(
-                                  ClipboardData(text: courseEntity.inviteCode),
-                                );
-                                if (context.mounted) {
-                                  ToastMessageUtil.showToast(
-                                    "Código de invitación copiado",
-                                    context,
-                                  );
-                                }
-                              },
-                              tooltip: 'Copiar a la papelera',
+                            CopyButton(
+                              textToCopy: courseEntity.inviteCode,
+                              successMessage: "Código de invitación copiado",
                             ),
                           ],
                         ),
