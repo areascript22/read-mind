@@ -1,6 +1,8 @@
 import 'package:client_app/core/common/utils/toast_util.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/cubit/timer_cubit_attempt/timer_attempt_cubit.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/buttons/reading_activity_button.dart';
 import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/dialog/dialog_feedback.dart';
+import 'package:client_app/features/home/children/courses/children/course_content/children/ai_reading/presentation/widgets/original_paragraph_card.dart';
 import 'package:client_app/features/home/children/courses/children/student_tracking/data/model/progress/progress_model.dart';
 import 'package:client_app/shared/widgets/loader_indicator.dart';
 import 'package:flutter/material.dart';
@@ -68,13 +70,6 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
             state.actionType == AiActionType.paraphrase) {
           showFeedbackDialog(context, state.feedbackEntity);
 
-          // context.read<ActivityProgressBloc>().add(
-          //   UpdateProgressEvent(
-          //     aiReadingId: widget.aiReadingEntity.aiReadingId,
-          //     dataToUpdate: {"paraphraseCompleted": true},
-          //   ),
-          // );
-
           final totalSeconds = timerAttemptCubit.totalTimeSec;
           context.read<AttemptsCubit>().createParaphraseAttempt(
             aiReadingId: widget.aiReadingEntity.aiReadingId,
@@ -94,22 +89,6 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
         return PopScope(
           canPop: true,
           child: Scaffold(
-            // appBar: AppBar(
-            //   title: const Text("Actividad de paráfrasis"),
-            //   centerTitle: true,
-            //   backgroundColor: Colors.blueAccent,
-            //   leading: IconButton(
-            //     onPressed: () {
-            //       timerAttemptCubit.setPlayCount(0);
-            //       timerAttemptCubit.setStartTime(DateTime.now());
-            //       Navigator.pop(context);
-            //     },
-            //     icon: const Icon(Icons.arrow_back),
-            //   ),
-            //   actions: [
-            //
-            //   ],
-            // ),
             body: Stack(
               children: [
                 SafeArea(
@@ -125,193 +104,14 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Actividad de paráfrasis",
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        BlocConsumer<
-                                          AttemptsCubit,
-                                          AttemptsState
-                                        >(
-                                          builder: (context, state) {
-                                            if (state is AttemptsLoading &&
-                                                state.attemptOperation ==
-                                                    AttemptOperation
-                                                        .paraphrase) {
-                                              return LoaderIndicator(
-                                                spinnerSize: 20,
-                                                spinnerColor: Colors.red,
-                                              );
-                                            }
-                                            if (state
-                                                is AttemptParaphraseCreated) {
-                                              return IconButton(
-                                                onPressed: () {
-                                                  showParaphraseAttemptsDialog(
-                                                    context,
-                                                    widget.aiReadingEntity,
-                                                  );
-                                                },
-                                                icon: Icon(Icons.book),
-                                              );
-                                            }
-                                            return IconButton(
-                                              onPressed: () {
-                                                showParaphraseAttemptsDialog(
-                                                  context,
-                                                  widget.aiReadingEntity,
-                                                );
-                                              },
-                                              icon: Icon(Icons.book),
-                                            );
-                                          },
-                                          listener: (context, state) {
-                                            if (state is AttemptsError &&
-                                                state.attemptOperation ==
-                                                    AttemptOperation
-                                                        .paraphrase) {
-                                              timerAttemptCubit.setStartTime(
-                                                DateTime.now(),
-                                              );
-                                              ToastMessageUtil.showToast(
-                                                state.message,
-                                                context,
-                                              );
-                                            }
+                                _buildHeader(),
 
-                                            if (state
-                                                is AttemptParaphraseCreated) {
-                                              timerAttemptCubit.setStartTime(
-                                                DateTime.now(),
-                                              );
-                                              context
-                                                  .read<ActivityProgressBloc>()
-                                                  .add(
-                                                    UpdateProgressEvent(
-                                                      aiReadingId:
-                                                          widget
-                                                              .aiReadingEntity
-                                                              .aiReadingId,
-                                                      dataToUpdate: {
-                                                        "paraphraseCompleted":
-                                                            true,
-                                                      },
-                                                    ),
-                                                  );
-                                            }
-                                          },
-                                        ),
-                                        BlocBuilder<
-                                          ActivityProgressBloc,
-                                          ActivityProgressState
-                                        >(
-                                          builder: (context, state) {
-                                            if (state is ProgressLoading) {
-                                              return LoaderIndicator(
-                                                spinnerSize: 20,
-                                                spinnerColor: Colors.white,
-                                              );
-                                            }
-                                            if (state is ProgressCreated &&
-                                                state.createdProgress
-                                                    .toReadingProgressEntity()!
-                                                    .subactivitiesCompleted
-                                                    .paraphrase) {
-                                              return Icon(
-                                                Icons.check,
-                                                color: Colors.green,
-                                              );
-                                            }
-
-                                            if (state is ProgressUpdated &&
-                                                state.updatedProgress
-                                                    .toReadingProgressEntity()!
-                                                    .subactivitiesCompleted
-                                                    .paraphrase) {
-                                              return Icon(
-                                                Icons.check,
-                                                color: Colors.green,
-                                              );
-                                            }
-
-                                            return SizedBox.shrink();
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                GestureDetector(
-                                  onTap:
-                                      () => setState(
-                                        () => _isExpanded = !_isExpanded,
-                                      ),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(14),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue.shade50,
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: Colors.blueAccent,
-                                        width: 0.6,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          "Ver párrafo original",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        Icon(
-                                          _isExpanded
-                                              ? Icons.expand_less
-                                              : Icons.expand_more,
-                                          color: Colors.blueAccent,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-
-                                AnimatedCrossFade(
-                                  firstChild: const SizedBox.shrink(),
-                                  secondChild: Container(
-                                    width: double.infinity,
-                                    margin: const EdgeInsets.only(
-                                      top: 8,
-                                      bottom: 16,
-                                    ),
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade100,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text(
-                                      widget.aiReadingEntity.content,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        height: 1.5,
-                                      ),
-                                    ),
-                                  ),
-                                  crossFadeState:
-                                      _isExpanded
-                                          ? CrossFadeState.showSecond
-                                          : CrossFadeState.showFirst,
-                                  duration: const Duration(milliseconds: 250),
+                                OriginalParagraphCard(
+                                  content: widget.aiReadingEntity.content,
+                                  isExpanded: _isExpanded,
+                                  onToggle: () {
+                                    setState(() => _isExpanded = !_isExpanded);
+                                  },
                                 ),
 
                                 const SizedBox(height: 10),
@@ -325,28 +125,13 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
                                 const SizedBox(height: 10),
                                 _buildRichTextField(),
                                 const SizedBox(height: 20),
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: 50,
-                                  child: ElevatedButton(
-                                    onPressed:
-                                        isLoading
-                                            ? null
-                                            : () => _submitParaphrase(context),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blueAccent,
-                                      disabledBackgroundColor:
-                                          Colors.grey.shade400,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      "Evaluar paráfrasis",
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
+
+                                ReadingActivityButton(
+                                  label: "Evaluar paráfrasis",
+                                  onPressed: () => _submitParaphrase(context),
+                                  isLoading: isLoading,
                                 ),
+
                                 SizedBox(height: 15),
                               ],
                             ),
@@ -363,6 +148,121 @@ class _ParaphrasePageState extends State<ParaphrasePage> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      mainAxisAlignment:
+      MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "Actividad de paráfrasis",
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Row(
+          children: [
+            BlocConsumer<AttemptsCubit, AttemptsState>(
+              builder: (context, state) {
+                if (state is AttemptsLoading && state.attemptOperation ==
+                    AttemptOperation
+                        .paraphrase) {
+                  return LoaderIndicator(
+                    spinnerSize: 20,
+                    spinnerColor: Colors.red,
+                  );
+                }
+                if (state is AttemptParaphraseCreated) {
+                  return IconButton(
+                    onPressed: () {
+                      showParaphraseAttemptsDialog(
+                        context,
+                        widget.aiReadingEntity,
+                      );
+                    },
+                    icon: Icon(Icons.book),
+                  );
+                }
+                return IconButton(
+                  onPressed: () {
+                    showParaphraseAttemptsDialog(
+                      context,
+                      widget.aiReadingEntity,
+                    );
+                  },
+                  icon: Icon(Icons.book),
+                );
+              },
+              listener: (context, state) {
+                if (state is AttemptsError && state.attemptOperation ==
+                    AttemptOperation
+                        .paraphrase) {
+                  timerAttemptCubit.setStartTime(
+                    DateTime.now(),
+                  );
+                  ToastMessageUtil.showToast(
+                    state.message,
+                    context,
+                  );
+                }
+
+                if (state is AttemptParaphraseCreated) {
+                  timerAttemptCubit.setStartTime(
+                    DateTime.now(),
+                  );
+                  context
+                      .read<ActivityProgressBloc>()
+                      .add(
+                    UpdateProgressEvent(
+                      aiReadingId:
+                      widget
+                          .aiReadingEntity
+                          .aiReadingId,
+                      dataToUpdate: {
+                        "paraphraseCompleted":
+                        true,
+                      },
+                    ),
+                  );
+                }
+              },
+            ),
+            BlocBuilder<ActivityProgressBloc, ActivityProgressState>(
+              builder: (context, state) {
+                if (state is ProgressLoading) {
+                  return LoaderIndicator(
+                    spinnerSize: 20,
+                    spinnerColor: Colors.white,
+                  );
+                }
+                if (state is ProgressCreated &&
+                    state.createdProgress
+                        .toReadingProgressEntity()!
+                        .subactivitiesCompleted
+                        .paraphrase) {
+                  return Icon(Icons.check, color: Colors.green,);
+                }
+
+                if (state is ProgressUpdated &&
+                    state.updatedProgress
+                        .toReadingProgressEntity()!
+                        .subactivitiesCompleted
+                        .paraphrase) {
+                  return Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  );
+                }
+
+                return SizedBox.shrink();
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 
