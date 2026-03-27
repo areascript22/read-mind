@@ -9,7 +9,7 @@ extension ClipboardExtension on BuildContext {
     try {
       await Clipboard.setData(ClipboardData(text: text));
 
-      await HapticFeedback.heavyImpact();
+      await HapticFeedback.lightImpact();
       if (!mounted) return;
 
       final toastMessage = message ?? "Copiado al portapapeles";
